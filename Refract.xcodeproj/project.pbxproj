@@ -1,0 +1,456 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		C67861971346E41100892BC2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C67861961346E41100892BC2 /* Cocoa.framework */; };
+		C67861A11346E41100892BC2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C678619F1346E41100892BC2 /* InfoPlist.strings */; };
+		C67861A41346E41100892BC2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C67861A31346E41100892BC2 /* main.m */; };
+		C67861A71346E41100892BC2 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = C67861A51346E41100892BC2 /* Credits.rtf */; };
+		C67861AA1346E41100892BC2 /* RefractAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C67861A91346E41100892BC2 /* RefractAppDelegate.m */; };
+		C67861AD1346E41100892BC2 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = C67861AB1346E41100892BC2 /* MainMenu.xib */; };
+		C67861B41346E41100892BC2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C67861961346E41100892BC2 /* Cocoa.framework */; };
+		C67861BC1346E41100892BC2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C67861BA1346E41100892BC2 /* InfoPlist.strings */; };
+		C67861BF1346E41100892BC2 /* RefractTests.h in Resources */ = {isa = PBXBuildFile; fileRef = C67861BE1346E41100892BC2 /* RefractTests.h */; };
+		C67861C11346E41100892BC2 /* RefractTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C67861C01346E41100892BC2 /* RefractTests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		C67861B51346E41100892BC2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C67861891346E41100892BC2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C67861911346E41100892BC2;
+			remoteInfo = Refract;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		C67861921346E41100892BC2 /* Refract.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Refract.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C67861961346E41100892BC2 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		C67861991346E41100892BC2 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		C678619A1346E41100892BC2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		C678619B1346E41100892BC2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		C678619E1346E41100892BC2 /* Refract-Info.plist */ = {isa = PBXFileReference; path = "Refract-Info.plist"; sourceTree = "<group>"; };
+		C67861A01346E41100892BC2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		C67861A21346E41100892BC2 /* Refract-Prefix.pch */ = {isa = PBXFileReference; path = "Refract-Prefix.pch"; sourceTree = "<group>"; };
+		C67861A31346E41100892BC2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		C67861A61346E41100892BC2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		C67861A81346E41100892BC2 /* RefractAppDelegate.h */ = {isa = PBXFileReference; path = RefractAppDelegate.h; sourceTree = "<group>"; };
+		C67861A91346E41100892BC2 /* RefractAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RefractAppDelegate.m; sourceTree = "<group>"; };
+		C67861AC1346E41100892BC2 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		C67861B31346E41100892BC2 /* RefractTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RefractTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C67861B91346E41100892BC2 /* RefractTests-Info.plist */ = {isa = PBXFileReference; path = "RefractTests-Info.plist"; sourceTree = "<group>"; };
+		C67861BB1346E41100892BC2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		C67861BD1346E41100892BC2 /* RefractTests-Prefix.pch */ = {isa = PBXFileReference; path = "RefractTests-Prefix.pch"; sourceTree = "<group>"; };
+		C67861BE1346E41100892BC2 /* RefractTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RefractTests.h; sourceTree = "<group>"; };
+		C67861C01346E41100892BC2 /* RefractTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RefractTests.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C678618F1346E41100892BC2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C67861971346E41100892BC2 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C67861AF1346E41100892BC2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C67861B41346E41100892BC2 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		C67861871346E41100892BC2 = {
+			isa = PBXGroup;
+			children = (
+				C678619C1346E41100892BC2 /* Refract */,
+				C67861B71346E41100892BC2 /* RefractTests */,
+				C67861951346E41100892BC2 /* Frameworks */,
+				C67861931346E41100892BC2 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		C67861931346E41100892BC2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C67861921346E41100892BC2 /* Refract.app */,
+				C67861B31346E41100892BC2 /* RefractTests.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C67861951346E41100892BC2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C67861961346E41100892BC2 /* Cocoa.framework */,
+				C67861981346E41100892BC2 /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C67861981346E41100892BC2 /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C67861991346E41100892BC2 /* AppKit.framework */,
+				C678619A1346E41100892BC2 /* CoreData.framework */,
+				C678619B1346E41100892BC2 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		C678619C1346E41100892BC2 /* Refract */ = {
+			isa = PBXGroup;
+			children = (
+				C67861A81346E41100892BC2 /* RefractAppDelegate.h */,
+				C67861A91346E41100892BC2 /* RefractAppDelegate.m */,
+				C67861AB1346E41100892BC2 /* MainMenu.xib */,
+				C678619D1346E41100892BC2 /* Supporting Files */,
+			);
+			path = Refract;
+			sourceTree = "<group>";
+		};
+		C678619D1346E41100892BC2 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				C678619E1346E41100892BC2 /* Refract-Info.plist */,
+				C678619F1346E41100892BC2 /* InfoPlist.strings */,
+				C67861A21346E41100892BC2 /* Refract-Prefix.pch */,
+				C67861A31346E41100892BC2 /* main.m */,
+				C67861A51346E41100892BC2 /* Credits.rtf */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		C67861B71346E41100892BC2 /* RefractTests */ = {
+			isa = PBXGroup;
+			children = (
+				C67861BE1346E41100892BC2 /* RefractTests.h */,
+				C67861C01346E41100892BC2 /* RefractTests.m */,
+				C67861B81346E41100892BC2 /* Supporting Files */,
+			);
+			path = RefractTests;
+			sourceTree = "<group>";
+		};
+		C67861B81346E41100892BC2 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				C67861B91346E41100892BC2 /* RefractTests-Info.plist */,
+				C67861BA1346E41100892BC2 /* InfoPlist.strings */,
+				C67861BD1346E41100892BC2 /* RefractTests-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		C67861911346E41100892BC2 /* Refract */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C67861C41346E41100892BC2 /* Build configuration list for PBXNativeTarget "Refract" */;
+			buildPhases = (
+				C678618E1346E41100892BC2 /* Sources */,
+				C678618F1346E41100892BC2 /* Frameworks */,
+				C67861901346E41100892BC2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Refract;
+			productName = Refract;
+			productReference = C67861921346E41100892BC2 /* Refract.app */;
+			productType = "com.apple.product-type.application";
+		};
+		C67861B21346E41100892BC2 /* RefractTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C67861C71346E41100892BC2 /* Build configuration list for PBXNativeTarget "RefractTests" */;
+			buildPhases = (
+				C67861AE1346E41100892BC2 /* Sources */,
+				C67861AF1346E41100892BC2 /* Frameworks */,
+				C67861B01346E41100892BC2 /* Resources */,
+				C67861B11346E41100892BC2 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C67861B61346E41100892BC2 /* PBXTargetDependency */,
+			);
+			name = RefractTests;
+			productName = RefractTests;
+			productReference = C67861B31346E41100892BC2 /* RefractTests.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C67861891346E41100892BC2 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = C678618C1346E41100892BC2 /* Build configuration list for PBXProject "Refract" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = C67861871346E41100892BC2;
+			productRefGroup = C67861931346E41100892BC2 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C67861911346E41100892BC2 /* Refract */,
+				C67861B21346E41100892BC2 /* RefractTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C67861901346E41100892BC2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C67861A11346E41100892BC2 /* InfoPlist.strings in Resources */,
+				C67861A71346E41100892BC2 /* Credits.rtf in Resources */,
+				C67861AD1346E41100892BC2 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C67861B01346E41100892BC2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C67861BC1346E41100892BC2 /* InfoPlist.strings in Resources */,
+				C67861BF1346E41100892BC2 /* RefractTests.h in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		C67861B11346E41100892BC2 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C678618E1346E41100892BC2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C67861A41346E41100892BC2 /* main.m in Sources */,
+				C67861AA1346E41100892BC2 /* RefractAppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C67861AE1346E41100892BC2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C67861C11346E41100892BC2 /* RefractTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		C67861B61346E41100892BC2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C67861911346E41100892BC2 /* Refract */;
+			targetProxy = C67861B51346E41100892BC2 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		C678619F1346E41100892BC2 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C67861A01346E41100892BC2 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		C67861A51346E41100892BC2 /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C67861A61346E41100892BC2 /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		C67861AB1346E41100892BC2 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C67861AC1346E41100892BC2 /* en */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		C67861BA1346E41100892BC2 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C67861BB1346E41100892BC2 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		C67861C21346E41100892BC2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		C67861C31346E41100892BC2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		C67861C51346E41100892BC2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Refract/Refract-Prefix.pch";
+				INFOPLIST_FILE = "Refract/Refract-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		C67861C61346E41100892BC2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Refract/Refract-Prefix.pch";
+				INFOPLIST_FILE = "Refract/Refract-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		C67861C81346E41100892BC2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Refract.app/Contents/MacOS/Refract";
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "RefractTests/RefractTests-Prefix.pch";
+				INFOPLIST_FILE = "RefractTests/RefractTests-Info.plist";
+				OTHER_LDFLAGS = (
+					"-framework",
+					SenTestingKit,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		C67861C91346E41100892BC2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Refract.app/Contents/MacOS/Refract";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "RefractTests/RefractTests-Prefix.pch";
+				INFOPLIST_FILE = "RefractTests/RefractTests-Info.plist";
+				OTHER_LDFLAGS = (
+					"-framework",
+					SenTestingKit,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C678618C1346E41100892BC2 /* Build configuration list for PBXProject "Refract" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C67861C21346E41100892BC2 /* Debug */,
+				C67861C31346E41100892BC2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C67861C41346E41100892BC2 /* Build configuration list for PBXNativeTarget "Refract" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C67861C51346E41100892BC2 /* Debug */,
+				C67861C61346E41100892BC2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		C67861C71346E41100892BC2 /* Build configuration list for PBXNativeTarget "RefractTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C67861C81346E41100892BC2 /* Debug */,
+				C67861C91346E41100892BC2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C67861891346E41100892BC2 /* Project object */;
+}
