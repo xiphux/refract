@@ -20,6 +20,8 @@
 		C67861D01346ED5C00892BC2 /* RFTorrent.m in Sources */ = {isa = PBXBuildFile; fileRef = C67861CF1346ED5C00892BC2 /* RFTorrent.m */; };
 		C67861D41347829D00892BC2 /* RFEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = C67861D31347829D00892BC2 /* RFEngine.m */; };
 		C678621A13478B0900892BC2 /* JSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C678621913478B0900892BC2 /* JSON.framework */; };
+		C678621E134795EF00892BC2 /* RFEngineTransmission.m in Sources */ = {isa = PBXBuildFile; fileRef = C678621D134795EF00892BC2 /* RFEngineTransmission.m */; };
+		C67862251347BDEA00892BC2 /* RFBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = C67862241347BDEA00892BC2 /* RFBase64.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -86,6 +88,10 @@
 		C67861D31347829D00892BC2 /* RFEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFEngine.m; sourceTree = "<group>"; };
 		C678620913478A8000892BC2 /* JSON.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = JSON.xcodeproj; path = json/JSON.xcodeproj; sourceTree = "<group>"; };
 		C678621913478B0900892BC2 /* JSON.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = JSON.framework; sourceTree = SOURCE_ROOT; };
+		C678621C134795EF00892BC2 /* RFEngineTransmission.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFEngineTransmission.h; sourceTree = "<group>"; };
+		C678621D134795EF00892BC2 /* RFEngineTransmission.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFEngineTransmission.m; sourceTree = "<group>"; };
+		C67862231347BDEA00892BC2 /* RFBase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFBase64.h; sourceTree = "<group>"; };
+		C67862241347BDEA00892BC2 /* RFBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFBase64.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -152,6 +158,7 @@
 		C678619C1346E41100892BC2 /* Refract */ = {
 			isa = PBXGroup;
 			children = (
+				C678621F1347BCC500892BC2 /* Utilities */,
 				C67861D11347825B00892BC2 /* Engine */,
 				C67861CA1346ED1000892BC2 /* Model */,
 				C67861A81346E41100892BC2 /* RefractAppDelegate.h */,
@@ -206,6 +213,7 @@
 		C67861D11347825B00892BC2 /* Engine */ = {
 			isa = PBXGroup;
 			children = (
+				C678621B1347939300892BC2 /* Transmission */,
 				C67861D21347829D00892BC2 /* RFEngine.h */,
 				C67861D31347829D00892BC2 /* RFEngine.m */,
 			);
@@ -221,6 +229,24 @@
 				C678621813478A8000892BC2 /* libjsontests.octest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		C678621B1347939300892BC2 /* Transmission */ = {
+			isa = PBXGroup;
+			children = (
+				C678621C134795EF00892BC2 /* RFEngineTransmission.h */,
+				C678621D134795EF00892BC2 /* RFEngineTransmission.m */,
+			);
+			name = Transmission;
+			sourceTree = "<group>";
+		};
+		C678621F1347BCC500892BC2 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				C67862231347BDEA00892BC2 /* RFBase64.h */,
+				C67862241347BDEA00892BC2 /* RFBase64.m */,
+			);
+			name = Utilities;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -369,6 +395,8 @@
 				C67861AA1346E41100892BC2 /* RefractAppDelegate.m in Sources */,
 				C67861D01346ED5C00892BC2 /* RFTorrent.m in Sources */,
 				C67861D41347829D00892BC2 /* RFEngine.m in Sources */,
+				C678621E134795EF00892BC2 /* RFEngineTransmission.m in Sources */,
+				C67862251347BDEA00892BC2 /* RFBase64.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

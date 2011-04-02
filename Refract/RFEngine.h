@@ -18,6 +18,7 @@
 
 - (bool)connect;
 - (bool)disconnect;
+- (bool)connected;
 - (bool)refresh;
 
 @end

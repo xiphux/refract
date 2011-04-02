@@ -23,6 +23,7 @@
 
 - (void)dealloc
 {
+    [torrents release];
     [super dealloc];
 }
 
@@ -35,6 +36,12 @@
 }
 
 - (bool)disconnect
+{
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
+
+- (bool)connected
 {
     [self doesNotRecognizeSelector:_cmd];
     return nil;
