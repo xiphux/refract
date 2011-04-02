@@ -35,18 +35,18 @@
 		C67861991346E41100892BC2 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		C678619A1346E41100892BC2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		C678619B1346E41100892BC2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		C678619E1346E41100892BC2 /* Refract-Info.plist */ = {isa = PBXFileReference; path = "Refract-Info.plist"; sourceTree = "<group>"; };
+		C678619E1346E41100892BC2 /* Refract-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Refract-Info.plist"; sourceTree = "<group>"; };
 		C67861A01346E41100892BC2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		C67861A21346E41100892BC2 /* Refract-Prefix.pch */ = {isa = PBXFileReference; path = "Refract-Prefix.pch"; sourceTree = "<group>"; };
+		C67861A21346E41100892BC2 /* Refract-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Refract-Prefix.pch"; sourceTree = "<group>"; };
 		C67861A31346E41100892BC2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		C67861A61346E41100892BC2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
-		C67861A81346E41100892BC2 /* RefractAppDelegate.h */ = {isa = PBXFileReference; path = RefractAppDelegate.h; sourceTree = "<group>"; };
+		C67861A81346E41100892BC2 /* RefractAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RefractAppDelegate.h; sourceTree = "<group>"; };
 		C67861A91346E41100892BC2 /* RefractAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RefractAppDelegate.m; sourceTree = "<group>"; };
 		C67861AC1346E41100892BC2 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		C67861B31346E41100892BC2 /* RefractTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RefractTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
-		C67861B91346E41100892BC2 /* RefractTests-Info.plist */ = {isa = PBXFileReference; path = "RefractTests-Info.plist"; sourceTree = "<group>"; };
+		C67861B91346E41100892BC2 /* RefractTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "RefractTests-Info.plist"; sourceTree = "<group>"; };
 		C67861BB1346E41100892BC2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		C67861BD1346E41100892BC2 /* RefractTests-Prefix.pch */ = {isa = PBXFileReference; path = "RefractTests-Prefix.pch"; sourceTree = "<group>"; };
+		C67861BD1346E41100892BC2 /* RefractTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RefractTests-Prefix.pch"; sourceTree = "<group>"; };
 		C67861BE1346E41100892BC2 /* RefractTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RefractTests.h; sourceTree = "<group>"; };
 		C67861C01346E41100892BC2 /* RefractTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RefractTests.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
