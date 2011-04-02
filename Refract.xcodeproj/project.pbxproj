@@ -17,6 +17,9 @@
 		C67861BC1346E41100892BC2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C67861BA1346E41100892BC2 /* InfoPlist.strings */; };
 		C67861BF1346E41100892BC2 /* RefractTests.h in Resources */ = {isa = PBXBuildFile; fileRef = C67861BE1346E41100892BC2 /* RefractTests.h */; };
 		C67861C11346E41100892BC2 /* RefractTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C67861C01346E41100892BC2 /* RefractTests.m */; };
+		C67861D01346ED5C00892BC2 /* RFTorrent.m in Sources */ = {isa = PBXBuildFile; fileRef = C67861CF1346ED5C00892BC2 /* RFTorrent.m */; };
+		C67861D41347829D00892BC2 /* RFEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = C67861D31347829D00892BC2 /* RFEngine.m */; };
+		C678621A13478B0900892BC2 /* JSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C678621913478B0900892BC2 /* JSON.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,6 +29,34 @@
 			proxyType = 1;
 			remoteGlobalIDString = C67861911346E41100892BC2;
 			remoteInfo = Refract;
+		};
+		C678621113478A8000892BC2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C678620913478A8000892BC2 /* JSON.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 53D229810C96121600276605;
+			remoteInfo = JSON;
+		};
+		C678621313478A8000892BC2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C678620913478A8000892BC2 /* JSON.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 53D2298D0C96122A00276605;
+			remoteInfo = Tests;
+		};
+		C678621513478A8000892BC2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C678620913478A8000892BC2 /* JSON.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FE2BBD800D8B0D3900184787;
+			remoteInfo = libjson;
+		};
+		C678621713478A8000892BC2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C678620913478A8000892BC2 /* JSON.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FE2BBDAB0D8B0EE000184787;
+			remoteInfo = libjsontests;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -49,6 +80,12 @@
 		C67861BD1346E41100892BC2 /* RefractTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RefractTests-Prefix.pch"; sourceTree = "<group>"; };
 		C67861BE1346E41100892BC2 /* RefractTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RefractTests.h; sourceTree = "<group>"; };
 		C67861C01346E41100892BC2 /* RefractTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RefractTests.m; sourceTree = "<group>"; };
+		C67861CE1346ED5C00892BC2 /* RFTorrent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFTorrent.h; sourceTree = "<group>"; };
+		C67861CF1346ED5C00892BC2 /* RFTorrent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFTorrent.m; sourceTree = "<group>"; };
+		C67861D21347829D00892BC2 /* RFEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFEngine.h; sourceTree = "<group>"; };
+		C67861D31347829D00892BC2 /* RFEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFEngine.m; sourceTree = "<group>"; };
+		C678620913478A8000892BC2 /* JSON.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = JSON.xcodeproj; path = json/JSON.xcodeproj; sourceTree = "<group>"; };
+		C678621913478B0900892BC2 /* JSON.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = JSON.framework; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +93,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C678621A13478B0900892BC2 /* JSON.framework in Frameworks */,
 				C67861971346E41100892BC2 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -74,6 +112,8 @@
 		C67861871346E41100892BC2 = {
 			isa = PBXGroup;
 			children = (
+				C678621913478B0900892BC2 /* JSON.framework */,
+				C678620913478A8000892BC2 /* JSON.xcodeproj */,
 				C678619C1346E41100892BC2 /* Refract */,
 				C67861B71346E41100892BC2 /* RefractTests */,
 				C67861951346E41100892BC2 /* Frameworks */,
@@ -112,6 +152,8 @@
 		C678619C1346E41100892BC2 /* Refract */ = {
 			isa = PBXGroup;
 			children = (
+				C67861D11347825B00892BC2 /* Engine */,
+				C67861CA1346ED1000892BC2 /* Model */,
 				C67861A81346E41100892BC2 /* RefractAppDelegate.h */,
 				C67861A91346E41100892BC2 /* RefractAppDelegate.m */,
 				C67861AB1346E41100892BC2 /* MainMenu.xib */,
@@ -150,6 +192,35 @@
 				C67861BD1346E41100892BC2 /* RefractTests-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		C67861CA1346ED1000892BC2 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				C67861CE1346ED5C00892BC2 /* RFTorrent.h */,
+				C67861CF1346ED5C00892BC2 /* RFTorrent.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		C67861D11347825B00892BC2 /* Engine */ = {
+			isa = PBXGroup;
+			children = (
+				C67861D21347829D00892BC2 /* RFEngine.h */,
+				C67861D31347829D00892BC2 /* RFEngine.m */,
+			);
+			name = Engine;
+			sourceTree = "<group>";
+		};
+		C678620A13478A8000892BC2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C678621213478A8000892BC2 /* JSON.framework */,
+				C678621413478A8000892BC2 /* Tests.octest */,
+				C678621613478A8000892BC2 /* libjson.a */,
+				C678621813478A8000892BC2 /* libjsontests.octest */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -206,6 +277,12 @@
 			mainGroup = C67861871346E41100892BC2;
 			productRefGroup = C67861931346E41100892BC2 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = C678620A13478A8000892BC2 /* Products */;
+					ProjectRef = C678620913478A8000892BC2 /* JSON.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				C67861911346E41100892BC2 /* Refract */,
@@ -213,6 +290,37 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		C678621213478A8000892BC2 /* JSON.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = JSON.framework;
+			remoteRef = C678621113478A8000892BC2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C678621413478A8000892BC2 /* Tests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = Tests.octest;
+			remoteRef = C678621313478A8000892BC2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C678621613478A8000892BC2 /* libjson.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libjson.a;
+			remoteRef = C678621513478A8000892BC2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C678621813478A8000892BC2 /* libjsontests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = libjsontests.octest;
+			remoteRef = C678621713478A8000892BC2 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		C67861901346E41100892BC2 /* Resources */ = {
@@ -259,6 +367,8 @@
 			files = (
 				C67861A41346E41100892BC2 /* main.m in Sources */,
 				C67861AA1346E41100892BC2 /* RefractAppDelegate.m in Sources */,
+				C67861D01346ED5C00892BC2 /* RFTorrent.m in Sources */,
+				C67861D41347829D00892BC2 /* RFEngine.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -353,8 +463,13 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_ENABLE_OBJC_GC = supported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Refract/Refract-Prefix.pch";
 				INFOPLIST_FILE = "Refract/Refract-Info.plist";
@@ -369,7 +484,12 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_ENABLE_OBJC_GC = supported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Refract/Refract-Prefix.pch";
 				INFOPLIST_FILE = "Refract/Refract-Info.plist";
