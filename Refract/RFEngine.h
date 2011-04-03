@@ -10,15 +10,12 @@
 
 
 @interface RFEngine : NSObject {
-@private
-    NSMutableDictionary *torrents;
 }
-
-@property(readonly) NSMutableDictionary *torrents;
 
 - (bool)connect;
 - (bool)disconnect;
 - (bool)connected;
 - (bool)refresh;
+- (NSDictionary *)torrents;
 
 @end

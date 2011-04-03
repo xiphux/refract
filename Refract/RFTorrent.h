@@ -22,23 +22,23 @@ typedef enum {
     NSString *name;
     NSString *tid;
     
-    int currentSize;
-    int doneSize;
-    int totalSize;
+    unsigned long currentSize;
+    unsigned long doneSize;
+    unsigned long totalSize;
     
-    int uploadRate;
-    int downloadRate;
+    unsigned long uploadRate;
+    unsigned long downloadRate;
 
     RFTorrentStatus status;
 }
 
 @property(copy) NSString *name;
 @property(copy) NSString *tid;
-@property int currentSize;
-@property int doneSize;
-@property int totalSize;
-@property int uploadRate;
-@property int downloadRate;
+@property unsigned long currentSize;
+@property unsigned long doneSize;
+@property unsigned long totalSize;
+@property unsigned long uploadRate;
+@property unsigned long downloadRate;
 @property RFTorrentStatus status;
 
 @end

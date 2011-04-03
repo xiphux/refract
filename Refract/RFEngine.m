@@ -8,14 +8,12 @@
 
 #import "RFEngine.h"
 
-
 @implementation RFEngine
 
 - (id)init
 {
     self = [super init];
     if (self) {
-        torrents = [[NSMutableDictionary alloc] init];
     }
     
     return self;
@@ -23,11 +21,8 @@
 
 - (void)dealloc
 {
-    [torrents release];
     [super dealloc];
 }
-
-@synthesize torrents;
 
 - (bool)connect
 {
@@ -48,6 +43,12 @@
 }
 
 - (bool)refresh
+{
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
+
+- (NSMutableDictionary *)torrents
 {
     [self doesNotRecognizeSelector:_cmd];
     return nil;

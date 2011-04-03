@@ -14,10 +14,12 @@
     NSString *url;
     NSString *username;
     NSString *password;
+    NSMutableDictionary *torrents;
 }
 
-@property(copy) NSString *url;
-@property(copy) NSString *username;
-@property(copy) NSString *password;
+@property (readonly, retain) NSMutableDictionary *torrents;
+@property (copy) NSString *url;
+@property (copy) NSString *username;
+@property (copy) NSString *password;
 
 @end
