@@ -22,4 +22,7 @@
 @property (copy) NSString *username;
 @property (copy) NSString *password;
 
+- (id)initWithUrl:(NSString *)initUrl;
+- (id)initWithUrlAndLogin:(NSString *)initUrl username:(NSString *)initUser password:(NSString *)initPass;
+
 @end

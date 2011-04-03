@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C60BA3DC13484DD800D0AB08 /* RFTorrentGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = C60BA3DB13484DD800D0AB08 /* RFTorrentGroup.m */; };
+		C64DF9A41348E29C00CB08EF /* Group.xib in Resources */ = {isa = PBXBuildFile; fileRef = C64DF9A31348E29C00CB08EF /* Group.xib */; };
+		C64DF9A61348E3B200CB08EF /* Torrent.xib in Resources */ = {isa = PBXBuildFile; fileRef = C64DF9A51348E3B200CB08EF /* Torrent.xib */; };
 		C67861971346E41100892BC2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C67861961346E41100892BC2 /* Cocoa.framework */; };
 		C67861A11346E41100892BC2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C678619F1346E41100892BC2 /* InfoPlist.strings */; };
 		C67861A41346E41100892BC2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C67861A31346E41100892BC2 /* main.m */; };
@@ -63,6 +66,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C60BA3DA13484DD800D0AB08 /* RFTorrentGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFTorrentGroup.h; sourceTree = "<group>"; };
+		C60BA3DB13484DD800D0AB08 /* RFTorrentGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFTorrentGroup.m; sourceTree = "<group>"; };
+		C64DF9A31348E29C00CB08EF /* Group.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Group.xib; sourceTree = "<group>"; };
+		C64DF9A51348E3B200CB08EF /* Torrent.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Torrent.xib; sourceTree = "<group>"; };
 		C67861921346E41100892BC2 /* Refract.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Refract.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C67861961346E41100892BC2 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		C67861991346E41100892BC2 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -115,6 +122,42 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C64DF9A71348E45800CB08EF /* View */ = {
+			isa = PBXGroup;
+			children = (
+				C64DF9AA1348E48300CB08EF /* Torrent */,
+				C64DF9A91348E47A00CB08EF /* Group */,
+				C64DF9A81348E46A00CB08EF /* Main */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		C64DF9A81348E46A00CB08EF /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				C67861A81346E41100892BC2 /* RefractAppDelegate.h */,
+				C67861A91346E41100892BC2 /* RefractAppDelegate.m */,
+				C67861AB1346E41100892BC2 /* MainMenu.xib */,
+			);
+			name = Main;
+			sourceTree = "<group>";
+		};
+		C64DF9A91348E47A00CB08EF /* Group */ = {
+			isa = PBXGroup;
+			children = (
+				C64DF9A31348E29C00CB08EF /* Group.xib */,
+			);
+			name = Group;
+			sourceTree = "<group>";
+		};
+		C64DF9AA1348E48300CB08EF /* Torrent */ = {
+			isa = PBXGroup;
+			children = (
+				C64DF9A51348E3B200CB08EF /* Torrent.xib */,
+			);
+			name = Torrent;
+			sourceTree = "<group>";
+		};
 		C67861871346E41100892BC2 = {
 			isa = PBXGroup;
 			children = (
@@ -158,12 +201,10 @@
 		C678619C1346E41100892BC2 /* Refract */ = {
 			isa = PBXGroup;
 			children = (
+				C64DF9A71348E45800CB08EF /* View */,
 				C678621F1347BCC500892BC2 /* Utilities */,
 				C67861D11347825B00892BC2 /* Engine */,
 				C67861CA1346ED1000892BC2 /* Model */,
-				C67861A81346E41100892BC2 /* RefractAppDelegate.h */,
-				C67861A91346E41100892BC2 /* RefractAppDelegate.m */,
-				C67861AB1346E41100892BC2 /* MainMenu.xib */,
 				C678619D1346E41100892BC2 /* Supporting Files */,
 			);
 			path = Refract;
@@ -206,6 +247,8 @@
 			children = (
 				C67861CE1346ED5C00892BC2 /* RFTorrent.h */,
 				C67861CF1346ED5C00892BC2 /* RFTorrent.m */,
+				C60BA3DA13484DD800D0AB08 /* RFTorrentGroup.h */,
+				C60BA3DB13484DD800D0AB08 /* RFTorrentGroup.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -356,6 +399,8 @@
 				C67861A11346E41100892BC2 /* InfoPlist.strings in Resources */,
 				C67861A71346E41100892BC2 /* Credits.rtf in Resources */,
 				C67861AD1346E41100892BC2 /* MainMenu.xib in Resources */,
+				C64DF9A41348E29C00CB08EF /* Group.xib in Resources */,
+				C64DF9A61348E3B200CB08EF /* Torrent.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -397,6 +442,7 @@
 				C67861D41347829D00892BC2 /* RFEngine.m in Sources */,
 				C678621E134795EF00892BC2 /* RFEngineTransmission.m in Sources */,
 				C67862251347BDEA00892BC2 /* RFBase64.m in Sources */,
+				C60BA3DC13484DD800D0AB08 /* RFTorrentGroup.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -589,6 +635,7 @@
 				C67861C61346E41100892BC2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		C67861C71346E41100892BC2 /* Build configuration list for PBXNativeTarget "RefractTests" */ = {
 			isa = XCConfigurationList;
@@ -597,6 +644,7 @@
 				C67861C91346E41100892BC2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

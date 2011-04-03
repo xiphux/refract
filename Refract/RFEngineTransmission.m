@@ -20,13 +20,32 @@
 
 @implementation RFEngineTransmission
 
+@synthesize torrents;
+@synthesize url;
+@synthesize username;
+@synthesize password;
+@synthesize request;
+
 - (id)init
+{
+    return [self initWithUrl:@"http://127.0.0.1:9091/transmission/rpc"];
+}
+
+- (id)initWithUrl:(NSString *) initUrl
+{
+    return [self initWithUrlAndLogin:initUrl username:@"" password:@""];
+}
+
+- (id)initWithUrlAndLogin:(NSString *)initUrl username:(NSString *)initUser password:(NSString *)initPass
 {
     self = [super init];
     if (self) {
         // Initialization code here.
         torrents = [[NSMutableDictionary alloc] init];
-        url = @"http://127.0.0.1:9091/transmission/rpc";
+        
+        url = initUrl;
+        username = initUser;
+        password = initPass;
     }
     
     return self;
@@ -34,16 +53,13 @@
 
 - (void)dealloc
 {
+    [url release];
+    [username release];
+    [password release];
+    [request release];
     [torrents release];
     [super dealloc];
 }
-
-@synthesize torrents;
-
-@synthesize url;
-@synthesize username;
-@synthesize password;
-@synthesize request;
 
 - (bool)connect
 {
@@ -73,7 +89,7 @@
 
 - (bool)connected
 {
-    return (request);
+    return request ? true : false;
 }
 
 - (bool)refresh
@@ -189,19 +205,19 @@
             if (status) {
                 switch ([status intValue]) {
                     case 1:         // TR_STATUS_CHECK_WAIT
-                        torrent.status = Waiting;
+                        torrent.status = stWaiting;
                         break;
                     case 2:         // TR_STATUS_CHECK
-                        torrent.status = Checking;
+                        torrent.status = stChecking;
                         break;
                     case 4:         // TR_STATUS_DOWNLOAD
-                        torrent.status = Downloading;
+                        torrent.status = stDownloading;
                         break;
                     case 8:         // TR_STATUS_SEED
-                        torrent.status = Seeding;
+                        torrent.status = stSeeding;
                         break;
                     case 16:        // TR_STATUS_STOPPED
-                        torrent.status = Stopped;
+                        torrent.status = stStopped;
                         break;
                     default:
                         torrent.status = 0;

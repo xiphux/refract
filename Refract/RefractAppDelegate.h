@@ -7,12 +7,17 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "RFEngine.h"
 
 @interface RefractAppDelegate : NSObject <NSApplicationDelegate> {
 @private
     NSWindow *window;
+    RFEngine *engine;
+    NSMutableArray *torrentGroups;
 }
 
 @property (assign) IBOutlet NSWindow *window;
+@property (assign) RFEngine *engine;
+@property (assign) NSMutableArray *torrentGroups;
 
 @end
