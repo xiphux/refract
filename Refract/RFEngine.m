@@ -7,6 +7,7 @@
 //
 
 #import "RFEngine.h"
+#import "RFEngineTransmission.h"
 
 @implementation RFEngine
 
@@ -52,6 +53,26 @@
 {
     [self doesNotRecognizeSelector:_cmd];
     return nil;
+}
+
++ (id)engineOfType:(RFEngineType)type
+{
+    switch (type) {
+        case engTransmission:
+            return [[RFEngineTransmission alloc] init];
+            break;
+    }
+}
+
++ (id)engine
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    int defEngine = (int)engTransmission;
+    NSDictionary *appDefaults = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:defEngine] forKey:@"Engine"];
+    [defaults registerDefaults:appDefaults];
+    
+    RFEngineType userType = (int)[[defaults objectForKey:@"Engine"] intValue];
+    return [RFEngine engineOfType:userType];
 }
 
 @end

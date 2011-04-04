@@ -20,4 +20,8 @@
 @property (assign) RFEngine *engine;
 @property (assign) NSMutableArray *torrentGroups;
 
+- (IBAction)openPreferences:(id)sender;
+- (bool)initEngine;
+- (void)destroyEngine;
+
 @end

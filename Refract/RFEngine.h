@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+typedef enum {
+    engTransmission = 1
+} RFEngineType;
 
 @interface RFEngine : NSObject {
 }
@@ -17,5 +20,8 @@
 - (bool)connected;
 - (bool)refresh;
 - (NSDictionary *)torrents;
+
++ (id)engineOfType:(RFEngineType)type;
++ (id)engine;
 
 @end

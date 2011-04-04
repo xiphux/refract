@@ -10,19 +10,20 @@
 
 #import "RFTorrent.h"
 #import "RFTorrentGroup.h"
-#import "RFEngineTransmission.h"
 
 @implementation RefractAppDelegate
 
 @synthesize window;
 @synthesize engine;
+@synthesize torrentGroups;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    RFEngineTransmission *tengine = [[RFEngineTransmission alloc] init];
-    [tengine connect];
-    [tengine refresh];
-    [self setEngine:tengine];
+    if (![self initEngine]) {
+        return;
+    }
+    
+    [engine refresh];
     
     NSMutableArray *checkingList = [NSMutableArray array];
     NSMutableArray *waitingList = [NSMutableArray array];
@@ -30,31 +31,33 @@
     NSMutableArray *seedingList = [NSMutableArray array];
     NSMutableArray *stoppedList = [NSMutableArray array];
     
-    for (id key in tengine.torrents) {
-        RFTorrent *t = [tengine.torrents objectForKey:key];
+    if ([[engine torrents] count] > 0) {
+        for (id key in engine.torrents) {
+            RFTorrent *t = [engine.torrents objectForKey:key];
         
-        switch (t.status) {
+            switch (t.status) {
                 
-            case stChecking:
-                [checkingList addObject:t];
-                break;
+                case stChecking:
+                    [checkingList addObject:t];
+                    break;
                 
-            case stWaiting:
-                [waitingList addObject:t];
-                break;
+                case stWaiting:
+                    [waitingList addObject:t];
+                    break;
                 
-            case stDownloading:
-                [downloadingList addObject:t];
-                break;
+                case stDownloading:
+                    [downloadingList addObject:t];
+                    break;
                 
-            case stSeeding:
-                [seedingList addObject:t];
-                break;
+                case stSeeding:
+                    [seedingList addObject:t];
+                    break;
                 
-            case stStopped:
-                [stoppedList addObject:t];
-                break;
+                case stStopped:
+                    [stoppedList addObject:t];
+                    break;
                 
+            }
         }
     }
 
@@ -100,6 +103,38 @@
     [self setTorrentGroups:groups];
 }
 
-@synthesize torrentGroups;
+- (bool)initEngine
+{
+    [self destroyEngine];
+    
+    engine = [RFEngine engine];
+    
+    if (!engine) {
+        return false;
+    }
+    
+    return [engine connect];
+}
+
+- (void)destroyEngine
+{
+    if (!engine) {
+        return;
+    }
+    
+    if ([engine connected]) {
+        [engine disconnect];
+    }
+    
+    [engine release];
+}
+
+- (IBAction)openPreferences:(id)sender
+{
+    if (![NSBundle loadNibNamed:@"Preferences" owner:self])
+    {
+        NSLog(@"Could not load preferences nib");
+    }
+}
 
 @end

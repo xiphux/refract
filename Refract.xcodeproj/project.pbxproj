@@ -25,6 +25,8 @@
 		C678621A13478B0900892BC2 /* JSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C678621913478B0900892BC2 /* JSON.framework */; };
 		C678621E134795EF00892BC2 /* RFEngineTransmission.m in Sources */ = {isa = PBXBuildFile; fileRef = C678621D134795EF00892BC2 /* RFEngineTransmission.m */; };
 		C67862251347BDEA00892BC2 /* RFBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = C67862241347BDEA00892BC2 /* RFBase64.m */; };
+		C683C39013492A330039B953 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = C683C38F13492A330039B953 /* Preferences.xib */; };
+		C6F920C1134939FB0047C777 /* PreferencesDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C6F920C0134939FB0047C777 /* PreferencesDelegate.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -99,6 +101,9 @@
 		C678621D134795EF00892BC2 /* RFEngineTransmission.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFEngineTransmission.m; sourceTree = "<group>"; };
 		C67862231347BDEA00892BC2 /* RFBase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFBase64.h; sourceTree = "<group>"; };
 		C67862241347BDEA00892BC2 /* RFBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFBase64.m; sourceTree = "<group>"; };
+		C683C38F13492A330039B953 /* Preferences.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Preferences.xib; sourceTree = "<group>"; };
+		C6F920BF134939FB0047C777 /* PreferencesDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencesDelegate.h; sourceTree = "<group>"; };
+		C6F920C0134939FB0047C777 /* PreferencesDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreferencesDelegate.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,9 +127,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C637EFF01349229100860228 /* Preferences */ = {
+			isa = PBXGroup;
+			children = (
+				C683C38F13492A330039B953 /* Preferences.xib */,
+				C6F920BF134939FB0047C777 /* PreferencesDelegate.h */,
+				C6F920C0134939FB0047C777 /* PreferencesDelegate.m */,
+			);
+			name = Preferences;
+			sourceTree = "<group>";
+		};
 		C64DF9A71348E45800CB08EF /* View */ = {
 			isa = PBXGroup;
 			children = (
+				C637EFF01349229100860228 /* Preferences */,
 				C64DF9AA1348E48300CB08EF /* Torrent */,
 				C64DF9A91348E47A00CB08EF /* Group */,
 				C64DF9A81348E46A00CB08EF /* Main */,
@@ -401,6 +417,7 @@
 				C67861AD1346E41100892BC2 /* MainMenu.xib in Resources */,
 				C64DF9A41348E29C00CB08EF /* Group.xib in Resources */,
 				C64DF9A61348E3B200CB08EF /* Torrent.xib in Resources */,
+				C683C39013492A330039B953 /* Preferences.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -443,6 +460,7 @@
 				C678621E134795EF00892BC2 /* RFEngineTransmission.m in Sources */,
 				C67862251347BDEA00892BC2 /* RFBase64.m in Sources */,
 				C60BA3DC13484DD800D0AB08 /* RFTorrentGroup.m in Sources */,
+				C6F920C1134939FB0047C777 /* PreferencesDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

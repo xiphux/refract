@@ -28,12 +28,18 @@
 
 - (id)init
 {
-    return [self initWithUrl:@"http://127.0.0.1:9091/transmission/rpc"];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSDictionary *appDefaults = [NSDictionary dictionaryWithObject:@"http://127.0.0.1:9091/transmission/rpc" forKey:@"Transmission.URL"];
+    [defaults registerDefaults:appDefaults];
+    
+    return [self initWithUrl:[defaults objectForKey:@"Transmission.URL"]];
 }
 
 - (id)initWithUrl:(NSString *) initUrl
 {
-    return [self initWithUrlAndLogin:initUrl username:@"" password:@""];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    return [self initWithUrlAndLogin:initUrl username:[defaults objectForKey:@"Transmission.Username"] password:[defaults objectForKey:@"Transmission.Password"]];
 }
 
 - (id)initWithUrlAndLogin:(NSString *)initUrl username:(NSString *)initUser password:(NSString *)initPass
@@ -43,9 +49,9 @@
         // Initialization code here.
         torrents = [[NSMutableDictionary alloc] init];
         
-        url = initUrl;
-        username = initUser;
-        password = initPass;
+        url = [NSString stringWithString:initUrl];
+        username = [NSString stringWithString:initUser];
+        password = [NSString stringWithString:initPass];
     }
     
     return self;
@@ -76,7 +82,9 @@
         [request setValue:[NSString stringWithFormat:@"Basic %@", auth] forHTTPHeaderField:@"Authorization"];
     }
     
-    [self rpcRequest:nil];
+    if ([self rpcRequest:nil] == nil) {
+        return false;
+    }
     
     return true;
 }
