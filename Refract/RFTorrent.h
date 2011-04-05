@@ -41,4 +41,6 @@ typedef enum {
 @property unsigned long downloadRate;
 @property RFTorrentStatus status;
 
+@property (readonly) unsigned int percent;
+
 @end

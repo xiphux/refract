@@ -37,4 +37,13 @@
 @synthesize downloadRate;
 @synthesize status;
 
+- (unsigned int)percent
+{
+    if (doneSize == 0) {
+        return 0;
+    }
+    
+    return (unsigned int)((currentSize / doneSize) * 100);
+}
+
 @end
