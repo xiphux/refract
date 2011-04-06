@@ -37,4 +37,20 @@
     [super dealloc];
 }
 
+- (bool)isEqual:(id)other
+{
+    if (other == self) {
+        return true;
+    }
+    if (!other || ![other isKindOfClass:[self class]]) {
+        return false;
+    }
+    return [[self name] isEqualToString:[other name]];
+}
+
+- (NSUInteger)hash
+{
+    return [[self name] hash];
+}
+
 @end

@@ -43,4 +43,8 @@ typedef enum {
 
 @property (readonly) unsigned int percent;
 
+- (bool)isEqual:(id)other;
+- (bool)dataEqual:(RFTorrent *)other;
+- (NSUInteger)hash;
+
 @end

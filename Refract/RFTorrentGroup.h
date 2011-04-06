@@ -20,4 +20,7 @@
 
 - (id)initWithName:(NSString *)initName;
 
+- (bool)isEqual:(id)other;
+- (NSUInteger)hash;
+
 @end
