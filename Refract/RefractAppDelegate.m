@@ -16,20 +16,37 @@
 @synthesize window;
 @synthesize engine;
 @synthesize torrentList;
+@synthesize updateTimer;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+    [self setDefaults];
+    
     if (![self initEngine]) {
         return;
     }
     
-    [engine refresh];
-    
     RFTorrentList *tList = [[RFTorrentList alloc] init];
     
-    [tList loadTorrents:[[engine torrents] allValues]];
-    
     [self setTorrentList:tList];
+    
+    [self refresh];
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSTimeInterval update = [defaults doubleForKey:@"UpdateInterval"];
+    
+    NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:update target:self selector:@selector(refresh) userInfo:nil repeats:true];
+    self.updateTimer = timer;
+}
+
+- (void)setDefaults
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSMutableDictionary *appDefaults = [NSMutableDictionary dictionary];
+    
+    [appDefaults setObject:[NSNumber numberWithDouble:5.0] forKey:@"UpdateInterval"];
+    
+    [defaults registerDefaults:appDefaults];
 }
 
 - (bool)initEngine
@@ -56,6 +73,17 @@
     }
     
     [engine release];
+}
+
+- (void)refresh
+{
+    if (![engine connected]) {
+        return;
+    }
+    
+    [engine refresh];
+    
+    [[self torrentList] loadTorrents:[[engine torrents] allValues]];
 }
 
 - (IBAction)openPreferences:(id)sender
