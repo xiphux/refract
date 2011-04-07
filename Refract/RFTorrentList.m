@@ -121,6 +121,16 @@
             [self addTorrentGroupsObject:g];
         }
     }
+    
+    NSMutableArray *prune = [NSMutableArray array];
+    for (RFTorrentGroup *group in torrentGroups) {
+        if ([group countOfTorrents] == 0) {
+            [prune addObject:group];
+        }
+    }
+    for (RFTorrentGroup *group in prune) {
+        [self removeTorrentGroupsObject:group];
+    }
 }
 
 
