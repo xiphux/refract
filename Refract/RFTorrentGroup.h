@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#import "RFTorrent.h"
 
 @interface RFTorrentGroup : NSObject {
 @private
@@ -16,11 +16,19 @@
 }
 
 @property (copy) NSString *name;
-@property (assign) NSMutableArray *torrents;
+@property (retain) NSMutableArray *torrents;
 
 - (id)initWithName:(NSString *)initName;
 
 - (bool)isEqual:(id)other;
 - (NSUInteger)hash;
+
+- (NSUInteger)countOfTorrents;
+- (id)objectInTorrentsAtIndex:(NSUInteger)index;
+- (void)insertObject:(RFTorrent *)torrent inTorrentsAtIndex:(NSUInteger)index;
+- (void)removeObjectFromTorrentsAtIndex:(NSUInteger)index;
+- (void)replaceObjectInTorrentsAtIndex:(NSUInteger)index withObject:(RFTorrent *)torrent;
+- (void)addTorrentsObject:(RFTorrent *)torrent;
+- (void)removeTorrentsObject:(RFTorrent *)torrent;
 
 @end

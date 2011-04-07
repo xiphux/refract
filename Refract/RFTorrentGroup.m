@@ -53,4 +53,40 @@
     return [[self name] hash];
 }
 
+
+- (NSUInteger)countOfTorrents
+{
+    return [torrents count];
+}
+
+- (id)objectInTorrentsAtIndex:(NSUInteger)index
+{
+    return [torrents objectAtIndex:index];
+}
+
+- (void)insertObject:(RFTorrent *)torrent inTorrentsAtIndex:(NSUInteger)index
+{
+    [torrents insertObject:torrent atIndex:index];
+}
+
+- (void)removeObjectFromTorrentsAtIndex:(NSUInteger)index
+{
+    [torrents removeObjectAtIndex:index];
+}
+
+- (void)replaceObjectInTorrentsAtIndex:(NSUInteger)index withObject:(RFTorrent *)torrent
+{
+    [torrents replaceObjectAtIndex:index withObject:torrent];
+}
+
+- (void)addTorrentsObject:(RFTorrent *)torrent
+{
+    [torrents addObject:torrent];
+}
+
+- (void)removeTorrentsObject:(RFTorrent *)torrent
+{
+    [torrents removeObject:torrent];
+}
+
 @end

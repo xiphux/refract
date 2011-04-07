@@ -26,6 +26,7 @@
 		C678621E134795EF00892BC2 /* RFEngineTransmission.m in Sources */ = {isa = PBXBuildFile; fileRef = C678621D134795EF00892BC2 /* RFEngineTransmission.m */; };
 		C67862251347BDEA00892BC2 /* RFBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = C67862241347BDEA00892BC2 /* RFBase64.m */; };
 		C683C39013492A330039B953 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = C683C38F13492A330039B953 /* Preferences.xib */; };
+		C6CB30D1134C0CE100CDCFFB /* RFTorrentList.m in Sources */ = {isa = PBXBuildFile; fileRef = C6CB30D0134C0CE100CDCFFB /* RFTorrentList.m */; };
 		C6F920C1134939FB0047C777 /* PreferencesDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C6F920C0134939FB0047C777 /* PreferencesDelegate.m */; };
 /* End PBXBuildFile section */
 
@@ -102,6 +103,8 @@
 		C67862231347BDEA00892BC2 /* RFBase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFBase64.h; sourceTree = "<group>"; };
 		C67862241347BDEA00892BC2 /* RFBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFBase64.m; sourceTree = "<group>"; };
 		C683C38F13492A330039B953 /* Preferences.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Preferences.xib; sourceTree = "<group>"; };
+		C6CB30CF134C0CE100CDCFFB /* RFTorrentList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFTorrentList.h; sourceTree = "<group>"; };
+		C6CB30D0134C0CE100CDCFFB /* RFTorrentList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFTorrentList.m; sourceTree = "<group>"; };
 		C6F920BF134939FB0047C777 /* PreferencesDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencesDelegate.h; sourceTree = "<group>"; };
 		C6F920C0134939FB0047C777 /* PreferencesDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreferencesDelegate.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -265,6 +268,8 @@
 				C67861CF1346ED5C00892BC2 /* RFTorrent.m */,
 				C60BA3DA13484DD800D0AB08 /* RFTorrentGroup.h */,
 				C60BA3DB13484DD800D0AB08 /* RFTorrentGroup.m */,
+				C6CB30CF134C0CE100CDCFFB /* RFTorrentList.h */,
+				C6CB30D0134C0CE100CDCFFB /* RFTorrentList.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -461,6 +466,7 @@
 				C67862251347BDEA00892BC2 /* RFBase64.m in Sources */,
 				C60BA3DC13484DD800D0AB08 /* RFTorrentGroup.m in Sources */,
 				C6F920C1134939FB0047C777 /* PreferencesDelegate.m in Sources */,
+				C6CB30D1134C0CE100CDCFFB /* RFTorrentList.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

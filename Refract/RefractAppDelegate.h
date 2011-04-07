@@ -8,17 +8,18 @@
 
 #import <Cocoa/Cocoa.h>
 #import "RFEngine.h"
+#import "RFTorrentList.h"
 
 @interface RefractAppDelegate : NSObject <NSApplicationDelegate> {
 @private
     NSWindow *window;
     RFEngine *engine;
-    NSMutableArray *torrentGroups;
+    RFTorrentList *torrentList;
 }
 
 @property (assign) IBOutlet NSWindow *window;
 @property (assign) RFEngine *engine;
-@property (assign) NSMutableArray *torrentGroups;
+@property (retain) RFTorrentList *torrentList;
 
 - (IBAction)openPreferences:(id)sender;
 - (bool)initEngine;

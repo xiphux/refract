@@ -503,7 +503,7 @@
 											<int key="NSvFlags">274</int>
 											<string key="NSFrameSize">{549, 457}</string>
 											<reference key="NSSuperview" ref="557667291"/>
-											<reference key="NSNextKeyView" ref="370174739"/>
+											<reference key="NSNextKeyView"/>
 											<string key="NSMinGridSize">{0, 0}</string>
 											<string key="NSMaxGridSize">{0, 0}</string>
 											<int key="NSMaxNumberOfGridRows">0</int>
@@ -563,7 +563,7 @@
 							</object>
 							<string key="NSFrame">{{0, -1}, {551, 459}}</string>
 							<reference key="NSSuperview" ref="208934434"/>
-							<reference key="NSNextKeyView" ref="557667291"/>
+							<reference key="NSNextKeyView" ref="370174739"/>
 							<int key="NSsFlags">530</int>
 							<reference key="NSVScroller" ref="370174739"/>
 							<reference key="NSHScroller" ref="963357463"/>
@@ -729,22 +729,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">contentArray: torrentGroups</string>
-						<reference key="source" ref="667524"/>
-						<reference key="destination" ref="976324537"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="667524"/>
-							<reference key="NSDestination" ref="976324537"/>
-							<string key="NSLabel">contentArray: torrentGroups</string>
-							<string key="NSBinding">contentArray</string>
-							<string key="NSKeyPath">torrentGroups</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">620</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
 						<string key="label">content: arrangedObjects</string>
 						<reference key="source" ref="742737832"/>
 						<reference key="destination" ref="667524"/>
@@ -766,6 +750,22 @@
 						<reference key="destination" ref="609285721"/>
 					</object>
 					<int key="connectionID">660</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">contentArray: torrentList.torrentGroups</string>
+						<reference key="source" ref="667524"/>
+						<reference key="destination" ref="976324537"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="667524"/>
+							<reference key="NSDestination" ref="976324537"/>
+							<string key="NSLabel">contentArray: torrentList.torrentGroups</string>
+							<string key="NSBinding">contentArray</string>
+							<string key="NSKeyPath">torrentList.torrentGroups</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">661</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1349,7 +1349,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">660</int>
+			<int key="maxID">661</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes"/>
 		<int key="IBDocument.localizationMode">0</int>
