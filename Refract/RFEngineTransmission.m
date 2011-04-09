@@ -105,7 +105,7 @@
     SBJsonParser *parser = [[SBJsonParser alloc] init];
     SBJsonWriter *writer = [[SBJsonWriter alloc] init];
     
-    NSArray *fields = [NSArray arrayWithObjects:@"id", @"name", @"totalSize", @"sizeWhenDone", @"leftUntilDone", @"rateDownload", @"rateUpload", @"status", nil];
+    NSArray *fields = [NSArray arrayWithObjects:@"id", @"name", @"totalSize", @"sizeWhenDone", @"leftUntilDone", @"rateDownload", @"rateUpload", @"status", @"percentDone", nil];
     NSDictionary *args = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObject:fields] forKeys:[NSArray arrayWithObject:@"fields"]];
     NSDictionary *requestData = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:args, @"torrent-get", nil] forKeys:[NSArray arrayWithObjects:@"arguments", @"method", nil]];
     NSString *requestStr = [writer stringWithObject:requestData];
@@ -207,6 +207,11 @@
             NSNumber *rateUpload = [torrentDict objectForKey:@"rateUpload"];
             if (rateUpload) {
                 torrent.uploadRate = [rateUpload unsignedLongValue];
+            }
+            
+            NSNumber *percent = [torrentDict objectForKey:@"percentDone"];
+            if (percent) {
+                torrent.percent = (int)([percent floatValue] * 100);
             }
             
             NSNumber *status = [torrentDict objectForKey:@"status"];

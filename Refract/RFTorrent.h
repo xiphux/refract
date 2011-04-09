@@ -28,6 +28,8 @@ typedef enum {
     
     unsigned long uploadRate;
     unsigned long downloadRate;
+    
+    unsigned int percent;
 
     RFTorrentStatus status;
 }
@@ -41,7 +43,7 @@ typedef enum {
 @property unsigned long downloadRate;
 @property RFTorrentStatus status;
 
-@property (readonly) unsigned int percent;
+@property unsigned int percent;
 
 - (bool)isEqual:(id)other;
 - (bool)dataEqual:(RFTorrent *)other;
