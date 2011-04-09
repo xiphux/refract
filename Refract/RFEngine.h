@@ -20,6 +20,7 @@ typedef enum {
 - (bool)connected;
 - (bool)refresh;
 - (NSDictionary *)torrents;
+- (RFEngineType)type;
 
 + (id)engineOfType:(RFEngineType)type;
 + (id)engine;

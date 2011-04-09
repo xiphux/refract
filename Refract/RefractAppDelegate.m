@@ -22,6 +22,8 @@
 {
     [self setDefaults];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsChanged:) name:NSUserDefaultsDidChangeNotification object:nil];
+    
     if (![self initEngine]) {
         return;
     }
@@ -30,13 +32,7 @@
     
     [self setTorrentList:tList];
     
-    [self refresh];
-    
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSTimeInterval update = [defaults doubleForKey:@"UpdateInterval"];
-    
-    NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:update target:self selector:@selector(refresh) userInfo:nil repeats:true];
-    self.updateTimer = timer;
+    [self startEngine];
 }
 
 - (void)setDefaults
@@ -44,7 +40,7 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSMutableDictionary *appDefaults = [NSMutableDictionary dictionary];
     
-    [appDefaults setObject:[NSNumber numberWithDouble:5.0] forKey:@"UpdateInterval"];
+    [appDefaults setObject:[NSNumber numberWithDouble:5.0] forKey:@"UpdateFrequency"];
     
     [defaults registerDefaults:appDefaults];
 }
@@ -62,10 +58,50 @@
     return [engine connect];
 }
 
+- (bool)startEngine
+{
+    if (started) {
+        return true;
+    }
+    
+    if (!(engine && [engine connected])) {
+        return false;
+    }
+    
+    [self refresh];
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSTimeInterval update = [defaults doubleForKey:@"UpdateFrequency"];
+    
+    NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:update target:self selector:@selector(refresh) userInfo:nil repeats:true];
+    self.updateTimer = timer;
+    
+    started = true;
+    
+    return true;
+}
+
+- (void)stopEngine
+{
+    if (!engine) {
+        return;
+    }
+    
+    [updateTimer invalidate];
+    
+    [updateTimer release];
+    
+    started = false;
+}
+
 - (void)destroyEngine
 {
     if (!engine) {
         return;
+    }
+    
+    if (started) {
+        [self stopEngine];
     }
     
     if ([engine connected]) {
@@ -91,6 +127,15 @@
     if (![NSBundle loadNibNamed:@"Preferences" owner:self])
     {
         NSLog(@"Could not load preferences nib");
+    }
+}
+
+- (void)settingsChanged:(NSNotification *)notification
+{
+    NSTimeInterval update = [[NSUserDefaults standardUserDefaults] doubleForKey:@"UpdateFrequency"];
+    if (update != [updateTimer timeInterval]) {
+        [self stopEngine];
+        [self startEngine];
     }
 }
 

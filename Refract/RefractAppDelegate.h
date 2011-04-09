@@ -16,6 +16,7 @@
     RFEngine *engine;
     RFTorrentList *torrentList;
     NSTimer *updateTimer;
+    bool started;
 }
 
 @property (assign) IBOutlet NSWindow *window;
@@ -26,7 +27,10 @@
 - (IBAction)openPreferences:(id)sender;
 - (void)setDefaults;
 - (bool)initEngine;
+- (bool)startEngine;
+- (void)stopEngine;
 - (void)destroyEngine;
 - (void)refresh;
+- (void)settingsChanged:(NSNotification *)notification;
 
 @end

@@ -55,6 +55,11 @@
     return nil;
 }
 
+- (RFEngineType)type
+{
+    return engTransmission;
+}
+
 + (id)engineOfType:(RFEngineType)type
 {
     switch (type) {
