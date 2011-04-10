@@ -13,9 +13,11 @@
 @interface SourceListController : NSObject <NSOutlineViewDelegate> {
 @private
     IBOutlet NSTreeController *treeController;
+    IBOutlet NSOutlineView *sourceList;
 }
 
 @property (retain) NSTreeController *treeController;
+@property (retain) NSOutlineView *sourceList;
 
 - (void)addStatusGroup:(RFTorrentStatus)newStatus;
 - (void)removeStatusGroup:(RFTorrentStatus)remStatus;

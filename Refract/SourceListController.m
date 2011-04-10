@@ -36,6 +36,7 @@
 }
 
 @synthesize treeController;
+@synthesize sourceList;
 
 - (void)awakeFromNib
 {
@@ -44,6 +45,8 @@
     [treeController setSortDescriptors:[NSArray arrayWithObjects:indexsd, titlesd, nil]];
     
     [self createStandardNodes];
+    
+    [sourceList selectRowIndexes:[NSIndexSet indexSetWithIndex:0] byExtendingSelection:false];
 }
 
 - (void)createStandardNodes
