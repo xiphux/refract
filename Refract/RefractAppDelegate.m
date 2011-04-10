@@ -15,6 +15,7 @@
 
 @synthesize window;
 @synthesize sourceListController;
+@synthesize torrentListController;
 @synthesize engine;
 @synthesize torrentList;
 @synthesize updateTimer;
@@ -24,6 +25,8 @@
     [self setDefaults];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsChanged:) name:NSUserDefaultsDidChangeNotification object:nil];
+    
+    [torrentListController setSortDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:true]]];
     
     if (![self initEngine]) {
         return;
