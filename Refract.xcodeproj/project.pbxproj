@@ -8,7 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		C60BA3DC13484DD800D0AB08 /* RFTorrentGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = C60BA3DB13484DD800D0AB08 /* RFTorrentGroup.m */; };
-		C64DF9A41348E29C00CB08EF /* Group.xib in Resources */ = {isa = PBXBuildFile; fileRef = C64DF9A31348E29C00CB08EF /* Group.xib */; };
+		C6414DCF13514B33000F248C /* SourceListController.m in Sources */ = {isa = PBXBuildFile; fileRef = C6414DCE13514B33000F248C /* SourceListController.m */; };
+		C6414DD3135156D9000F248C /* BaseNode.m in Sources */ = {isa = PBXBuildFile; fileRef = C6414DD2135156D9000F248C /* BaseNode.m */; };
+		C6414DD61351588C000F248C /* StatusNode.m in Sources */ = {isa = PBXBuildFile; fileRef = C6414DD51351588B000F248C /* StatusNode.m */; };
+		C6414DD913516057000F248C /* CategoryNode.m in Sources */ = {isa = PBXBuildFile; fileRef = C6414DD813516057000F248C /* CategoryNode.m */; };
 		C64DF9A61348E3B200CB08EF /* Torrent.xib in Resources */ = {isa = PBXBuildFile; fileRef = C64DF9A51348E3B200CB08EF /* Torrent.xib */; };
 		C67861971346E41100892BC2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C67861961346E41100892BC2 /* Cocoa.framework */; };
 		C67861A11346E41100892BC2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C678619F1346E41100892BC2 /* InfoPlist.strings */; };
@@ -71,7 +74,14 @@
 /* Begin PBXFileReference section */
 		C60BA3DA13484DD800D0AB08 /* RFTorrentGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFTorrentGroup.h; sourceTree = "<group>"; };
 		C60BA3DB13484DD800D0AB08 /* RFTorrentGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFTorrentGroup.m; sourceTree = "<group>"; };
-		C64DF9A31348E29C00CB08EF /* Group.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Group.xib; sourceTree = "<group>"; };
+		C6414DCD13514B33000F248C /* SourceListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SourceListController.h; sourceTree = "<group>"; };
+		C6414DCE13514B33000F248C /* SourceListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SourceListController.m; sourceTree = "<group>"; };
+		C6414DD1135156D9000F248C /* BaseNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseNode.h; sourceTree = "<group>"; };
+		C6414DD2135156D9000F248C /* BaseNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseNode.m; sourceTree = "<group>"; };
+		C6414DD41351588B000F248C /* StatusNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatusNode.h; sourceTree = "<group>"; };
+		C6414DD51351588B000F248C /* StatusNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatusNode.m; sourceTree = "<group>"; };
+		C6414DD713516057000F248C /* CategoryNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryNode.h; sourceTree = "<group>"; };
+		C6414DD813516057000F248C /* CategoryNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryNode.m; sourceTree = "<group>"; };
 		C64DF9A51348E3B200CB08EF /* Torrent.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Torrent.xib; sourceTree = "<group>"; };
 		C67861921346E41100892BC2 /* Refract.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Refract.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C67861961346E41100892BC2 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -140,12 +150,26 @@
 			name = Preferences;
 			sourceTree = "<group>";
 		};
+		C6414DD013515672000F248C /* SourceList */ = {
+			isa = PBXGroup;
+			children = (
+				C6414DCD13514B33000F248C /* SourceListController.h */,
+				C6414DCE13514B33000F248C /* SourceListController.m */,
+				C6414DD1135156D9000F248C /* BaseNode.h */,
+				C6414DD2135156D9000F248C /* BaseNode.m */,
+				C6414DD41351588B000F248C /* StatusNode.h */,
+				C6414DD51351588B000F248C /* StatusNode.m */,
+				C6414DD713516057000F248C /* CategoryNode.h */,
+				C6414DD813516057000F248C /* CategoryNode.m */,
+			);
+			name = SourceList;
+			sourceTree = "<group>";
+		};
 		C64DF9A71348E45800CB08EF /* View */ = {
 			isa = PBXGroup;
 			children = (
 				C637EFF01349229100860228 /* Preferences */,
 				C64DF9AA1348E48300CB08EF /* Torrent */,
-				C64DF9A91348E47A00CB08EF /* Group */,
 				C64DF9A81348E46A00CB08EF /* Main */,
 			);
 			name = View;
@@ -154,19 +178,12 @@
 		C64DF9A81348E46A00CB08EF /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				C6414DD013515672000F248C /* SourceList */,
 				C67861A81346E41100892BC2 /* RefractAppDelegate.h */,
 				C67861A91346E41100892BC2 /* RefractAppDelegate.m */,
 				C67861AB1346E41100892BC2 /* MainMenu.xib */,
 			);
 			name = Main;
-			sourceTree = "<group>";
-		};
-		C64DF9A91348E47A00CB08EF /* Group */ = {
-			isa = PBXGroup;
-			children = (
-				C64DF9A31348E29C00CB08EF /* Group.xib */,
-			);
-			name = Group;
 			sourceTree = "<group>";
 		};
 		C64DF9AA1348E48300CB08EF /* Torrent */ = {
@@ -420,7 +437,6 @@
 				C67861A11346E41100892BC2 /* InfoPlist.strings in Resources */,
 				C67861A71346E41100892BC2 /* Credits.rtf in Resources */,
 				C67861AD1346E41100892BC2 /* MainMenu.xib in Resources */,
-				C64DF9A41348E29C00CB08EF /* Group.xib in Resources */,
 				C64DF9A61348E3B200CB08EF /* Torrent.xib in Resources */,
 				C683C39013492A330039B953 /* Preferences.xib in Resources */,
 			);
@@ -467,6 +483,10 @@
 				C60BA3DC13484DD800D0AB08 /* RFTorrentGroup.m in Sources */,
 				C6F920C1134939FB0047C777 /* PreferencesDelegate.m in Sources */,
 				C6CB30D1134C0CE100CDCFFB /* RFTorrentList.m in Sources */,
+				C6414DCF13514B33000F248C /* SourceListController.m in Sources */,
+				C6414DD3135156D9000F248C /* BaseNode.m in Sources */,
+				C6414DD61351588C000F248C /* StatusNode.m in Sources */,
+				C6414DD913516057000F248C /* CategoryNode.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -14,6 +14,7 @@
 @implementation RefractAppDelegate
 
 @synthesize window;
+@synthesize sourceListController;
 @synthesize engine;
 @synthesize torrentList;
 @synthesize updateTimer;
@@ -119,7 +120,60 @@
     
     [engine refresh];
     
-    [[self torrentList] loadTorrents:[[engine torrents] allValues]];
+    NSArray *allTorrents = [[engine torrents] allValues];
+    
+    [[self torrentList] loadTorrents:allTorrents];
+    
+    bool downloading = false;
+    bool stopped = false;
+    bool waiting = false;
+    bool checking = false;
+    bool seeding = false;
+    for (RFTorrent *t in allTorrents) {
+        switch ([t status]) {
+            case stDownloading:
+                downloading = true;
+                break;
+            case stSeeding:
+                seeding = true;
+                break;
+            case stStopped:
+                stopped = true;
+                break;
+            case stWaiting:
+                waiting = true;
+                break;
+            case stChecking:
+                checking = true;
+                break;
+        }
+    }
+    
+    if (downloading) {
+        [sourceListController addStatusGroup:stDownloading];
+    } else {
+        [sourceListController removeStatusGroup:stDownloading];
+    }
+    if (stopped) {
+        [sourceListController addStatusGroup:stStopped];
+    } else {
+        [sourceListController removeStatusGroup:stStopped];
+    }
+    if (waiting) {
+        [sourceListController addStatusGroup:stWaiting];
+    } else {
+        [sourceListController removeStatusGroup:stWaiting];
+    }
+    if (checking) {
+        [sourceListController addStatusGroup:stChecking];
+    } else {
+        [sourceListController removeStatusGroup:stChecking];
+    }
+    if (seeding) {
+        [sourceListController addStatusGroup:stSeeding];
+    } else {
+        [sourceListController removeStatusGroup:stSeeding];
+    }
 }
 
 - (IBAction)openPreferences:(id)sender

@@ -9,10 +9,12 @@
 #import <Cocoa/Cocoa.h>
 #import "RFEngine.h"
 #import "RFTorrentList.h"
+#import "SourceListController.h"
 
 @interface RefractAppDelegate : NSObject <NSApplicationDelegate> {
 @private
-    NSWindow *window;
+    NSWindow IBOutlet *window;
+    SourceListController IBOutlet *sourceListController;
     RFEngine *engine;
     RFTorrentList *torrentList;
     NSTimer *updateTimer;
@@ -20,6 +22,7 @@
 }
 
 @property (assign) IBOutlet NSWindow *window;
+@property (retain) IBOutlet SourceListController *sourceListController;
 @property (assign) RFEngine *engine;
 @property (retain) RFTorrentList *torrentList;
 @property (retain) NSTimer *updateTimer;
