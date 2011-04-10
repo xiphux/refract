@@ -9,29 +9,21 @@
 #import "RFTorrentList.h"
 
 @interface RFTorrentList ()
-- (NSString *)groupForTorrent:(RFTorrent *)torrent;
-- (NSString *)statusGroupForTorrent:(RFTorrent *)torrent;
+- (void)rebuildList;
+- (void)updateList;
+- (NSMutableArray *)filteredList;
+- (bool)torrentMatches:(RFTorrent *)t;
 @end
 
 @implementation RFTorrentList
 
-@synthesize torrentGroups;
-@synthesize grouping;
-
 - (id)init
-{
-    return [self initWithGrouping:grStatus];
-}
-
-- (id)initWithGrouping:(RFTorrentGrouping)initGrouping
 {
     self = [super init];
     if (self) {
-        torrentGroups = [NSMutableArray array];
-        grouping = initGrouping;
+        filterType = grNone;
     }
-    
-    return self;   
+    return self;
 }
 
 - (void)dealloc
@@ -39,146 +31,133 @@
     [super dealloc];
 }
 
-- (NSUInteger)countOfTorrentGroups
+@synthesize torrents;
+@synthesize filterType;
+@synthesize filterStatus;
+
+- (NSUInteger)countOfTorrents
 {
-    return [torrentGroups count];
+    return [torrents count];
 }
 
-- (id)objectInTorrentGroupsAtIndex:(NSUInteger)index
+- (id)objectInTorrentsAtIndex:(NSUInteger)index
 {
-    return [torrentGroups objectAtIndex:index];
+    return [torrents objectAtIndex:index];
 }
 
-- (void)insertObject:(RFTorrentGroup *)group inTorrentGroupsAtIndex:(NSUInteger)index
+- (void)insertObject:(RFTorrent *)torrent inTorrentsAtIndex:(NSUInteger)index
 {
-    [torrentGroups insertObject:group atIndex:index];
+    [torrents insertObject:torrent atIndex:index];
 }
 
-- (void)removeObjectFromTorrentGroupsAtIndex:(NSUInteger)index
+- (void)removeObjectFromTorrentsAtIndex:(NSUInteger)index
 {
-    [torrentGroups removeObjectAtIndex:index];
+    [torrents removeObjectAtIndex:index];
 }
 
-- (void)replaceObjectInTorrentGroupsAtIndex:(NSUInteger)index withObject:(RFTorrentGroup *)anObject
+- (void)replaceObjectInTorrentsAtIndex:(NSUInteger)index withObject:(RFTorrent *)anObject
 {
-    [torrentGroups replaceObjectAtIndex:index withObject:anObject];
+    [torrents replaceObjectAtIndex:index withObject:anObject];
 }
 
-- (void)addTorrentGroupsObject:(RFTorrentGroup *)anObject
+- (void)addTorrentsObject:(RFTorrent *)anObject
 {
-    [torrentGroups addObject:anObject];
+    [torrents addObject:anObject];
 }
 
-- (void)removeTorrentGroupsObject:(RFTorrentGroup *)anObject
+- (void)removeTorrentsObject:(RFTorrent *)anObject
 {
-    [torrentGroups removeObject:anObject];
+    [torrents removeObject:anObject];
 }
 
 
-- (void)loadTorrents:(NSArray *)torrents
+- (void)loadTorrents:(NSArray *)torrentList
 {
-    // remove torrents no longer in the list
-    for (RFTorrentGroup *group in torrentGroups) {
-        NSMutableArray *prune = [NSMutableArray array];
-        NSMutableArray *tList = [group torrents];
-        for (RFTorrent *t in tList) {
-            if ([torrents indexOfObject:t] == NSNotFound) {
-                [prune addObject:t];
-            } else if (![[self groupForTorrent:t] isEqualToString:[group name]]) {
-                [prune addObject:t];
-            }
-        }
-        for (RFTorrent *t in prune) {
-            [group removeTorrentsObject:t];
+    allTorrents = torrentList;
+    [self updateList];
+}
+
+- (void)filterAll
+{
+    if (filterType != grNone) {
+        filterType = grNone;
+        [self rebuildList];
+    }
+}
+
+- (void)filterByStatus:(RFTorrentStatus)status
+{
+    if ((filterType != grStatus) || (filterStatus != status)) {
+        filterType = grStatus;
+        filterStatus = status;
+        [self rebuildList];
+    }
+}
+
+- (NSMutableArray *)filteredList
+{
+    NSMutableArray *list = [NSMutableArray array];
+    
+    for (RFTorrent *t in allTorrents) {
+        if ([self torrentMatches:t]) {
+            [list addObject:t];
         }
     }
     
-    for (RFTorrent *t in torrents) {
-        NSString *grpName = [self groupForTorrent:t];
-        bool added = false;
-        RFTorrentGroup *g = nil;
-        for (RFTorrentGroup *group in torrentGroups) {
-            if ([[group name] isEqualToString:grpName]) {
-                g = group;
-                break;
-            }
-        }
-        if (g == nil) {
-            added = true;
-            g = [[RFTorrentGroup alloc] initWithName:grpName];
-        } 
-        
-        NSUInteger index = [[g torrents] indexOfObject:t];
-        if (index == NSNotFound) {
-            [g addTorrentsObject:t];
-        } else {
-            if (![[[g torrents] objectAtIndex:index] dataEqual:t]) {
-                [g replaceObjectInTorrentsAtIndex:index withObject:t];
-            }
-        }
-        
-        if (added) {
-            [self addTorrentGroupsObject:g];
-        }
+    return list;
+}
+
+- (void)rebuildList
+{
+    [self setTorrents:[self filteredList]];
+}
+
+- (void)updateList
+{
+    NSMutableArray *matchlist = [self filteredList];
+    
+    if ([torrents count] == 0) {
+        [self setTorrents:matchlist];
+        return;
     }
     
+    // prune torrents no longer matching
     NSMutableArray *prune = [NSMutableArray array];
-    for (RFTorrentGroup *group in torrentGroups) {
-        if ([group countOfTorrents] == 0) {
-            [prune addObject:group];
+    for (RFTorrent *t in torrents) {
+        if (![matchlist containsObject:t]) {
+            [prune addObject:t];
         }
     }
-    for (RFTorrentGroup *group in prune) {
-        [self removeTorrentGroupsObject:group];
+    for (RFTorrent *t in prune) {
+        [self removeTorrentsObject:t];
+    }
+    
+    // update torrents that have changed
+    for (RFTorrent *t in matchlist) {
+        NSUInteger index = [torrents indexOfObject:t];
+        if (index != NSNotFound) {
+            if (![[torrents objectAtIndex:index] dataEqual:t]) {
+                [self replaceObjectInTorrentsAtIndex:index withObject:t];
+            }
+        } else {
+            [self addTorrentsObject:t];
+        }
     }
 }
 
-
-- (NSString *)groupForTorrent:(RFTorrent *)torrent
+- (bool)torrentMatches:(RFTorrent *)t
 {
-    if (!torrent) {
-        return nil;
+    if (filterType == grNone) {
+        return true;
     }
     
-    switch (grouping) {
-        case grStatus:
-            return [self statusGroupForTorrent:torrent];
-            break;
+    if (filterType == grStatus) {
+        if ([t status] == filterStatus) {
+            return true;
+        }
     }
     
-    return nil;
-}
-
-- (NSString *)statusGroupForTorrent:(RFTorrent *)torrent
-{
-    if (!torrent) {
-        return nil;
-    }
-    
-    switch ([torrent status]) {
-            
-        case stWaiting:
-            return @"Waiting";
-            break;
-            
-        case stChecking:
-            return @"Checking";
-            break;
-            
-        case stDownloading:
-            return @"Downloading";
-            break;
-            
-        case stSeeding:
-            return @"Seeding";
-            break;
-            
-        case stStopped:
-            return @"Stopped";
-            break;
-    }
-    
-    return nil;
+    return false;
 }
 
 @end

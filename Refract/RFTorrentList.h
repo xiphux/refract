@@ -7,31 +7,34 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "RFTorrentGroup.h"
+
+#import "RFTorrent.h"
 
 typedef enum {
+    grNone,
     grStatus
 } RFTorrentGrouping;
 
 @interface RFTorrentList : NSObject {
 @private
-    NSMutableArray *torrentGroups;
-    RFTorrentGrouping grouping;
+    NSArray *allTorrents;
+    NSMutableArray *torrents;
+    RFTorrentGrouping filterType;
+    RFTorrentStatus filterStatus;
 }
 
-@property (retain) NSMutableArray *torrentGroups;
-@property RFTorrentGrouping grouping;
+@property (retain) NSMutableArray *torrents;
+@property (readonly) RFTorrentGrouping filterType;
+@property (readonly) RFTorrentStatus filterStatus;
 
-- (id)initWithGrouping:(RFTorrentGrouping)initGrouping;
+- (NSUInteger)countOfTorrents;
+- (id)objectInTorrentsAtIndex:(NSUInteger)index;
+- (void)insertObject:(RFTorrent *)torrent inTorrentsAtIndex:(NSUInteger)index;
+- (void)removeObjectFromTorrentsAtIndex:(NSUInteger)index;
+- (void)replaceObjectInTorrentsAtIndex:(NSUInteger)index withObject:(RFTorrent *)anObject;
 
-- (NSUInteger)countOfTorrentGroups;
-- (id)objectInTorrentGroupsAtIndex:(NSUInteger)index;
-- (void)insertObject:(RFTorrentGroup *)group inTorrentGroupsAtIndex:(NSUInteger)index;
-- (void)removeObjectFromTorrentGroupsAtIndex:(NSUInteger)index;
-- (void)replaceObjectInTorrentGroupsAtIndex:(NSUInteger)index withObject:(RFTorrentGroup *)anObject;
-- (void)addTorrentGroupsObject:(RFTorrentGroup *)anObject;
-- (void)removeTorrentGroupsObject:(RFTorrentGroup *)anObject;
-
-- (void)loadTorrents:(NSArray *)torrents;
+- (void)loadTorrents:(NSArray *)torrentList;
+- (void)filterAll;
+- (void)filterByStatus:(RFTorrentStatus)status;
 
 @end
