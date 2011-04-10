@@ -120,28 +120,28 @@
 
 - (void)removeStatusGroup:(RFTorrentStatus)remStatus
 {
-    CategoryNode *statusCat = nil;
-    NSIndexPath *path = nil;
+    NSTreeNode *statusNode = nil;
     
     NSArray *nodes = [[treeController arrangedObjects] childNodes];
     
     for (NSUInteger i = 0; i < [nodes count]; i++) {
-        id node = [[nodes objectAtIndex:i] representedObject];
-        if ([node isKindOfClass:[CategoryNode class]]) {
-            if ([node categoryType] == catStatus) {
-                statusCat = node;
-                path = [NSIndexPath indexPathWithIndex:i];
+        id treenode = [nodes objectAtIndex:i];
+        id datanode = [treenode representedObject];
+        if ([datanode isKindOfClass:[CategoryNode class]]) {
+            if ([datanode categoryType] == catStatus) {
+                statusNode = treenode;
                 break;
             }
         }
     }
     
-    if (statusCat != nil) {
-        for (NSUInteger i = 0; i < [[statusCat children] count]; i++) {
-            id stat = [[statusCat children] objectAtIndex:i];
-            if ([stat isKindOfClass:[StatusNode class]]) {
-                if ([stat status] == remStatus) {
-                    [treeController removeObjectAtArrangedObjectIndexPath:[path indexPathByAddingIndex:i]];
+    if (statusNode != nil) {
+        for (NSUInteger i = 0; i < [[statusNode childNodes] count]; i++) {
+            id treenode = [[statusNode childNodes] objectAtIndex:i];
+            id datanode = [treenode representedObject];
+            if ([datanode isKindOfClass:[StatusNode class]]) {
+                if ([datanode status] == remStatus) {
+                    [treeController removeObjectAtArrangedObjectIndexPath:[treenode indexPath]];
                     break;
                 }
             }
