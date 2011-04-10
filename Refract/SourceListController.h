@@ -8,16 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
-#import "RFTorrent.h"
+#import "RFTorrentFilter.h"
 
 @interface SourceListController : NSObject <NSOutlineViewDelegate> {
 @private
     IBOutlet NSTreeController *treeController;
     IBOutlet NSOutlineView *sourceList;
+    RFTorrentFilter *filter;
 }
 
 @property (retain) NSTreeController *treeController;
 @property (retain) NSOutlineView *sourceList;
+@property (readonly) RFTorrentFilter *filter;
 
 - (void)addStatusGroup:(RFTorrentStatus)newStatus;
 - (void)removeStatusGroup:(RFTorrentStatus)remStatus;

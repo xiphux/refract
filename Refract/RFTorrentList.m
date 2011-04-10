@@ -12,7 +12,6 @@
 - (void)rebuildList;
 - (void)updateList;
 - (NSMutableArray *)filteredList;
-- (bool)torrentMatches:(RFTorrent *)t;
 @end
 
 @implementation RFTorrentList
@@ -21,7 +20,7 @@
 {
     self = [super init];
     if (self) {
-        filterType = grNone;
+        filter = [[RFTorrentFilter alloc] init];
     }
     return self;
 }
@@ -32,8 +31,22 @@
 }
 
 @synthesize torrents;
-@synthesize filterType;
-@synthesize filterStatus;
+
+- (RFTorrentFilter *)filter
+{
+    return filter;
+}
+
+- (void)setFilter:(RFTorrentFilter *)newFilter
+{
+    if (!newFilter) {
+        newFilter = [[RFTorrentFilter alloc] init];
+    }
+    if (![filter isEqual:newFilter]) {
+        filter = [[RFTorrentFilter alloc] initWithFilter:newFilter];
+        [self rebuildList];
+    }
+}
 
 - (NSUInteger)countOfTorrents
 {
@@ -77,29 +90,12 @@
     [self updateList];
 }
 
-- (void)filterAll
-{
-    if (filterType != grNone) {
-        filterType = grNone;
-        [self rebuildList];
-    }
-}
-
-- (void)filterByStatus:(RFTorrentStatus)status
-{
-    if ((filterType != grStatus) || (filterStatus != status)) {
-        filterType = grStatus;
-        filterStatus = status;
-        [self rebuildList];
-    }
-}
-
 - (NSMutableArray *)filteredList
 {
     NSMutableArray *list = [NSMutableArray array];
     
     for (RFTorrent *t in allTorrents) {
-        if ([self torrentMatches:t]) {
+        if ([filter checkTorrent:t]) {
             [list addObject:t];
         }
     }
@@ -143,21 +139,6 @@
             [self addTorrentsObject:t];
         }
     }
-}
-
-- (bool)torrentMatches:(RFTorrent *)t
-{
-    if (filterType == grNone) {
-        return true;
-    }
-    
-    if (filterType == grStatus) {
-        if ([t status] == filterStatus) {
-            return true;
-        }
-    }
-    
-    return false;
 }
 
 @end

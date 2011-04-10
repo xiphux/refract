@@ -28,6 +28,8 @@
     
     [torrentListController setSortDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:true]]];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sourceListSelectionChanged:) name:@"SourceListSelectionChanged" object:sourceListController];
+    
     if (![self initEngine]) {
         return;
     }
@@ -193,6 +195,13 @@
     if (update != [updateTimer timeInterval]) {
         [self stopEngine];
         [self startEngine];
+    }
+}
+
+- (void)sourceListSelectionChanged:(NSNotification *)notification
+{
+    if (![[sourceListController filter] isEqual:[torrentList filter]]) {
+        [torrentList setFilter:[sourceListController filter]];
     }
 }
 

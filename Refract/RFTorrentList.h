@@ -9,23 +9,17 @@
 #import <Foundation/Foundation.h>
 
 #import "RFTorrent.h"
-
-typedef enum {
-    grNone,
-    grStatus
-} RFTorrentGrouping;
+#import "RFTorrentFilter.h"
 
 @interface RFTorrentList : NSObject {
 @private
     NSArray *allTorrents;
     NSMutableArray *torrents;
-    RFTorrentGrouping filterType;
-    RFTorrentStatus filterStatus;
+    RFTorrentFilter *filter;
 }
 
 @property (retain) NSMutableArray *torrents;
-@property (readonly) RFTorrentGrouping filterType;
-@property (readonly) RFTorrentStatus filterStatus;
+@property (copy) RFTorrentFilter *filter;
 
 - (NSUInteger)countOfTorrents;
 - (id)objectInTorrentsAtIndex:(NSUInteger)index;
@@ -34,7 +28,5 @@ typedef enum {
 - (void)replaceObjectInTorrentsAtIndex:(NSUInteger)index withObject:(RFTorrent *)anObject;
 
 - (void)loadTorrents:(NSArray *)torrentList;
-- (void)filterAll;
-- (void)filterByStatus:(RFTorrentStatus)status;
 
 @end

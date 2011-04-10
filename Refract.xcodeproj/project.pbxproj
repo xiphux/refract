@@ -12,6 +12,7 @@
 		C6414DD3135156D9000F248C /* BaseNode.m in Sources */ = {isa = PBXBuildFile; fileRef = C6414DD2135156D9000F248C /* BaseNode.m */; };
 		C6414DD61351588C000F248C /* StatusNode.m in Sources */ = {isa = PBXBuildFile; fileRef = C6414DD51351588B000F248C /* StatusNode.m */; };
 		C6414DD913516057000F248C /* CategoryNode.m in Sources */ = {isa = PBXBuildFile; fileRef = C6414DD813516057000F248C /* CategoryNode.m */; };
+		C6414DDC13526AC7000F248C /* RFTorrentFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = C6414DDB13526AC6000F248C /* RFTorrentFilter.m */; };
 		C64DF9A61348E3B200CB08EF /* Torrent.xib in Resources */ = {isa = PBXBuildFile; fileRef = C64DF9A51348E3B200CB08EF /* Torrent.xib */; };
 		C67861971346E41100892BC2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C67861961346E41100892BC2 /* Cocoa.framework */; };
 		C67861A11346E41100892BC2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C678619F1346E41100892BC2 /* InfoPlist.strings */; };
@@ -82,6 +83,8 @@
 		C6414DD51351588B000F248C /* StatusNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatusNode.m; sourceTree = "<group>"; };
 		C6414DD713516057000F248C /* CategoryNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryNode.h; sourceTree = "<group>"; };
 		C6414DD813516057000F248C /* CategoryNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryNode.m; sourceTree = "<group>"; };
+		C6414DDA13526AC6000F248C /* RFTorrentFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFTorrentFilter.h; sourceTree = "<group>"; };
+		C6414DDB13526AC6000F248C /* RFTorrentFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFTorrentFilter.m; sourceTree = "<group>"; };
 		C64DF9A51348E3B200CB08EF /* Torrent.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Torrent.xib; sourceTree = "<group>"; };
 		C67861921346E41100892BC2 /* Refract.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Refract.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C67861961346E41100892BC2 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -287,6 +290,8 @@
 				C60BA3DB13484DD800D0AB08 /* RFTorrentGroup.m */,
 				C6CB30CF134C0CE100CDCFFB /* RFTorrentList.h */,
 				C6CB30D0134C0CE100CDCFFB /* RFTorrentList.m */,
+				C6414DDA13526AC6000F248C /* RFTorrentFilter.h */,
+				C6414DDB13526AC6000F248C /* RFTorrentFilter.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -487,6 +492,7 @@
 				C6414DD3135156D9000F248C /* BaseNode.m in Sources */,
 				C6414DD61351588C000F248C /* StatusNode.m in Sources */,
 				C6414DD913516057000F248C /* CategoryNode.m in Sources */,
+				C6414DDC13526AC7000F248C /* RFTorrentFilter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

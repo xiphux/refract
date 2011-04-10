@@ -14,7 +14,6 @@
 
 @interface SourceListController ()
 - (void)createStandardNodes;
-- (CategoryNode *)findCategoryNode:(CategoryNodeType)type;
 - (NSUInteger)statusSortIndex:(RFTorrentStatus)status;
 @end
 
@@ -37,6 +36,7 @@
 
 @synthesize treeController;
 @synthesize sourceList;
+@synthesize filter;
 
 - (void)awakeFromNib
 {
@@ -46,6 +46,7 @@
     
     [self createStandardNodes];
     
+    filter = [[RFTorrentFilter alloc] initWithType:filtNone];
     [sourceList selectRowIndexes:[NSIndexSet indexSetWithIndex:0] byExtendingSelection:false];
 }
 
@@ -176,19 +177,6 @@
     }
 }
 
-- (CategoryNode *)findCategoryNode:(CategoryNodeType)type
-{
-    for (id node in [treeController arrangedObjects]) {
-        if ([node isKindOfClass:[CategoryNode class]]) {
-            if ([node categoryType] == type) {
-                return node;
-            }
-        }
-    }
-    
-    return nil;
-}
-
 - (BOOL)outlineView:(NSOutlineView *)outlineView isGroupItem:(id)item
 {
     if ([[item representedObject] isKindOfClass:[CategoryNode class]]) {
@@ -213,6 +201,29 @@
         return NO;
     }
     return YES;
+}
+
+- (void)outlineViewSelectionDidChange:(NSNotification *)notification
+{
+    NSArray *selection = [treeController selectedObjects];
+    BaseNode *node = [selection objectAtIndex:0];
+    
+    RFTorrentFilter *newFilter;
+    
+    if ([node isKindOfClass:[StatusNode class]]) {
+        newFilter = [[RFTorrentFilter alloc] initWithStatus:[node status]];
+    } else if (![node isKindOfClass:[CategoryNode class]]) {
+        if ([[node title] isEqualToString:@"All"]) {
+            newFilter = [[RFTorrentFilter alloc] initWithType:filtNone];
+        }
+    }
+    
+    if (newFilter && (![newFilter isEqual:filter])) {
+        filter = newFilter;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"SourceListSelectionChanged" object:self];
+    }
+    
+    [newFilter release];
 }
 
 @end
