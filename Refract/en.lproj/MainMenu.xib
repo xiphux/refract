@@ -787,7 +787,7 @@
 															<int key="NSvFlags">274</int>
 															<string key="NSFrameSize">{440, 455}</string>
 															<reference key="NSSuperview" ref="557667291"/>
-															<reference key="NSNextKeyView" ref="370174739"/>
+															<reference key="NSNextKeyView"/>
 															<string key="NSMinGridSize">{0, 0}</string>
 															<string key="NSMaxGridSize">{0, 0}</string>
 															<int key="NSMaxNumberOfGridRows">0</int>
@@ -837,7 +837,7 @@
 											</object>
 											<string key="NSFrameSize">{442, 457}</string>
 											<reference key="NSSuperview" ref="533517072"/>
-											<reference key="NSNextKeyView" ref="557667291"/>
+											<reference key="NSNextKeyView" ref="370174739"/>
 											<int key="NSsFlags">530</int>
 											<reference key="NSVScroller" ref="370174739"/>
 											<reference key="NSHScroller" ref="963357463"/>
@@ -1056,7 +1056,7 @@
 						<string key="label">content: arrangedObjects</string>
 						<reference key="source" ref="730765074"/>
 						<reference key="destination" ref="713668804"/>
-						<object class="NSNibBindingConnector" key="connector">
+						<object class="NSNibBindingConnector" key="connector" id="200692421">
 							<reference key="NSSource" ref="730765074"/>
 							<reference key="NSDestination" ref="713668804"/>
 							<string key="NSLabel">content: arrangedObjects</string>
@@ -1138,6 +1138,23 @@
 						<reference key="destination" ref="730765074"/>
 					</object>
 					<int key="connectionID">759</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">selectionIndexPaths: selectionIndexPaths</string>
+						<reference key="source" ref="730765074"/>
+						<reference key="destination" ref="713668804"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="730765074"/>
+							<reference key="NSDestination" ref="713668804"/>
+							<string key="NSLabel">selectionIndexPaths: selectionIndexPaths</string>
+							<string key="NSBinding">selectionIndexPaths</string>
+							<string key="NSKeyPath">selectionIndexPaths</string>
+							<reference key="NSPreviousConnector" ref="200692421"/>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">768</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1887,7 +1904,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">759</int>
+			<int key="maxID">768</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes"/>
 		<int key="IBDocument.localizationMode">0</int>

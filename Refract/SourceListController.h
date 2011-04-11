@@ -15,6 +15,7 @@
     IBOutlet NSTreeController *treeController;
     IBOutlet NSOutlineView *sourceList;
     RFTorrentFilter *filter;
+    bool manipulatingSourceList;
 }
 
 @property (retain) NSTreeController *treeController;

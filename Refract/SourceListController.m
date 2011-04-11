@@ -44,10 +44,11 @@
     NSSortDescriptor *titlesd = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:true];
     [treeController setSortDescriptors:[NSArray arrayWithObjects:indexsd, titlesd, nil]];
     
-    [self createStandardNodes];
-    
     filter = [[RFTorrentFilter alloc] initWithType:filtNone];
+    manipulatingSourceList = true;
+    [self createStandardNodes];
     [sourceList selectRowIndexes:[NSIndexSet indexSetWithIndex:0] byExtendingSelection:false];
+    manipulatingSourceList = false;
 }
 
 - (void)createStandardNodes
@@ -64,6 +65,7 @@
 {
     CategoryNode *statusCat = nil;
     NSIndexPath *path = nil;
+    NSIndexPath *selectedPath = [[[treeController selectedNodes] objectAtIndex:0] indexPath];
     
     NSArray *nodes = [[treeController arrangedObjects] childNodes];    
     
@@ -84,7 +86,9 @@
         [statusCat setSortIndex:1];
         [statusCat setIsLeaf:false];
         path = [NSIndexPath indexPathWithIndex:1];
+        manipulatingSourceList = true;
         [treeController insertObject:statusCat atArrangedObjectIndexPath:path];
+        manipulatingSourceList = false;
     } else {
         for (NSUInteger i = 0; i < [[statusCat children] count]; i++) {
             id stat = [[statusCat children] objectAtIndex:i];
@@ -117,9 +121,11 @@
     }
     [sNode setIsLeaf:true];
     [sNode setStatus:newStatus];
+    manipulatingSourceList = true;
     [treeController insertObject:sNode atArrangedObjectIndexPath:itemPath];
-    
     [treeController rearrangeObjects];
+    [treeController setSelectionIndexPath:selectedPath];
+    manipulatingSourceList = false;
 }
 
 - (void)removeStatusGroup:(RFTorrentStatus)remStatus
@@ -145,7 +151,12 @@
             id datanode = [treenode representedObject];
             if ([datanode isKindOfClass:[StatusNode class]]) {
                 if ([datanode status] == remStatus) {
+                    manipulatingSourceList = true;
                     [treeController removeObjectAtArrangedObjectIndexPath:[treenode indexPath]];
+                    if ([[statusNode childNodes] count] == 0) {
+                        [treeController removeObjectAtArrangedObjectIndexPath:[statusNode indexPath]];
+                    }
+                    manipulatingSourceList = false;
                     break;
                 }
             }
@@ -205,7 +216,13 @@
 
 - (void)outlineViewSelectionDidChange:(NSNotification *)notification
 {
+    if (manipulatingSourceList) {
+        return;
+    }
     NSArray *selection = [treeController selectedObjects];
+    if ([selection count] == 0) {
+        return;
+    }
     BaseNode *node = [selection objectAtIndex:0];
     
     RFTorrentFilter *newFilter;
@@ -218,7 +235,11 @@
         }
     }
     
-    if (newFilter && (![newFilter isEqual:filter])) {
+    if (!newFilter) {
+        return;
+    }
+    
+    if (![newFilter isEqual:filter]) {
         filter = newFilter;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"SourceListSelectionChanged" object:self];
     }
