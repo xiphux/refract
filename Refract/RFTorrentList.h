@@ -15,11 +15,9 @@
 @private
     NSArray *allTorrents;
     NSMutableArray *torrents;
-    RFTorrentFilter *filter;
 }
 
 @property (retain) NSMutableArray *torrents;
-@property (copy) RFTorrentFilter *filter;
 
 - (NSUInteger)countOfTorrents;
 - (id)objectInTorrentsAtIndex:(NSUInteger)index;

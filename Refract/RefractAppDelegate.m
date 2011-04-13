@@ -129,6 +129,8 @@
     
     [[self torrentList] loadTorrents:allTorrents];
     
+    [torrentListController rearrangeObjects];
+    
     bool downloading = false;
     bool stopped = false;
     bool waiting = false;
@@ -200,8 +202,11 @@
 
 - (void)sourceListSelectionChanged:(NSNotification *)notification
 {
-    if (![[sourceListController filter] isEqual:[torrentList filter]]) {
-        [torrentList setFilter:[sourceListController filter]];
+    if ([[sourceListController filter] filterType] == filtNone) {
+        [torrentListController setFilterPredicate:nil];
+    } else if ([[sourceListController filter] filterType] == filtStatus) {
+        NSPredicate *pred = [NSPredicate predicateWithFormat:@"status == %d", [[sourceListController filter] torrentStatus]];
+        [torrentListController setFilterPredicate:pred];
     }
 }
 

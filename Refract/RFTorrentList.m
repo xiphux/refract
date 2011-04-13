@@ -9,9 +9,7 @@
 #import "RFTorrentList.h"
 
 @interface RFTorrentList ()
-- (void)rebuildList;
 - (void)updateList;
-- (NSMutableArray *)filteredList;
 @end
 
 @implementation RFTorrentList
@@ -20,7 +18,6 @@
 {
     self = [super init];
     if (self) {
-        filter = [[RFTorrentFilter alloc] init];
     }
     return self;
 }
@@ -31,22 +28,6 @@
 }
 
 @synthesize torrents;
-
-- (RFTorrentFilter *)filter
-{
-    return filter;
-}
-
-- (void)setFilter:(RFTorrentFilter *)newFilter
-{
-    if (!newFilter) {
-        newFilter = [[RFTorrentFilter alloc] init];
-    }
-    if (![filter isEqual:newFilter]) {
-        filter = [[RFTorrentFilter alloc] initWithFilter:newFilter];
-        [self rebuildList];
-    }
-}
 
 - (NSUInteger)countOfTorrents
 {
@@ -90,37 +71,17 @@
     [self updateList];
 }
 
-- (NSMutableArray *)filteredList
-{
-    NSMutableArray *list = [NSMutableArray array];
-    
-    for (RFTorrent *t in allTorrents) {
-        if ([filter checkTorrent:t]) {
-            [list addObject:t];
-        }
-    }
-    
-    return list;
-}
-
-- (void)rebuildList
-{
-    [self setTorrents:[self filteredList]];
-}
-
 - (void)updateList
 {
-    NSMutableArray *matchlist = [self filteredList];
-    
     if ([torrents count] == 0) {
-        [self setTorrents:matchlist];
+        [self setTorrents:[NSMutableArray arrayWithArray:allTorrents]];
         return;
     }
     
     // prune torrents no longer matching
     NSMutableArray *prune = [NSMutableArray array];
     for (RFTorrent *t in torrents) {
-        if (![matchlist containsObject:t]) {
+        if (![allTorrents containsObject:t]) {
             [prune addObject:t];
         }
     }
@@ -129,7 +90,7 @@
     }
     
     // update torrents that have changed
-    for (RFTorrent *t in matchlist) {
+    for (RFTorrent *t in allTorrents) {
         NSUInteger index = [torrents indexOfObject:t];
         if (index != NSNotFound) {
             if (![[torrents objectAtIndex:index] dataEqual:t]) {
