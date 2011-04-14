@@ -74,15 +74,9 @@
         return false;
     }
     
-    [self refresh];
-    
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSTimeInterval update = [defaults doubleForKey:@"UpdateFrequency"];
-    
-    NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:update target:self selector:@selector(refresh) userInfo:nil repeats:true];
-    self.updateTimer = timer;
-    
     started = true;
+    
+    [self refresh];
     
     return true;
 }
@@ -92,10 +86,6 @@
     if (!engine) {
         return;
     }
-    
-    [updateTimer invalidate];
-    
-    [updateTimer release];
     
     started = false;
 }
@@ -120,6 +110,10 @@
 - (void)refresh
 {
     if (![engine connected]) {
+        return;
+    }
+    
+    if (!started) {
         return;
     }
     
@@ -181,6 +175,10 @@
     } else {
         [sourceListController removeStatusGroup:stSeeding];
     }
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSTimeInterval update = [defaults doubleForKey:@"UpdateFrequency"];
+    [NSTimer scheduledTimerWithTimeInterval:update target:self selector:@selector(refresh) userInfo:nil repeats:false];
 }
 
 - (IBAction)openPreferences:(id)sender
@@ -193,11 +191,11 @@
 
 - (void)settingsChanged:(NSNotification *)notification
 {
-    NSTimeInterval update = [[NSUserDefaults standardUserDefaults] doubleForKey:@"UpdateFrequency"];
-    if (update != [updateTimer timeInterval]) {
-        [self stopEngine];
-        [self startEngine];
-    }
+//    NSTimeInterval update = [[NSUserDefaults standardUserDefaults] doubleForKey:@"UpdateFrequency"];
+//    if (update != [updateTimer timeInterval]) {
+//        [self stopEngine];
+//        [self startEngine];
+//    }
 }
 
 - (void)sourceListSelectionChanged:(NSNotification *)notification

@@ -18,7 +18,6 @@
     NSArrayController IBOutlet *torrentListController;
     RFEngine *engine;
     RFTorrentList *torrentList;
-    NSTimer *updateTimer;
     bool started;
 }
 
