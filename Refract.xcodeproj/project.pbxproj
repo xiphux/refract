@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		C60BA3DC13484DD800D0AB08 /* RFTorrentGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = C60BA3DB13484DD800D0AB08 /* RFTorrentGroup.m */; };
+		C60C325B135699E600CB14CD /* RFURLConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = C60C325A135699E600CB14CD /* RFURLConnection.m */; };
 		C6414DCF13514B33000F248C /* SourceListController.m in Sources */ = {isa = PBXBuildFile; fileRef = C6414DCE13514B33000F248C /* SourceListController.m */; };
 		C6414DD3135156D9000F248C /* BaseNode.m in Sources */ = {isa = PBXBuildFile; fileRef = C6414DD2135156D9000F248C /* BaseNode.m */; };
 		C6414DD61351588C000F248C /* StatusNode.m in Sources */ = {isa = PBXBuildFile; fileRef = C6414DD51351588B000F248C /* StatusNode.m */; };
@@ -75,6 +76,8 @@
 /* Begin PBXFileReference section */
 		C60BA3DA13484DD800D0AB08 /* RFTorrentGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFTorrentGroup.h; sourceTree = "<group>"; };
 		C60BA3DB13484DD800D0AB08 /* RFTorrentGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFTorrentGroup.m; sourceTree = "<group>"; };
+		C60C3259135699E600CB14CD /* RFURLConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFURLConnection.h; sourceTree = "<group>"; };
+		C60C325A135699E600CB14CD /* RFURLConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFURLConnection.m; sourceTree = "<group>"; };
 		C6414DCD13514B33000F248C /* SourceListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SourceListController.h; sourceTree = "<group>"; };
 		C6414DCE13514B33000F248C /* SourceListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SourceListController.m; sourceTree = "<group>"; };
 		C6414DD1135156D9000F248C /* BaseNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseNode.h; sourceTree = "<group>"; };
@@ -302,6 +305,8 @@
 				C678621B1347939300892BC2 /* Transmission */,
 				C67861D21347829D00892BC2 /* RFEngine.h */,
 				C67861D31347829D00892BC2 /* RFEngine.m */,
+				C60C3259135699E600CB14CD /* RFURLConnection.h */,
+				C60C325A135699E600CB14CD /* RFURLConnection.m */,
 			);
 			name = Engine;
 			sourceTree = "<group>";
@@ -493,6 +498,7 @@
 				C6414DD61351588C000F248C /* StatusNode.m in Sources */,
 				C6414DD913516057000F248C /* CategoryNode.m in Sources */,
 				C6414DDC13526AC7000F248C /* RFTorrentFilter.m in Sources */,
+				C60C325B135699E600CB14CD /* RFURLConnection.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

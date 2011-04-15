@@ -30,6 +30,8 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sourceListSelectionChanged:) name:@"SourceListSelectionChanged" object:sourceListController];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(afterRefresh) name:@"refresh" object:engine];
+     
     if (![self initEngine]) {
         return;
     }
@@ -70,7 +72,7 @@
         return true;
     }
     
-    if (!(engine && [engine connected])) {
+    if (!engine) {
         return false;
     }
     
@@ -109,16 +111,15 @@
 
 - (void)refresh
 {
-    if (![engine connected]) {
-        return;
-    }
-    
     if (!started) {
         return;
     }
     
     [engine refresh];
-    
+}
+     
+- (void)afterRefresh
+{    
     NSArray *allTorrents = [[engine torrents] allValues];
     
     [[self torrentList] loadTorrents:allTorrents];

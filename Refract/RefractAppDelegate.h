@@ -35,6 +35,7 @@
 - (void)stopEngine;
 - (void)destroyEngine;
 - (void)refresh;
+- (void)afterRefresh;
 - (void)settingsChanged:(NSNotification *)notification;
 - (void)sourceListSelectionChanged:(NSNotification *)notification;
 

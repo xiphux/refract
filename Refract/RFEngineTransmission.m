@@ -9,13 +9,14 @@
 #import "RFEngineTransmission.h"
 #import "RFTorrent.h"
 #import "RFBase64.h"
+#import "RFURLConnection.h"
 #import <JSON/JSON.h>
 
 @interface RFEngineTransmission ()
 @property (readwrite, retain) NSMutableDictionary *torrents;
-@property (retain) NSMutableURLRequest *request;
-- (NSData *)rpcRequest:(NSData *)requestBody;
+- (bool)rpcRequest:(NSString *)type data:(NSData *)requestBody;
 - (void)parseTorrentList:(NSArray *)torrentList;
+- (NSMutableURLRequest *)createRequest;
 @end
 
 @implementation RFEngineTransmission
@@ -24,7 +25,7 @@
 @synthesize url;
 @synthesize username;
 @synthesize password;
-@synthesize request;
+@synthesize connected;
 
 - (id)init
 {
@@ -62,7 +63,6 @@
     [url release];
     [username release];
     [password release];
-    [request release];
     [torrents release];
     [super dealloc];
 }
@@ -73,36 +73,34 @@
         return false;
     }
     
-    request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
-    [request setHTTPMethod:@"POST"];
-    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    
-    if (([username length] > 0) && ([password length] > 0)) {
-        NSString *auth = [RFBase64 encodeBase64WithData:[[NSString stringWithFormat:@"%@:%@", username, password] dataUsingEncoding:NSUTF8StringEncoding]];
-        [request setValue:[NSString stringWithFormat:@"Basic %@", auth] forHTTPHeaderField:@"Authorization"];
-    }
-    
-    if ([self rpcRequest:nil] == nil) {
-        return false;
-    }
-    
     return true;
 }
 
 - (bool)disconnect
 {
-    request = nil;
     return true;
 }
 
-- (bool)connected
+- (NSMutableURLRequest *)createRequest
 {
-    return request ? true : false;
+    NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
+    [req setHTTPMethod:@"POST"];
+    [req setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    
+    if (([username length] > 0) && ([password length] > 0)) {
+        NSString *auth = [RFBase64 encodeBase64WithData:[[NSString stringWithFormat:@"%@:%@", username, password] dataUsingEncoding:NSUTF8StringEncoding]];
+        [req setValue:[NSString stringWithFormat:@"Basic %@", auth] forHTTPHeaderField:@"Authorization"];
+    }
+    
+    if ([sessionId length] > 0) {
+        [req setValue:sessionId forHTTPHeaderField:@"X-Transmission-Session-Id"];
+    }
+    
+    return req;
 }
 
 - (bool)refresh
 {
-    SBJsonParser *parser = [[SBJsonParser alloc] init];
     SBJsonWriter *writer = [[SBJsonWriter alloc] init];
     
     NSArray *fields = [NSArray arrayWithObjects:@"id", @"name", @"totalSize", @"sizeWhenDone", @"leftUntilDone", @"rateDownload", @"rateUpload", @"status", @"percentDone", nil];
@@ -111,51 +109,31 @@
     NSString *requestStr = [writer stringWithObject:requestData];
     NSData *requestJson = [requestStr dataUsingEncoding:NSUTF8StringEncoding];
     
-    NSData *response = [self rpcRequest:requestJson];
-    
-    if (response != nil) {
-        NSString *responseStr = [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding];
-        NSDictionary *responseData = [parser objectWithString:responseStr];
-        
-        if ([[responseData objectForKey:@"result"] isEqualToString:@"success"]) {
-            NSArray *torrentList = [[responseData objectForKey:@"arguments"] objectForKey:@"torrents"];
-            [self parseTorrentList:torrentList];
-        }
-    }
-    
-    [parser release];
     [writer release];
     
-    return true;
+    return [self rpcRequest:@"refresh" data:requestJson];
 }
 
-- (NSData *)rpcRequest:(NSData *)requestBody
+- (bool)rpcRequest:(NSString *)type data:(NSData *)requestBody
 {
+    NSMutableURLRequest *request = [self createRequest];
+    
     if (!request) {
-        return nil;
+        return false;
     }
     
     [request setHTTPBody:requestBody];
     
-    NSHTTPURLResponse *responseData = nil;
-    NSError *error = nil;
+    RFURLConnection *rfConn = [[RFURLConnection alloc] initWithRequest:request delegate:self startImmediately:false];
     
-    NSData *response = [NSURLConnection sendSynchronousRequest:request returningResponse:&responseData error:&error];
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:type, @"type", nil];
+    [rfConn setUserInfo:userInfo];
+    [rfConn setRequestData:requestBody];
+    [rfConn scheduleInRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+    [rfConn start];
+    [rfConn release];
     
-    if (responseData) {
-        if ([responseData statusCode] == 409) {
-            // requires session token - get token and resubmit request
-            NSDictionary *responseHeaders = [responseData allHeaderFields];
-            
-            NSString *sessionId = [responseHeaders valueForKey:@"X-Transmission-Session-Id"];
-            if ([sessionId length] > 0) {
-                [request setValue:sessionId forHTTPHeaderField:@"X-Transmission-Session-Id"];
-                return [self rpcRequest:requestBody];
-            }
-        }
-    }
-    
-    return response;
+    return true;
 }
 
 - (void)parseTorrentList:(NSArray *)torrentList
@@ -245,6 +223,61 @@
     for (NSString *delID in existingIDs) {
         [torrents removeObjectForKey:delID];
     }
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSHTTPURLResponse *)response
+{
+    RFURLConnection *rfConn = (RFURLConnection *)connection;
+    [rfConn setResponse:response];
+    [rfConn setResponseData:[[NSMutableData alloc] init]];
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+{
+    RFURLConnection *rfConn = (RFURLConnection *)connection;
+    [[rfConn responseData] appendData:data];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+    RFURLConnection *rfConn = (RFURLConnection *)connection;
+    
+    if ([[rfConn response] statusCode] == 409) {
+        // requires session token - get token and resubmit request
+        NSDictionary *responseHeaders = [[rfConn response] allHeaderFields];
+        
+        sessionId = [responseHeaders valueForKey:@"X-Transmission-Session-Id"];
+        if ([sessionId length] > 0) {
+            [self rpcRequest:[[rfConn userInfo] objectForKey:@"type"] data:[rfConn requestData]]; 
+        }
+        
+        return;
+    }
+    
+    if ([[rfConn response] statusCode] == 200) {
+        
+        if ([[[rfConn userInfo] objectForKey:@"type"] isEqualToString:@"refresh"]) {
+            if ([rfConn responseData] != nil) {
+                NSString *responseStr = [[NSString alloc] initWithData:[rfConn responseData] encoding:NSUTF8StringEncoding];
+                SBJsonParser *parser = [[SBJsonParser alloc] init];
+                NSDictionary *responseData = [parser objectWithString:responseStr];
+                [parser release];
+                
+                if ([[responseData objectForKey:@"result"] isEqualToString:@"success"]) {
+                    NSArray *torrentList = [[responseData objectForKey:@"arguments"] objectForKey:@"torrents"];
+                    [self parseTorrentList:torrentList];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:[[rfConn userInfo] objectForKey:@"type"] object:self];
+                }
+            }
+        }
+        
+        return;
+    }
+}
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+{
+    
 }
 
 @end

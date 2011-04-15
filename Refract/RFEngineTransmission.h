@@ -15,9 +15,12 @@
     NSString *username;
     NSString *password;
     NSMutableDictionary *torrents;
+    NSString *sessionId;
+    bool connected;
 }
 
 @property (readonly, retain) NSMutableDictionary *torrents;
+@property (readonly) bool connected;
 @property (copy) NSString *url;
 @property (copy) NSString *username;
 @property (copy) NSString *password;
