@@ -902,12 +902,10 @@
 				<bool key="NSClearsFilterPredicateOnInsertion">YES</bool>
 			</object>
 			<object class="NSTreeController" id="713668804">
-				<string key="NSObjectClassName">NSMutableArray</string>
-				<bool key="NSEditable">YES</bool>
+				<string key="NSObjectClassName">BaseNode</string>
 				<object class="_NSManagedProxy" key="_NSManagedProxy"/>
 				<bool key="NSAvoidsEmptySelection">YES</bool>
 				<bool key="NSPreservesSelection">YES</bool>
-				<bool key="NSSelectsInsertedObjects">YES</bool>
 				<string key="NSTreeContentChildrenKey">children</string>
 				<string key="NSTreeContentLeafKey">isLeaf</string>
 			</object>
@@ -1142,7 +1140,7 @@
 						<string key="label">selectionIndexPaths: selectionIndexPaths</string>
 						<reference key="source" ref="730765074"/>
 						<reference key="destination" ref="713668804"/>
-						<object class="NSNibBindingConnector" key="connector">
+						<object class="NSNibBindingConnector" key="connector" id="556576551">
 							<reference key="NSSource" ref="730765074"/>
 							<reference key="NSDestination" ref="713668804"/>
 							<string key="NSLabel">selectionIndexPaths: selectionIndexPaths</string>
@@ -1169,6 +1167,23 @@
 						</object>
 					</object>
 					<int key="connectionID">770</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">sortDescriptors: sortDescriptors</string>
+						<reference key="source" ref="730765074"/>
+						<reference key="destination" ref="713668804"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="730765074"/>
+							<reference key="NSDestination" ref="713668804"/>
+							<string key="NSLabel">sortDescriptors: sortDescriptors</string>
+							<string key="NSBinding">sortDescriptors</string>
+							<string key="NSKeyPath">sortDescriptors</string>
+							<reference key="NSPreviousConnector" ref="556576551"/>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">772</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1918,7 +1933,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">770</int>
+			<int key="maxID">772</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
