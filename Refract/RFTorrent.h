@@ -9,11 +9,11 @@
 #import <Foundation/Foundation.h>
 
 typedef enum {
-    stWaiting,
-    stChecking,
-    stDownloading,
-    stSeeding,
-    stStopped
+    stWaiting = 1,
+    stChecking = 2,
+    stDownloading = 3,
+    stSeeding = 4,
+    stStopped = 5
 } RFTorrentStatus;
 
 @interface RFTorrent : NSObject {

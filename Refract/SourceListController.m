@@ -15,6 +15,7 @@
 @interface SourceListController ()
 - (void)createStandardNodes;
 - (NSUInteger)statusSortIndex:(RFTorrentStatus)status;
+- (void)doRemoveStatusGroup:(RFTorrentStatus)remStatus;
 @end
 
 @implementation SourceListController
@@ -65,9 +66,12 @@
 {
     CategoryNode *statusCat = nil;
     NSIndexPath *path = nil;
-    NSIndexPath *selectedPath = [[[treeController selectedNodes] objectAtIndex:0] indexPath];
     
-    NSArray *nodes = [[treeController arrangedObjects] childNodes];    
+    NSArray *nodes = [[treeController arrangedObjects] childNodes];
+    
+    if (removeStatus == newStatus) {
+        removeStatus = 0;
+    }
     
     for (NSUInteger i = 0; i < [nodes count]; i++) {
         id node = [[nodes objectAtIndex:i] representedObject];
@@ -124,11 +128,46 @@
     manipulatingSourceList = true;
     [treeController insertObject:sNode atArrangedObjectIndexPath:itemPath];
     [treeController rearrangeObjects];
-    [treeController setSelectionIndexPath:selectedPath];
     manipulatingSourceList = false;
 }
 
 - (void)removeStatusGroup:(RFTorrentStatus)remStatus
+{
+    NSArray *selection = [treeController selectedObjects];
+    if ([selection count] > 0) {
+        BaseNode *node = [selection objectAtIndex:0];
+        if ([node isKindOfClass:[StatusNode class]]) {
+            if ([node status] == remStatus) {
+                removeStatus = remStatus;
+                return;
+            }
+        }
+    }
+    
+    [self doRemoveStatusGroup:remStatus];
+}
+
+- (void)tryRemoveStatusGroup
+{
+    if (removeStatus == 0) {
+        return;
+    }
+    
+    NSArray *selection = [treeController selectedObjects];
+    if ([selection count] > 0) {
+        BaseNode *node = [selection objectAtIndex:0];
+        if ([node isKindOfClass:[StatusNode class]]) {
+            if ([node status] == removeStatus) {
+                return;
+            }
+        }
+    }
+    
+    [self doRemoveStatusGroup:removeStatus];
+    removeStatus = 0;
+}
+
+- (void)doRemoveStatusGroup:(RFTorrentStatus)remStatus
 {
     NSTreeNode *statusNode = nil;
     
@@ -214,13 +253,20 @@
     return YES;
 }
 
+- (BOOL)outlineView:(NSOutlineView *)outlineView shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item
+{
+    return false;
+}
+
 - (void)outlineViewSelectionDidChange:(NSNotification *)notification
 {
     if (manipulatingSourceList) {
         return;
     }
+    
     NSArray *selection = [treeController selectedObjects];
     if ([selection count] == 0) {
+        [treeController setSelectionIndexPath:[NSIndexPath indexPathWithIndex:0]];
         return;
     }
     BaseNode *node = [selection objectAtIndex:0];
@@ -245,6 +291,10 @@
     }
     
     [newFilter release];
+        
+    if (removeStatus > 0) {
+        [self performSelector:@selector(tryRemoveStatusGroup) withObject:nil afterDelay:1.0];
+    }
 }
 
 @end
