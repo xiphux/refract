@@ -29,7 +29,6 @@
 @property (retain) IBOutlet NSSearchField *searchField;
 @property (assign) RFEngine *engine;
 @property (retain) RFTorrentList *torrentList;
-@property (retain) NSTimer *updateTimer;
 
 - (IBAction)openPreferences:(id)sender;
 - (IBAction)search:(id)sender;

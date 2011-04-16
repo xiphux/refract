@@ -25,7 +25,6 @@
 @synthesize searchField;
 @synthesize engine;
 @synthesize torrentList;
-@synthesize updateTimer;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
