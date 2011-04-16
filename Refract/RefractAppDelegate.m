@@ -13,11 +13,16 @@
 #import "RFConstants.h"
 #import "RFEngineTransmission.h"
 
+@interface RefractAppDelegate ()
+- (void)updateFilterPredicate;
+@end
+
 @implementation RefractAppDelegate
 
 @synthesize window;
 @synthesize sourceListController;
 @synthesize torrentListController;
+@synthesize searchField;
 @synthesize engine;
 @synthesize torrentList;
 @synthesize updateTimer;
@@ -207,11 +212,41 @@
 
 - (void)sourceListSelectionChanged:(NSNotification *)notification
 {
-    if ([[sourceListController filter] filterType] == filtNone) {
+    [self updateFilterPredicate];
+}
+
+- (IBAction)search:(id)sender
+{
+    [self updateFilterPredicate];
+}
+
+- (void)updateFilterPredicate
+{
+    NSMutableArray *allPredicates = [NSMutableArray array];
+    
+    NSString *searchText = [searchField stringValue];
+    if ([searchText length] > 0) {
+        NSArray *keywords = [searchText componentsSeparatedByString:@" "];
+        if ([keywords count] > 0) {
+            for (NSString *word in keywords) {
+                if ([word length] > 0) {
+                    [allPredicates addObject:[NSPredicate predicateWithFormat:@"name contains[cd] %@", word]];
+                }
+            }
+        }
+    }
+    
+    RFTorrentFilterType filtType = [[sourceListController filter] filterType];
+    if (filtType == filtStatus) {
+        NSPredicate *statusPredicate = [NSPredicate predicateWithFormat:@"status == %d", [[sourceListController filter] torrentStatus]];
+        [allPredicates addObject:statusPredicate];
+    }
+    
+    if ([allPredicates count] > 0) {
+        NSPredicate *filterPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:allPredicates];
+        [torrentListController setFilterPredicate:filterPredicate];
+    } else {
         [torrentListController setFilterPredicate:nil];
-    } else if ([[sourceListController filter] filterType] == filtStatus) {
-        NSPredicate *pred = [NSPredicate predicateWithFormat:@"status == %d", [[sourceListController filter] torrentStatus]];
-        [torrentListController setFilterPredicate:pred];
     }
 }
 

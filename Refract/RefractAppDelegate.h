@@ -16,19 +16,23 @@
     NSWindow IBOutlet *window;
     SourceListController IBOutlet *sourceListController;
     NSArrayController IBOutlet *torrentListController;
+    NSSearchField IBOutlet *searchField;
     RFEngine *engine;
     RFTorrentList *torrentList;
+    NSPredicate *searchPredicate;
     bool started;
 }
 
 @property (assign) IBOutlet NSWindow *window;
 @property (retain) IBOutlet NSArrayController *torrentListController;
 @property (retain) IBOutlet SourceListController *sourceListController;
+@property (retain) IBOutlet NSSearchField *searchField;
 @property (assign) RFEngine *engine;
 @property (retain) RFTorrentList *torrentList;
 @property (retain) NSTimer *updateTimer;
 
 - (IBAction)openPreferences:(id)sender;
+- (IBAction)search:(id)sender;
 - (void)setDefaults;
 - (bool)initEngine;
 - (bool)startEngine;
