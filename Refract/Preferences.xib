@@ -669,38 +669,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.Transmission.Username</string>
-						<reference key="source" ref="1055742117"/>
-						<reference key="destination" ref="80281248"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="1055742117"/>
-							<reference key="NSDestination" ref="80281248"/>
-							<string key="NSLabel">value: values.Transmission.Username</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.Transmission.Username</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">93</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
-						<string key="label">value: values.Transmission.Password</string>
-						<reference key="source" ref="690653955"/>
-						<reference key="destination" ref="80281248"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="690653955"/>
-							<reference key="NSDestination" ref="80281248"/>
-							<string key="NSLabel">value: values.Transmission.Password</string>
-							<string key="NSBinding">value</string>
-							<string key="NSKeyPath">values.Transmission.Password</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">94</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
 						<string key="label">value: values.UpdateFrequency</string>
 						<reference key="source" ref="77829292"/>
 						<reference key="destination" ref="80281248"/>
@@ -714,6 +682,54 @@
 						</object>
 					</object>
 					<int key="connectionID">103</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: transmissionUsername</string>
+						<reference key="source" ref="1055742117"/>
+						<reference key="destination" ref="914834220"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="1055742117"/>
+							<reference key="NSDestination" ref="914834220"/>
+							<string key="NSLabel">value: transmissionUsername</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">transmissionUsername</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">111</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: transmissionPassword</string>
+						<reference key="source" ref="690653955"/>
+						<reference key="destination" ref="914834220"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="690653955"/>
+							<reference key="NSDestination" ref="914834220"/>
+							<string key="NSLabel">value: transmissionPassword</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">transmissionPassword</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">114</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">transmissionPasswordField</string>
+						<reference key="source" ref="914834220"/>
+						<reference key="destination" ref="690653955"/>
+					</object>
+					<int key="connectionID">115</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">transmissionUsernameField</string>
+						<reference key="source" ref="914834220"/>
+						<reference key="destination" ref="1055742117"/>
+					</object>
+					<int key="connectionID">116</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1135,7 +1151,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">103</int>
+			<int key="maxID">116</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -1184,6 +1200,8 @@
 							<string>general</string>
 							<string>generalButton</string>
 							<string>toolbar</string>
+							<string>transmissionPasswordField</string>
+							<string>transmissionUsernameField</string>
 							<string>window</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -1193,6 +1211,8 @@
 							<string>NSView</string>
 							<string>NSToolbarItem</string>
 							<string>NSToolbar</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
 							<string>NSWindow</string>
 						</object>
 					</object>
@@ -1205,6 +1225,8 @@
 							<string>general</string>
 							<string>generalButton</string>
 							<string>toolbar</string>
+							<string>transmissionPasswordField</string>
+							<string>transmissionUsernameField</string>
 							<string>window</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
@@ -1228,6 +1250,14 @@
 							<object class="IBToOneOutletInfo">
 								<string key="name">toolbar</string>
 								<string key="candidateClassName">NSToolbar</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">transmissionPasswordField</string>
+								<string key="candidateClassName">NSTextField</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">transmissionUsernameField</string>
+								<string key="candidateClassName">NSTextField</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">window</string>

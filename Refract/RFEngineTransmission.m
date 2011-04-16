@@ -10,6 +10,8 @@
 #import "RFTorrent.h"
 #import "RFBase64.h"
 #import "RFURLConnection.h"
+#import "RFConstants.h"
+#import "EMKeychainItem.h"
 #import <JSON/JSON.h>
 
 @interface RFEngineTransmission ()
@@ -17,6 +19,7 @@
 - (bool)rpcRequest:(NSString *)type data:(NSData *)requestBody;
 - (void)parseTorrentList:(NSArray *)torrentList;
 - (NSMutableURLRequest *)createRequest;
+- (void)settingsChanged:(NSNotification *)notification;
 @end
 
 @implementation RFEngineTransmission
@@ -30,7 +33,7 @@
 - (id)init
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSDictionary *appDefaults = [NSDictionary dictionaryWithObject:@"http://127.0.0.1:9091/transmission/rpc" forKey:@"Transmission.URL"];
+    NSDictionary *appDefaults = [NSDictionary dictionaryWithObject:@"http://127.0.0.1:9091/transmission/rpc" forKey:REFRACT_USERDEFAULT_TRANSMISSION_URL];
     [defaults registerDefaults:appDefaults];
     
     return [self initWithUrl:[defaults objectForKey:@"Transmission.URL"]];
@@ -40,7 +43,16 @@
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
-    return [self initWithUrlAndLogin:initUrl username:[defaults objectForKey:@"Transmission.Username"] password:[defaults objectForKey:@"Transmission.Password"]];
+    NSString *user = [defaults stringForKey:REFRACT_USERDEFAULT_TRANSMISSION_USERNAME];
+    NSString *pass = nil;
+    if ([user length] > 0) {
+        EMGenericKeychainItem *keychain = [EMGenericKeychainItem genericKeychainItemForService:REFRACT_KEYCHAIN_TRANSMISSION withUsername:user];
+        if (keychain) {
+            pass = [keychain password];
+        }
+    }
+    
+    return [self initWithUrlAndLogin:initUrl username:user password:pass];
 }
 
 - (id)initWithUrlAndLogin:(NSString *)initUrl username:(NSString *)initUser password:(NSString *)initPass
@@ -53,6 +65,8 @@
         url = [NSString stringWithString:initUrl];
         username = [NSString stringWithString:initUser];
         password = [NSString stringWithString:initPass];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsChanged:) name:NSUserDefaultsDidChangeNotification object:nil];
     }
     
     return self;
@@ -225,6 +239,32 @@
     }
 }
 
+- (void)settingsChanged:(NSNotification *)notification
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    if ([defaults integerForKey:REFRACT_USERDEFAULT_ENGINE] != engTransmission) {
+        return;
+    }
+    
+    NSString *settingsUrl = [defaults stringForKey:REFRACT_USERDEFAULT_TRANSMISSION_URL];
+    if (![url isEqualToString:settingsUrl]) {
+        url = settingsUrl;
+    }
+    NSString *settingsUser = [defaults stringForKey:REFRACT_USERDEFAULT_TRANSMISSION_USERNAME];
+    if (![username isEqualToString:settingsUser]) {
+        username = settingsUrl;
+    }
+    NSString *pass = nil;
+    if ([username length] > 0) {
+        EMGenericKeychainItem *keychain = [EMGenericKeychainItem genericKeychainItemForService: REFRACT_KEYCHAIN_TRANSMISSION withUsername:username];
+        if (keychain) {
+            pass = [keychain password];
+        }
+    }
+    password = pass;
+}
+
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSHTTPURLResponse *)response
 {
     RFURLConnection *rfConn = (RFURLConnection *)connection;
@@ -255,6 +295,8 @@
     }
     
     if ([[rfConn response] statusCode] == 200) {
+        
+        connected = true;
         
         if ([[[rfConn userInfo] objectForKey:@"type"] isEqualToString:@"refresh"]) {
             if ([rfConn responseData] != nil) {

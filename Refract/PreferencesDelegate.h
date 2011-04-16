@@ -18,6 +18,12 @@
     IBOutlet NSToolbar *toolbar;
     IBOutlet NSToolbarItem *generalButton;
     IBOutlet NSToolbarItem *engineButton;
+    
+    IBOutlet NSTextField *transmissionUsernameField;
+    IBOutlet NSTextField *transmissionPasswordField;
+    
+    NSString *transmissionUsername;
+    NSString *transmissionPassword;
 }
 
 @property (retain) IBOutlet NSWindow *window;
@@ -27,6 +33,10 @@
 @property (retain) NSToolbar *toolbar;
 @property (retain) IBOutlet NSToolbarItem *generalButton;
 @property (retain) IBOutlet NSToolbarItem *engineButton;
+@property (retain) IBOutlet NSTextField *transmissionUsernameField;
+@property (retain) IBOutlet NSTextField *transmissionPasswordField;
+@property (copy) NSString *transmissionUsername;
+@property (copy) NSString *transmissionPassword;
 
 - (void)awakeFromNib;
 - (IBAction)switchToGeneral:(id)sender;

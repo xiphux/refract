@@ -10,6 +10,8 @@
 
 #import "RFTorrent.h"
 #import "RFTorrentGroup.h"
+#import "RFConstants.h"
+#import "RFEngineTransmission.h"
 
 @implementation RefractAppDelegate
 
@@ -24,23 +26,21 @@
 {
     [self setDefaults];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsChanged:) name:NSUserDefaultsDidChangeNotification object:nil];
-    
     [torrentListController setSortDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:true]]];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sourceListSelectionChanged:) name:@"SourceListSelectionChanged" object:sourceListController];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(afterRefresh) name:@"refresh" object:engine];
-     
-    if (![self initEngine]) {
-        return;
-    }
     
     RFTorrentList *tList = [[RFTorrentList alloc] init];
     
     [self setTorrentList:tList];
+     
+    if ([self initEngine]) {
+        [self startEngine];
+    }
     
-    [self startEngine];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsChanged:) name:NSUserDefaultsDidChangeNotification object:nil];
 }
 
 - (void)setDefaults
@@ -48,7 +48,7 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSMutableDictionary *appDefaults = [NSMutableDictionary dictionary];
     
-    [appDefaults setObject:[NSNumber numberWithDouble:5.0] forKey:@"UpdateFrequency"];
+    [appDefaults setObject:[NSNumber numberWithDouble:5.0] forKey:REFRACT_USERDEFAULT_UPDATE_FREQUENCY];
     
     [defaults registerDefaults:appDefaults];
 }
@@ -178,7 +178,7 @@
     }
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSTimeInterval update = [defaults doubleForKey:@"UpdateFrequency"];
+    NSTimeInterval update = [defaults doubleForKey:REFRACT_USERDEFAULT_UPDATE_FREQUENCY];
     [NSTimer scheduledTimerWithTimeInterval:update target:self selector:@selector(refresh) userInfo:nil repeats:false];
 }
 
@@ -192,11 +192,17 @@
 
 - (void)settingsChanged:(NSNotification *)notification
 {
-//    NSTimeInterval update = [[NSUserDefaults standardUserDefaults] doubleForKey:@"UpdateFrequency"];
-//    if (update != [updateTimer timeInterval]) {
-//        [self stopEngine];
-//        [self startEngine];
-//    }
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    RFEngineType type = [defaults integerForKey:REFRACT_USERDEFAULT_ENGINE];
+    if (type != [engine type]) {
+        [self destroyEngine];
+        [self initEngine];
+    }
+    
+    if (!started) {
+        [self startEngine];
+    }
 }
 
 - (void)sourceListSelectionChanged:(NSNotification *)notification

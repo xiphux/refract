@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		C60BA3DC13484DD800D0AB08 /* RFTorrentGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = C60BA3DB13484DD800D0AB08 /* RFTorrentGroup.m */; };
 		C60C325B135699E600CB14CD /* RFURLConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = C60C325A135699E600CB14CD /* RFURLConnection.m */; };
+		C60C325E1357E6AF00CB14CD /* EMKeychainItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C60C325D1357E6AF00CB14CD /* EMKeychainItem.m */; };
+		C60C32601357E6E200CB14CD /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C60C325F1357E6E100CB14CD /* Carbon.framework */; };
+		C60C32621357E6EC00CB14CD /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C60C32611357E6EC00CB14CD /* Security.framework */; };
 		C6414DCF13514B33000F248C /* SourceListController.m in Sources */ = {isa = PBXBuildFile; fileRef = C6414DCE13514B33000F248C /* SourceListController.m */; };
 		C6414DD3135156D9000F248C /* BaseNode.m in Sources */ = {isa = PBXBuildFile; fileRef = C6414DD2135156D9000F248C /* BaseNode.m */; };
 		C6414DD61351588C000F248C /* StatusNode.m in Sources */ = {isa = PBXBuildFile; fileRef = C6414DD51351588B000F248C /* StatusNode.m */; };
@@ -78,6 +81,11 @@
 		C60BA3DB13484DD800D0AB08 /* RFTorrentGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFTorrentGroup.m; sourceTree = "<group>"; };
 		C60C3259135699E600CB14CD /* RFURLConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFURLConnection.h; sourceTree = "<group>"; };
 		C60C325A135699E600CB14CD /* RFURLConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFURLConnection.m; sourceTree = "<group>"; };
+		C60C325C1357E6AF00CB14CD /* EMKeychainItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMKeychainItem.h; sourceTree = "<group>"; };
+		C60C325D1357E6AF00CB14CD /* EMKeychainItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EMKeychainItem.m; sourceTree = "<group>"; };
+		C60C325F1357E6E100CB14CD /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
+		C60C32611357E6EC00CB14CD /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		C60C32631357FFBC00CB14CD /* RFConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFConstants.h; sourceTree = "<group>"; };
 		C6414DCD13514B33000F248C /* SourceListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SourceListController.h; sourceTree = "<group>"; };
 		C6414DCE13514B33000F248C /* SourceListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SourceListController.m; sourceTree = "<group>"; };
 		C6414DD1135156D9000F248C /* BaseNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseNode.h; sourceTree = "<group>"; };
@@ -130,6 +138,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C60C32621357E6EC00CB14CD /* Security.framework in Frameworks */,
+				C60C32601357E6E200CB14CD /* Carbon.framework in Frameworks */,
 				C678621A13478B0900892BC2 /* JSON.framework in Frameworks */,
 				C67861971346E41100892BC2 /* Cocoa.framework in Frameworks */,
 			);
@@ -203,6 +213,8 @@
 		C67861871346E41100892BC2 = {
 			isa = PBXGroup;
 			children = (
+				C60C32611357E6EC00CB14CD /* Security.framework */,
+				C60C325F1357E6E100CB14CD /* Carbon.framework */,
 				C678621913478B0900892BC2 /* JSON.framework */,
 				C678620913478A8000892BC2 /* JSON.xcodeproj */,
 				C678619C1346E41100892BC2 /* Refract */,
@@ -295,6 +307,7 @@
 				C6CB30D0134C0CE100CDCFFB /* RFTorrentList.m */,
 				C6414DDA13526AC6000F248C /* RFTorrentFilter.h */,
 				C6414DDB13526AC6000F248C /* RFTorrentFilter.m */,
+				C60C32631357FFBC00CB14CD /* RFConstants.h */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -334,6 +347,8 @@
 		C678621F1347BCC500892BC2 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				C60C325C1357E6AF00CB14CD /* EMKeychainItem.h */,
+				C60C325D1357E6AF00CB14CD /* EMKeychainItem.m */,
 				C67862231347BDEA00892BC2 /* RFBase64.h */,
 				C67862241347BDEA00892BC2 /* RFBase64.m */,
 			);
@@ -499,6 +514,7 @@
 				C6414DD913516057000F248C /* CategoryNode.m in Sources */,
 				C6414DDC13526AC7000F248C /* RFTorrentFilter.m in Sources */,
 				C60C325B135699E600CB14CD /* RFURLConnection.m in Sources */,
+				C60C325E1357E6AF00CB14CD /* EMKeychainItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

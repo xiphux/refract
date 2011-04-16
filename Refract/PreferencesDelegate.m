@@ -7,7 +7,8 @@
 //
 
 #import "PreferencesDelegate.h"
-
+#import "EMKeychainItem.h"
+#import "RFConstants.h"
 
 @implementation PreferencesDelegate
 
@@ -17,6 +18,8 @@
 @synthesize toolbar;
 @synthesize generalButton;
 @synthesize engineButton;
+@synthesize transmissionUsernameField;
+@synthesize transmissionPasswordField;
 
 - (id)init
 {
@@ -52,6 +55,25 @@
 
 - (void)awakeFromNib
 {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *tmUser = [defaults stringForKey:REFRACT_USERDEFAULT_TRANSMISSION_USERNAME];
+    
+    if ([tmUser length] > 0) {
+        [self willChangeValueForKey:@"transmissionUsername"];
+        transmissionUsername = tmUser;
+        [self didChangeValueForKey:@"transmissionUsername"];
+        EMGenericKeychainItem *tmPass = [EMGenericKeychainItem genericKeychainItemForService:REFRACT_KEYCHAIN_TRANSMISSION withUsername:transmissionUsername];
+        if (tmPass) {
+            NSString *passStr = [tmPass password];
+            if ([passStr length] > 0) {
+                [self willChangeValueForKey:@"transmissionPassword"];
+                transmissionPassword = [tmPass password];   
+                [self didChangeValueForKey:@"transmissionPassword"];
+            }
+            [tmPass release];
+        }
+    }
+    
     NSView *contentView = [window contentView];
     [[contentView animator] addSubview:general];
     current = general;
@@ -90,6 +112,71 @@
     windowFrame.origin.y -= heightChange;
     
     [window setFrame:windowFrame display:true animate:true];
+}
+
+- (NSString *)transmissionUsername
+{
+    return transmissionUsername;
+}
+
+- (void)setTransmissionUsername:(NSString *)newTransmissionUsername
+{
+    if ([newTransmissionUsername isEqualToString:transmissionUsername]) {
+        return;
+    }
+    
+    EMGenericKeychainItem *oldPass = [EMGenericKeychainItem genericKeychainItemForService:REFRACT_KEYCHAIN_TRANSMISSION withUsername:transmissionUsername];
+    if (oldPass) {
+        [oldPass removeFromKeychain];
+        [oldPass release];
+    }
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if ([newTransmissionUsername length] > 0) {
+        EMGenericKeychainItem *existingPass = [EMGenericKeychainItem genericKeychainItemForService:REFRACT_KEYCHAIN_TRANSMISSION withUsername:newTransmissionUsername];
+        if (existingPass) {
+            [self willChangeValueForKey:@"transmissionPassword"];
+            transmissionPassword = [existingPass password];
+            [self didChangeValueForKey:@"transmissionPassword"];
+        } else {
+            [EMGenericKeychainItem addGenericKeychainItemForService:REFRACT_KEYCHAIN_TRANSMISSION withUsername:newTransmissionUsername password:transmissionPassword];
+        }
+        [defaults setObject:newTransmissionUsername forKey:REFRACT_USERDEFAULT_TRANSMISSION_USERNAME];
+    } else {
+        [self willChangeValueForKey:@"transmissionPassword"];
+        transmissionPassword = nil;
+        [self didChangeValueForKey:@"transmissionPassword"];
+        [defaults removeObjectForKey:REFRACT_USERDEFAULT_TRANSMISSION_USERNAME];
+    }
+    
+    transmissionUsername = newTransmissionUsername;
+}
+
+- (NSString *)transmissionPassword
+{
+    return transmissionPassword;
+}
+
+- (void)setTransmissionPassword:(NSString *)newTransmissionPassword
+{
+    if ([newTransmissionPassword isEqualToString:transmissionPassword]) {
+        return;
+    }
+    
+    if ([transmissionUsername length] == 0) {
+        [transmissionPasswordField setStringValue:@""];
+        transmissionPassword = nil;
+        return;
+    }
+    
+    EMGenericKeychainItem *pass = [EMGenericKeychainItem genericKeychainItemForService:REFRACT_KEYCHAIN_TRANSMISSION withUsername:transmissionUsername];
+    if (pass) {
+        [pass setPassword:newTransmissionPassword];
+    } else {
+        [EMGenericKeychainItem addGenericKeychainItemForService:REFRACT_KEYCHAIN_TRANSMISSION withUsername:transmissionUsername password:newTransmissionPassword];
+    }
+    
+    transmissionPassword = newTransmissionPassword;
 }
 
 @end
