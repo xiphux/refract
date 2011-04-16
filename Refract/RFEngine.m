@@ -55,6 +55,42 @@
     return nil;
 }
 
+- (unsigned long)uploadSpeed
+{
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
+
+- (unsigned long)downloadSpeed
+{
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
+
+- (unsigned long)sessionUploadedBytes
+{
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
+
+- (unsigned long)sessionDownloadedBytes
+{
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
+
+- (unsigned long)totalUploadedBytes
+{
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
+
+- (unsigned long)totalDownloadedBytes
+{
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
+
 - (RFEngineType)type
 {
     return engTransmission;

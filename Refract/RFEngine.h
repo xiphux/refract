@@ -13,6 +13,7 @@ typedef enum {
 } RFEngineType;
 
 @interface RFEngine : NSObject {
+@private
 }
 
 - (bool)connect;
@@ -21,6 +22,12 @@ typedef enum {
 - (bool)refresh;
 - (NSDictionary *)torrents;
 - (RFEngineType)type;
+- (unsigned long)uploadSpeed;
+- (unsigned long)downloadSpeed;
+- (unsigned long)sessionUploadedBytes;
+- (unsigned long)sessionDownloadedBytes;
+- (unsigned long)totalUploadedBytes;
+- (unsigned long)totalDownloadedBytes;
 
 + (id)engineOfType:(RFEngineType)type;
 + (id)engine;

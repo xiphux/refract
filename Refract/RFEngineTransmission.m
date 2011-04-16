@@ -20,15 +20,10 @@
 - (void)parseTorrentList:(NSArray *)torrentList;
 - (NSMutableURLRequest *)createRequest;
 - (void)settingsChanged:(NSNotification *)notification;
+- (void)handleResponse:(NSData *)responseData userInfo:(NSDictionary *)userInfo;
 @end
 
 @implementation RFEngineTransmission
-
-@synthesize torrents;
-@synthesize url;
-@synthesize username;
-@synthesize password;
-@synthesize connected;
 
 - (id)init
 {
@@ -81,6 +76,18 @@
     [super dealloc];
 }
 
+@synthesize torrents;
+@synthesize url;
+@synthesize username;
+@synthesize password;
+@synthesize connected;
+@synthesize uploadSpeed;
+@synthesize downloadSpeed;
+@synthesize sessionUploadedBytes;
+@synthesize sessionDownloadedBytes;
+@synthesize totalUploadedBytes;
+@synthesize totalDownloadedBytes;
+
 - (bool)connect
 {
     if ([url length] == 0) {
@@ -123,9 +130,16 @@
     NSString *requestStr = [writer stringWithObject:requestData];
     NSData *requestJson = [requestStr dataUsingEncoding:NSUTF8StringEncoding];
     
+    NSDictionary *statsRequestData = [NSDictionary dictionaryWithObject:@"session-stats" forKey:@"method"];
+    NSString *statsRequestStr = [writer stringWithObject:statsRequestData];
+    NSData *statsRequestJson = [statsRequestStr dataUsingEncoding:NSUTF8StringEncoding];
+    
     [writer release];
     
-    return [self rpcRequest:@"refresh" data:requestJson];
+    [self rpcRequest:@"refresh" data:requestJson];
+    [self rpcRequest:@"stats" data:statsRequestJson];
+    
+    return true;
 }
 
 - (bool)rpcRequest:(NSString *)type data:(NSData *)requestBody
@@ -298,20 +312,7 @@
         
         connected = true;
         
-        if ([[[rfConn userInfo] objectForKey:@"type"] isEqualToString:@"refresh"]) {
-            if ([rfConn responseData] != nil) {
-                NSString *responseStr = [[NSString alloc] initWithData:[rfConn responseData] encoding:NSUTF8StringEncoding];
-                SBJsonParser *parser = [[SBJsonParser alloc] init];
-                NSDictionary *responseData = [parser objectWithString:responseStr];
-                [parser release];
-                
-                if ([[responseData objectForKey:@"result"] isEqualToString:@"success"]) {
-                    NSArray *torrentList = [[responseData objectForKey:@"arguments"] objectForKey:@"torrents"];
-                    [self parseTorrentList:torrentList];
-                    [[NSNotificationCenter defaultCenter] postNotificationName:[[rfConn userInfo] objectForKey:@"type"] object:self];
-                }
-            }
-        }
+        [self handleResponse:[rfConn responseData] userInfo:[rfConn userInfo]];
         
         return;
     }
@@ -320,6 +321,78 @@
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
     
+}
+
+- (void)handleResponse:(NSData *)responseData userInfo:(NSDictionary *)userInfo
+{
+    if (!(responseData || userInfo)) {
+        return;
+    }
+    
+    NSString *type = [userInfo objectForKey:@"type"];
+    
+    NSString *responseStr = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
+    SBJsonParser *parser = [[SBJsonParser alloc] init];
+    NSDictionary *responseDict = [parser objectWithString:responseStr];
+    [parser release];
+    
+    if (![[responseDict objectForKey:@"result"] isEqualToString:@"success"]) {
+        return;
+    }
+    
+    if ([type isEqualToString:@"refresh"]) {
+        NSArray *torrentList = [[responseDict objectForKey:@"arguments"] objectForKey:@"torrents"];
+        [self parseTorrentList:torrentList];
+    } else if ([type isEqualToString:@"stats"]) {
+        NSDictionary *statsDict = [responseDict objectForKey:@"arguments"];
+        
+        NSNumber *downSpeed = [statsDict objectForKey:@"downloadSpeed"];
+        if (downSpeed && ([downSpeed unsignedLongValue] != downloadSpeed)) {
+            [self willChangeValueForKey:@"downloadSpeed"];
+            downloadSpeed = [downSpeed unsignedLongValue];
+            [self didChangeValueForKey:@"downloadSpeed"];
+        }
+        
+        NSNumber *upSpeed = [statsDict objectForKey:@"uploadSpeed"];
+        if (upSpeed && ([upSpeed unsignedLongValue] != uploadSpeed)) {
+            [self willChangeValueForKey:@"uploadSpeed"];
+            uploadSpeed = [upSpeed unsignedLongValue];
+            [self didChangeValueForKey:@"uploadSpeed"];
+        }
+        
+        NSDictionary *sessionDict = [statsDict objectForKey:@"current-stats"];
+        
+        NSNumber *sUpBytes = [sessionDict objectForKey:@"uploadedBytes"];
+        if (sUpBytes && ([sUpBytes unsignedLongValue] != sessionUploadedBytes)) {
+            [self willChangeValueForKey:@"sessionUploadedBytes"];
+            sessionUploadedBytes = [sUpBytes unsignedLongValue];
+            [self didChangeValueForKey:@"sessionUploadedBytes"];
+        }
+        
+        NSNumber *sDownBytes = [sessionDict objectForKey:@"downloadedBytes"];
+        if (sDownBytes && ([sDownBytes unsignedLongValue] != sessionDownloadedBytes)) {
+            [self willChangeValueForKey:@"sessionDownloadedBytes"];
+            sessionDownloadedBytes = [sDownBytes unsignedLongValue];
+            [self didChangeValueForKey:@"sessionDownloadedBytes"];
+        }
+        
+        NSDictionary *totalDict = [statsDict objectForKey:@"cumulative-stats"];
+        
+        NSNumber *tUpBytes = [totalDict objectForKey:@"uploadedBytes"];
+        if (tUpBytes && ([tUpBytes unsignedLongValue] != totalUploadedBytes)) {
+            [self willChangeValueForKey:@"totalUploadedBytes"];
+            totalUploadedBytes = [tUpBytes unsignedLongValue];
+            [self didChangeValueForKey:@"totalUploadedBytes"];
+        }
+        
+        NSNumber *tDownBytes = [totalDict objectForKey:@"downloadedBytes"];
+        if (tDownBytes && ([tDownBytes unsignedLongValue] != totalDownloadedBytes)) {
+            [self willChangeValueForKey:@"totalDownloadedBytes"];
+            totalDownloadedBytes = [tDownBytes unsignedLongValue];
+            [self didChangeValueForKey:@"totalDownloadedBytes"];
+        }
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:type object:self];
 }
 
 @end
