@@ -407,10 +407,9 @@
 								<string key="NSToolbarItemPaletteLabel">Search</string>
 								<nil key="NSToolbarItemToolTip"/>
 								<object class="NSSearchField" key="NSToolbarItemView" id="975738421">
-									<reference key="NSNextResponder"/>
+									<nil key="NSNextResponder"/>
 									<int key="NSvFlags">268</int>
 									<string key="NSFrame">{{0, 14}, {96, 22}}</string>
-									<reference key="NSSuperview"/>
 									<bool key="NSEnabled">YES</bool>
 									<object class="NSSearchFieldCell" key="NSCell" id="541821065">
 										<int key="NSCellFlags">343014976</int>
@@ -773,6 +772,7 @@
 											<int key="NSvFlags">289</int>
 											<string key="NSFrame">{{326, 5}, {205, 14}}</string>
 											<reference key="NSSuperview" ref="533517072"/>
+											<reference key="NSNextKeyView"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTextFieldCell" key="NSCell" id="456623023">
 												<int key="NSCellFlags">68288064</int>
@@ -833,7 +833,7 @@
 															<int key="NSvFlags">274</int>
 															<string key="NSFrameSize">{546, 427}</string>
 															<reference key="NSSuperview" ref="557667291"/>
-															<reference key="NSNextKeyView" ref="370174739"/>
+															<reference key="NSNextKeyView" ref="947010822"/>
 															<string key="NSMinGridSize">{0, 0}</string>
 															<string key="NSMaxGridSize">{0, 0}</string>
 															<int key="NSMaxNumberOfGridRows">0</int>
@@ -886,7 +886,7 @@
 											</object>
 											<string key="NSFrame">{{0, 28}, {548, 429}}</string>
 											<reference key="NSSuperview" ref="533517072"/>
-											<reference key="NSNextKeyView" ref="557667291"/>
+											<reference key="NSNextKeyView" ref="370174739"/>
 											<int key="NSsFlags">530</int>
 											<reference key="NSVScroller" ref="370174739"/>
 											<reference key="NSHScroller" ref="963357463"/>
@@ -1276,6 +1276,38 @@
 						<reference key="destination" ref="25314792"/>
 					</object>
 					<int key="connectionID">790</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">delegate</string>
+						<reference key="source" ref="380538620"/>
+						<reference key="destination" ref="976324537"/>
+					</object>
+					<int key="connectionID">791</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">sourceListView</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="302950690"/>
+					</object>
+					<int key="connectionID">792</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">torrentListView</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="533517072"/>
+					</object>
+					<int key="connectionID">793</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">window</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="1028704394"/>
+					</object>
+					<int key="connectionID">795</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1860,6 +1892,7 @@
 					<string>544.IBPluginDependency</string>
 					<string>545.IBPluginDependency</string>
 					<string>546.IBPluginDependency</string>
+					<string>547.CustomClassName</string>
 					<string>547.IBPluginDependency</string>
 					<string>554.IBPluginDependency</string>
 					<string>56.IBPluginDependency</string>
@@ -1976,6 +2009,7 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>TorrentItem</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2031,7 +2065,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">790</int>
+			<int key="maxID">795</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes"/>
 		<int key="IBDocument.localizationMode">0</int>

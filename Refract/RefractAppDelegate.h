@@ -12,7 +12,7 @@
 #import "SourceListController.h"
 #import "PreferencesController.h"
 
-@interface RefractAppDelegate : NSObject <NSApplicationDelegate> {
+@interface RefractAppDelegate : NSObject <NSApplicationDelegate, NSSplitViewDelegate> {
 @private
     NSWindow IBOutlet *window;
     SourceListController IBOutlet *sourceListController;
@@ -21,10 +21,12 @@
     NSSearchField IBOutlet *searchField;
     NSButton IBOutlet *statsButton;
     NSTextField IBOutlet *rateText;
-    bool showTotalStats;
+    
     RFEngine *engine;
     RFTorrentList *torrentList;
     NSPredicate *searchPredicate;
+    
+    bool showTotalStats;
     bool started;
 }
 
@@ -34,6 +36,7 @@
 @property (retain) IBOutlet NSSearchField *searchField;
 @property (retain) IBOutlet NSTextField *rateText;
 @property (retain) IBOutlet NSButton *statsButton;
+
 @property (assign) RFEngine *engine;
 @property (retain) RFTorrentList *torrentList;
 

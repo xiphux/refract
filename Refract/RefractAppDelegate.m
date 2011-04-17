@@ -44,6 +44,7 @@
 @synthesize searchField;
 @synthesize rateText;
 @synthesize statsButton;
+
 @synthesize engine;
 @synthesize torrentList;
 
@@ -302,6 +303,17 @@
     } else {
         [torrentListController setFilterPredicate:nil];
     }
+}
+
+- (BOOL)splitView:(NSSplitView *)splitView canCollapseSubview:(NSView *)subview
+{
+    NSView *sourceList = [[splitView subviews] objectAtIndex:0];
+    return [subview isEqual:sourceList];
+}
+
+- (BOOL)splitView:(NSSplitView *)splitView shouldHideDividerAtIndex:(NSInteger)dividerIndex
+{
+    return NO;
 }
 
 @end

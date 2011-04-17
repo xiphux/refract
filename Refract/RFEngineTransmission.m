@@ -217,7 +217,7 @@
             
             NSNumber *percent = [torrentDict objectForKey:@"percentDone"];
             if (percent) {
-                torrent.percent = (int)([percent floatValue] * 100);
+                torrent.percent = [percent doubleValue] * 100;
             }
             
             NSNumber *status = [torrentDict objectForKey:@"status"];
@@ -266,8 +266,10 @@
             
             NSNumber *recheckProgress = [torrentDict objectForKey:@"recheckProgress"];
             if (recheckProgress) {
-                torrent.recheckPercent = (int)([recheckProgress floatValue] * 100);
+                torrent.recheckPercent = [recheckProgress doubleValue] * 100;
             }
+            
+            [torrent signalUpdated];
             
             [existingIDs removeObject:tid];
         }

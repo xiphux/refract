@@ -36,6 +36,7 @@
 		C683C39013492A330039B953 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = C683C38F13492A330039B953 /* Preferences.xib */; };
 		C6B914D2135A50D90008B707 /* RFUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = C6B914D1135A50D90008B707 /* RFUtils.m */; };
 		C6B914D5135AB05E0008B707 /* PreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = C6B914D4135AB05E0008B707 /* PreferencesController.m */; };
+		C6B914D8135AC7590008B707 /* TorrentItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C6B914D7135AC7590008B707 /* TorrentItem.m */; };
 		C6CB30D1134C0CE100CDCFFB /* RFTorrentList.m in Sources */ = {isa = PBXBuildFile; fileRef = C6CB30D0134C0CE100CDCFFB /* RFTorrentList.m */; };
 		C6F920C1134939FB0047C777 /* PreferencesDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C6F920C0134939FB0047C777 /* PreferencesDelegate.m */; };
 /* End PBXBuildFile section */
@@ -133,6 +134,8 @@
 		C6B914D1135A50D90008B707 /* RFUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFUtils.m; sourceTree = "<group>"; };
 		C6B914D3135AB05E0008B707 /* PreferencesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencesController.h; sourceTree = "<group>"; };
 		C6B914D4135AB05E0008B707 /* PreferencesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreferencesController.m; sourceTree = "<group>"; };
+		C6B914D6135AC7590008B707 /* TorrentItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TorrentItem.h; sourceTree = "<group>"; };
+		C6B914D7135AC7590008B707 /* TorrentItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TorrentItem.m; sourceTree = "<group>"; };
 		C6CB30CF134C0CE100CDCFFB /* RFTorrentList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFTorrentList.h; sourceTree = "<group>"; };
 		C6CB30D0134C0CE100CDCFFB /* RFTorrentList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFTorrentList.m; sourceTree = "<group>"; };
 		C6F920BF134939FB0047C777 /* PreferencesDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencesDelegate.h; sourceTree = "<group>"; };
@@ -214,6 +217,8 @@
 			isa = PBXGroup;
 			children = (
 				C64DF9A51348E3B200CB08EF /* Torrent.xib */,
+				C6B914D6135AC7590008B707 /* TorrentItem.h */,
+				C6B914D7135AC7590008B707 /* TorrentItem.m */,
 			);
 			name = Torrent;
 			sourceTree = "<group>";
@@ -527,6 +532,7 @@
 				C60C325E1357E6AF00CB14CD /* EMKeychainItem.m in Sources */,
 				C6B914D2135A50D90008B707 /* RFUtils.m in Sources */,
 				C6B914D5135AB05E0008B707 /* PreferencesController.m in Sources */,
+				C6B914D8135AC7590008B707 /* TorrentItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

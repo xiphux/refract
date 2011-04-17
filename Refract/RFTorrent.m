@@ -84,4 +84,9 @@
             );
 }
 
+- (void)signalUpdated
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"TorrentUpdated" object:self];
+}
+
 @end

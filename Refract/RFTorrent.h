@@ -35,8 +35,8 @@ typedef enum {
     unsigned long peersDownload;
     unsigned long peersUpload;
     
-    unsigned int percent;
-    unsigned int recheckPercent;
+    double percent;
+    double recheckPercent;
 
     RFTorrentStatus status;
 }
@@ -52,13 +52,14 @@ typedef enum {
 @property unsigned long peersConnected;
 @property unsigned long peersDownload;
 @property unsigned long peersUpload;
-@property unsigned int recheckPercent;
+@property double recheckPercent;
 @property long eta;
 
-@property unsigned int percent;
+@property double percent;
 
 - (bool)isEqual:(id)other;
 - (bool)dataEqual:(RFTorrent *)other;
 - (NSUInteger)hash;
+- (void)signalUpdated;
 
 @end
