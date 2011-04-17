@@ -124,7 +124,7 @@
 {
     SBJsonWriter *writer = [[SBJsonWriter alloc] init];
     
-    NSArray *fields = [NSArray arrayWithObjects:@"id", @"name", @"totalSize", @"sizeWhenDone", @"leftUntilDone", @"rateDownload", @"rateUpload", @"status", @"percentDone", nil];
+    NSArray *fields = [NSArray arrayWithObjects:@"id", @"name", @"totalSize", @"sizeWhenDone", @"leftUntilDone", @"rateDownload", @"rateUpload", @"status", @"percentDone", @"eta", @"peersConnected", @"peersGettingFromUs", @"peersSendingToUs", @"recheckPercent", nil];
     NSDictionary *args = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObject:fields] forKeys:[NSArray arrayWithObject:@"fields"]];
     NSDictionary *requestData = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:args, @"torrent-get", nil] forKeys:[NSArray arrayWithObjects:@"arguments", @"method", nil]];
     NSString *requestStr = [writer stringWithObject:requestData];
@@ -242,6 +242,31 @@
                         torrent.status = 0;
                         break;
                 }
+            }
+            
+            NSNumber *peersConnected = [torrentDict objectForKey:@"peersConnected"];
+            if (peersConnected) {
+                torrent.peersConnected = [peersConnected unsignedLongValue];
+            }
+            
+            NSNumber *peersGettingFromUs = [torrentDict objectForKey:@"peersGettingFromUs"];
+            if (peersGettingFromUs) {
+                torrent.peersUpload = [peersGettingFromUs unsignedLongValue];
+            }
+            
+            NSNumber *peersSendingToUs = [torrentDict objectForKey:@"peersSendingToUs"];
+            if (peersSendingToUs) {
+                torrent.peersDownload = [peersSendingToUs unsignedLongValue];
+            }
+            
+            NSNumber *eta = [torrentDict objectForKey:@"eta"];
+            if (eta) {
+                torrent.eta = [eta longValue];
+            }
+            
+            NSNumber *recheckProgress = [torrentDict objectForKey:@"recheckProgress"];
+            if (recheckProgress) {
+                torrent.recheckPercent = (int)([recheckProgress floatValue] * 100);
             }
             
             [existingIDs removeObject:tid];

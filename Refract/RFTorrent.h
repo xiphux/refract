@@ -29,7 +29,14 @@ typedef enum {
     unsigned long uploadRate;
     unsigned long downloadRate;
     
+    long eta;
+    
+    unsigned long peersConnected;
+    unsigned long peersDownload;
+    unsigned long peersUpload;
+    
     unsigned int percent;
+    unsigned int recheckPercent;
 
     RFTorrentStatus status;
 }
@@ -42,6 +49,11 @@ typedef enum {
 @property unsigned long uploadRate;
 @property unsigned long downloadRate;
 @property RFTorrentStatus status;
+@property unsigned long peersConnected;
+@property unsigned long peersDownload;
+@property unsigned long peersUpload;
+@property unsigned int recheckPercent;
+@property long eta;
 
 @property unsigned int percent;
 

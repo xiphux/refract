@@ -37,6 +37,11 @@
 @synthesize downloadRate;
 @synthesize status;
 @synthesize percent;
+@synthesize peersConnected;
+@synthesize peersUpload;
+@synthesize peersDownload;
+@synthesize eta;
+@synthesize recheckPercent;
 
 - (bool)isEqual:(id)other
 {
@@ -70,7 +75,12 @@
             ([self totalSize] == [other totalSize]) &&
             ([self uploadRate] == [other uploadRate]) &&
             ([self downloadRate] == [other downloadRate]) &&
-            ([self status] == [other status])
+            ([self status] == [other status]) &&
+            ([self peersConnected] == [other peersConnected]) &&
+            ([self peersUpload] == [other peersUpload]) &&
+            ([self peersDownload] == [other peersDownload]) &&
+            ([self eta] == [other eta]) &&
+            ([self recheckPercent] == [other recheckPercent])
             );
 }
 
