@@ -8,6 +8,10 @@
 
 #import "RFUtils.h"
 
+#define MIN_SECS 60
+#define HOUR_SECS 60*MIN_SECS
+#define DAY_SECS 24*HOUR_SECS
+
 @interface RFUtils ()
 + (unsigned int)readableBytesReducePower:(unsigned long)bytes unit:(unsigned int)unit;
 + (NSString *)bytesUnit:(unsigned int)power unit:(unsigned int)unit;
@@ -178,6 +182,57 @@
     }
     
     return nil;
+}
+
++ (NSString *)readableDuration:(long)totalSecs
+{
+    if (totalSecs < 0) {
+        return @"unknown";
+    }
+    
+    unsigned long days = 0;
+    unsigned long hours = 0;
+    unsigned long mins = 0;
+    unsigned long secs = totalSecs;
+    
+    if (secs > DAY_SECS) {
+        days = (unsigned long)(secs / DAY_SECS);
+        secs -= days * DAY_SECS;
+    }
+    
+    if (secs > HOUR_SECS) {
+        hours = (unsigned long)(secs / HOUR_SECS);
+        secs -= hours * HOUR_SECS;
+    }
+    
+    if (secs > MIN_SECS) {
+        mins = (unsigned long)(secs / MIN_SECS);
+        secs -= mins * MIN_SECS;
+    }
+    
+    NSMutableArray *timepcs = [NSMutableArray array];
+    
+    if (days > 0) {
+        [timepcs addObject:[NSString stringWithFormat:@"%d days", days]];
+    }
+    
+    if (hours > 0) {
+        [timepcs addObject:[NSString stringWithFormat:@"%d hour", hours]];
+    }
+
+    if (mins > 0) {
+        [timepcs addObject:[NSString stringWithFormat:@"%d min", mins]];
+    }
+    
+    if (secs > 0) {
+        [timepcs addObject:[NSString stringWithFormat:@"%d sec", secs]];
+    }
+    
+    if (timepcs > 0) {
+        return [timepcs componentsJoinedByString:@", "];
+    }
+    
+    return @"0 sec";
 }
 
 @end

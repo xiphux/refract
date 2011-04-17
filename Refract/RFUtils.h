@@ -19,4 +19,6 @@
 
 + (NSString *)readableRateDecimal:(unsigned long)bytes;
 + (NSString *)readableRateBinary:(unsigned long)bytes;
+
++ (NSString *)readableDuration:(long)totalSecs;
 @end

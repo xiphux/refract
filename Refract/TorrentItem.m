@@ -71,11 +71,10 @@
         RFTorrent *t = [self representedObject];
         switch ([t status]) {
             case stDownloading:
-                label = [NSString stringWithFormat:@"%@ of %@ (%.2f%%) - %d remaining", [RFUtils readableBytesDecimal:[t currentSize]], [RFUtils readableBytesDecimal:[t doneSize]], [t percent], [t eta]];
+                label = [NSString stringWithFormat:@"%@ of %@ (%.2f%%) - %@ remaining", [RFUtils readableBytesDecimal:[t currentSize]], [RFUtils readableBytesDecimal:[t doneSize]], [t percent], [RFUtils readableDuration:[t eta]]];
                 break;
             case stSeeding:
-                // TODO: convert eta to readable
-                label = [NSString stringWithFormat:@"%@, uploaded %@ (Ratio: %.2f) - %d remaining", [RFUtils readableBytesDecimal:[t doneSize]], [RFUtils readableBytesDecimal:[t uploadedSize]], [t ratio], [t eta]];
+                label = [NSString stringWithFormat:@"%@, uploaded %@ (Ratio: %.2f) - %@ remaining", [RFUtils readableBytesDecimal:[t doneSize]], [RFUtils readableBytesDecimal:[t uploadedSize]], [t ratio], [RFUtils readableDuration:[t eta]]];
                 break;
             case stStopped:
                 label = [NSString stringWithFormat:@"%@, uploaded %@ (Ratio: %.2f)", [RFUtils readableBytesDecimal:[t doneSize]], [RFUtils readableBytesDecimal:[t uploadedSize]], [t ratio]];
