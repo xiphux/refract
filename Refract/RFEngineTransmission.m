@@ -180,8 +180,7 @@
             RFTorrent *torrent = [torrents objectForKey:tid];
             
             if (!torrent) {
-                torrent = [[RFTorrent alloc] init];
-                torrent.tid = tid;
+                torrent = [[RFTorrent alloc] initWithTid:tid];
                 [torrents setValue:torrent forKey:tid];
             }
             

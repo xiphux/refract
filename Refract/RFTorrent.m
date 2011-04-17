@@ -13,9 +13,14 @@
 
 - (id)init
 {
+    return [self initWithTid:nil];
+}
+
+- (id)initWithTid:(NSString *)initTid
+{
     self = [super init];
     if (self) {
-        // Initialization code here.
+        tid = [NSString stringWithString:initTid];
     }
     
     return self;
@@ -28,22 +33,247 @@
     [super dealloc];
 }
 
-@synthesize name;
 @synthesize tid;
-@synthesize currentSize;
-@synthesize doneSize;
-@synthesize totalSize;
-@synthesize uploadRate;
-@synthesize downloadRate;
-@synthesize status;
-@synthesize percent;
-@synthesize peersConnected;
-@synthesize peersUpload;
-@synthesize peersDownload;
-@synthesize eta;
-@synthesize recheckPercent;
-@synthesize ratio;
-@synthesize uploadedSize;
+
+- (NSString *)name  
+{
+    return name;
+}
+
+- (void)setName:(NSString *)newName
+{
+    if ([name isEqualToString:newName]) {
+        return;
+    }
+    
+    name = [NSString stringWithString:newName];
+    
+    updated = true;
+}
+
+- (unsigned long)currentSize
+{
+    return currentSize;
+}
+
+- (void)setCurrentSize:(unsigned long)newCurrentSize
+{
+    if (currentSize == newCurrentSize) {
+        return;
+    }
+    
+    currentSize = newCurrentSize;
+
+    updated = true;
+}
+
+- (unsigned long)doneSize
+{
+    return doneSize;
+}
+
+- (void)setDoneSize:(unsigned long)newDoneSize
+{
+    if (doneSize == newDoneSize) {
+        return;
+    }
+    
+    doneSize = newDoneSize;
+    
+    updated = true;
+}
+
+- (unsigned long)totalSize
+{
+    return totalSize;
+}
+
+- (void)setTotalSize:(unsigned long)newTotalSize
+{
+    if (totalSize == newTotalSize) {
+        return;
+    }
+    
+    totalSize = newTotalSize;
+    
+    updated = true;
+}
+
+- (unsigned long)uploadRate
+{
+    return uploadRate;
+}
+
+- (void)setUploadRate:(unsigned long)newUploadRate
+{
+    if (uploadRate == newUploadRate) {
+        return;
+    }
+    
+    uploadRate = newUploadRate;
+    
+    updated = true;
+}
+
+- (unsigned long)downloadRate
+{
+    return downloadRate;
+}
+
+- (void)setDownloadRate:(unsigned long)newDownloadRate
+{
+    if (downloadRate == newDownloadRate) {
+        return;
+    }
+    
+    downloadRate = newDownloadRate;
+    
+    updated = true;
+}
+
+- (RFTorrentStatus)status
+{
+    return status;
+}
+
+- (void)setStatus:(RFTorrentStatus)newStatus
+{
+    if (status == newStatus) {
+        return;
+    }
+    
+    status = newStatus;
+    
+    updated = true;
+}
+
+- (double)percent
+{
+    return percent;
+}
+
+- (void)setPercent:(double)newPercent
+{
+    if (percent == newPercent) {
+        return;
+    }
+    
+    percent = newPercent;
+    
+    updated = true;
+}
+
+- (unsigned long)peersConnected
+{
+    return peersConnected;
+}
+
+- (void)setPeersConnected:(unsigned long)newPeersConnected
+{
+    if (peersConnected == newPeersConnected) {
+        return;
+    }
+    
+    peersConnected = newPeersConnected;
+    
+    updated = true;
+}
+
+- (unsigned long)peersUpload
+{
+    return peersUpload;
+}
+
+- (void)setPeersUpload:(unsigned long)newPeersUpload
+{
+    if (peersUpload == newPeersUpload) {
+        return;
+    }
+    
+    peersUpload = newPeersUpload;
+    
+    updated = true;
+}
+
+- (unsigned long)peersDownload
+{
+    return peersDownload;
+}
+
+- (void)setPeersDownload:(unsigned long)newPeersDownload
+{
+    if (peersDownload == newPeersDownload) {
+        return;
+    }
+    
+    peersDownload = newPeersDownload;
+    
+    updated = true;
+}
+
+- (long)eta
+{
+    return eta;
+}
+
+- (void)setEta:(long)newEta
+{
+    if (eta == newEta) {
+        return;
+    }
+    
+    eta = newEta;
+    
+    updated = true;
+}
+
+- (double)recheckPercent
+{
+    return recheckPercent;
+}
+
+- (void)setRecheckPercent:(double)newRecheckPercent
+{
+    if (recheckPercent == newRecheckPercent) {
+        return;
+    }
+    
+    recheckPercent = newRecheckPercent;
+    
+    updated = true;
+}
+
+- (double)ratio
+{
+    return ratio;
+}
+
+- (void)setRatio:(double)newRatio
+{
+    if (ratio == newRatio) {
+        return;
+    }
+    
+    ratio = newRatio;
+    
+    updated = true;
+}
+
+- (unsigned long)uploadedSize
+{
+    return uploadedSize;
+}
+
+- (void)setUploadedSize:(unsigned long)newUploadedSize
+{
+    if (uploadedSize == newUploadedSize) {
+        return;
+    }
+    
+    uploadedSize = newUploadedSize;
+    
+    updated = true;
+}
 
 - (bool)isEqual:(id)other
 {
@@ -90,7 +320,10 @@
 
 - (void)signalUpdated
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"TorrentUpdated" object:self];
+    if (updated) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"TorrentUpdated" object:self];
+        updated = false;
+    }
 }
 
 @end

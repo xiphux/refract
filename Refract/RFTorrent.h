@@ -19,6 +19,8 @@ typedef enum {
 @interface RFTorrent : NSObject {
 @private
     
+    bool updated;
+    
     NSString *name;
     NSString *tid;
     
@@ -45,7 +47,7 @@ typedef enum {
 }
 
 @property(copy) NSString *name;
-@property(copy) NSString *tid;
+@property(readonly) NSString *tid;
 @property unsigned long currentSize;
 @property unsigned long doneSize;
 @property unsigned long totalSize;
@@ -60,6 +62,8 @@ typedef enum {
 @property double ratio;
 @property double percent;
 @property unsigned long uploadedSize;
+
+- (id)initWithTid:(NSString *)initTid;
 
 - (bool)isEqual:(id)other;
 - (bool)dataEqual:(RFTorrent *)other;
