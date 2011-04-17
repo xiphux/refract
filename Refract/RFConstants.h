@@ -9,7 +9,7 @@
 
 #define REFRACT_KEYCHAIN_TRANSMISSION @"Refract.Transmission"
 
-
+#define REFRACT_USERDEFAULT_TOTAL_SIZE @"TotalSize"
 #define REFRACT_USERDEFAULT_UPDATE_FREQUENCY @"UpdateFrequency"
 
 #define REFRACT_USERDEFAULT_ENGINE @"Engine"

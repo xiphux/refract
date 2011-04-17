@@ -34,6 +34,7 @@
 		C678621E134795EF00892BC2 /* RFEngineTransmission.m in Sources */ = {isa = PBXBuildFile; fileRef = C678621D134795EF00892BC2 /* RFEngineTransmission.m */; };
 		C67862251347BDEA00892BC2 /* RFBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = C67862241347BDEA00892BC2 /* RFBase64.m */; };
 		C683C39013492A330039B953 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = C683C38F13492A330039B953 /* Preferences.xib */; };
+		C6B914D2135A50D90008B707 /* RFUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = C6B914D1135A50D90008B707 /* RFUtils.m */; };
 		C6CB30D1134C0CE100CDCFFB /* RFTorrentList.m in Sources */ = {isa = PBXBuildFile; fileRef = C6CB30D0134C0CE100CDCFFB /* RFTorrentList.m */; };
 		C6F920C1134939FB0047C777 /* PreferencesDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C6F920C0134939FB0047C777 /* PreferencesDelegate.m */; };
 /* End PBXBuildFile section */
@@ -127,6 +128,8 @@
 		C67862231347BDEA00892BC2 /* RFBase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFBase64.h; sourceTree = "<group>"; };
 		C67862241347BDEA00892BC2 /* RFBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFBase64.m; sourceTree = "<group>"; };
 		C683C38F13492A330039B953 /* Preferences.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Preferences.xib; sourceTree = "<group>"; };
+		C6B914D0135A50D90008B707 /* RFUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFUtils.h; sourceTree = "<group>"; };
+		C6B914D1135A50D90008B707 /* RFUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFUtils.m; sourceTree = "<group>"; };
 		C6CB30CF134C0CE100CDCFFB /* RFTorrentList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFTorrentList.h; sourceTree = "<group>"; };
 		C6CB30D0134C0CE100CDCFFB /* RFTorrentList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFTorrentList.m; sourceTree = "<group>"; };
 		C6F920BF134939FB0047C777 /* PreferencesDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencesDelegate.h; sourceTree = "<group>"; };
@@ -351,6 +354,8 @@
 				C60C325D1357E6AF00CB14CD /* EMKeychainItem.m */,
 				C67862231347BDEA00892BC2 /* RFBase64.h */,
 				C67862241347BDEA00892BC2 /* RFBase64.m */,
+				C6B914D0135A50D90008B707 /* RFUtils.h */,
+				C6B914D1135A50D90008B707 /* RFUtils.m */,
 			);
 			name = Utilities;
 			sourceTree = "<group>";
@@ -515,6 +520,7 @@
 				C6414DDC13526AC7000F248C /* RFTorrentFilter.m in Sources */,
 				C60C325B135699E600CB14CD /* RFURLConnection.m in Sources */,
 				C60C325E1357E6AF00CB14CD /* EMKeychainItem.m in Sources */,
+				C6B914D2135A50D90008B707 /* RFUtils.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

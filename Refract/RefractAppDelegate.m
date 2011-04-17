@@ -8,6 +8,7 @@
 
 #import "RefractAppDelegate.h"
 
+#import "RFUtils.h"
 #import "RFTorrent.h"
 #import "RFTorrentGroup.h"
 #import "RFConstants.h"
@@ -23,6 +24,7 @@
 @synthesize sourceListController;
 @synthesize torrentListController;
 @synthesize searchField;
+@synthesize statsButton;
 @synthesize engine;
 @synthesize torrentList;
 
@@ -35,6 +37,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sourceListSelectionChanged:) name:@"SourceListSelectionChanged" object:sourceListController];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(afterRefresh) name:@"refresh" object:engine];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(afterStatsRefresh) name:@"stats" object:engine];
+    
+    showTotalStats = [[NSUserDefaults standardUserDefaults] boolForKey:REFRACT_USERDEFAULT_TOTAL_SIZE];
     
     RFTorrentList *tList = [[RFTorrentList alloc] init];
     
@@ -184,6 +189,25 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSTimeInterval update = [defaults doubleForKey:REFRACT_USERDEFAULT_UPDATE_FREQUENCY];
     [NSTimer scheduledTimerWithTimeInterval:update target:self selector:@selector(refresh) userInfo:nil repeats:false];
+}
+
+- (void)afterStatsRefresh
+{
+    NSString *label;
+    if (showTotalStats) {
+        label = [NSString stringWithFormat:@"Total DL: %@ UL: %@", [RFUtils readableBytesDecimal:[engine totalDownloadedBytes]], [RFUtils readableBytesDecimal:[engine totalUploadedBytes]]];
+    } else {
+        label = [NSString stringWithFormat:@"Session DL: %@ UL: %@", [RFUtils readableBytesDecimal:[engine sessionDownloadedBytes]], [RFUtils readableBytesDecimal:[engine sessionUploadedBytes]]];
+    }
+    [statsButton setTitle:label];
+    [statsButton sizeToFit];
+}
+
+- (IBAction)statsButtonClick:(id)sender
+{
+    showTotalStats = !showTotalStats;
+    [[NSUserDefaults standardUserDefaults] setBool:showTotalStats forKey:REFRACT_USERDEFAULT_TOTAL_SIZE];
+    [self afterStatsRefresh];
 }
 
 - (IBAction)openPreferences:(id)sender

@@ -17,6 +17,8 @@
     SourceListController IBOutlet *sourceListController;
     NSArrayController IBOutlet *torrentListController;
     NSSearchField IBOutlet *searchField;
+    NSButton IBOutlet *statsButton;
+    bool showTotalStats;
     RFEngine *engine;
     RFTorrentList *torrentList;
     NSPredicate *searchPredicate;
@@ -27,11 +29,13 @@
 @property (retain) IBOutlet NSArrayController *torrentListController;
 @property (retain) IBOutlet SourceListController *sourceListController;
 @property (retain) IBOutlet NSSearchField *searchField;
+@property (retain) IBOutlet NSButton *statsButton;
 @property (assign) RFEngine *engine;
 @property (retain) RFTorrentList *torrentList;
 
 - (IBAction)openPreferences:(id)sender;
 - (IBAction)search:(id)sender;
+- (IBAction)statsButtonClick:(id)sender;
 - (void)setDefaults;
 - (bool)initEngine;
 - (bool)startEngine;
@@ -39,6 +43,7 @@
 - (void)destroyEngine;
 - (void)refresh;
 - (void)afterRefresh;
+- (void)afterStatsRefresh;
 - (void)settingsChanged:(NSNotification *)notification;
 - (void)sourceListSelectionChanged:(NSNotification *)notification;
 
