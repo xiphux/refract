@@ -22,6 +22,7 @@
 			<string>NSCollectionView</string>
 			<string>NSCustomView</string>
 			<string>NSSearchField</string>
+			<string>NSTextField</string>
 			<string>NSSearchFieldCell</string>
 			<string>NSToolbarSeparatorItem</string>
 			<string>NSWindowTemplate</string>
@@ -815,13 +816,40 @@
 									<int key="NSvFlags">256</int>
 									<object class="NSMutableArray" key="NSSubviews">
 										<bool key="EncodedWithXMLCoder">YES</bool>
+										<object class="NSTextField" id="25314792">
+											<reference key="NSNextResponder" ref="533517072"/>
+											<int key="NSvFlags">289</int>
+											<string key="NSFrame">{{326, 5}, {205, 14}}</string>
+											<reference key="NSSuperview" ref="533517072"/>
+											<reference key="NSWindow"/>
+											<reference key="NSNextKeyView"/>
+											<bool key="NSEnabled">YES</bool>
+											<object class="NSTextFieldCell" key="NSCell" id="456623023">
+												<int key="NSCellFlags">68288064</int>
+												<int key="NSCellFlags2">71435264</int>
+												<string key="NSContents"/>
+												<object class="NSFont" key="NSSupport">
+													<string key="NSName">LucidaGrande</string>
+													<double key="NSSize">11</double>
+													<int key="NSfFlags">3100</int>
+												</object>
+												<reference key="NSControlView" ref="25314792"/>
+												<object class="NSColor" key="NSBackgroundColor" id="397259003">
+													<int key="NSColorSpace">6</int>
+													<string key="NSCatalogName">System</string>
+													<string key="NSColorName">controlColor</string>
+													<reference key="NSColor" ref="261744573"/>
+												</object>
+												<reference key="NSTextColor" ref="970177379"/>
+											</object>
+										</object>
 										<object class="NSButton" id="947010822">
 											<reference key="NSNextResponder" ref="533517072"/>
 											<int key="NSvFlags">292</int>
 											<string key="NSFrame">{{0, 3}, {154, 17}}</string>
 											<reference key="NSSuperview" ref="533517072"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView"/>
+											<reference key="NSNextKeyView" ref="25314792"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="93928669">
 												<int key="NSCellFlags">67239424</int>
@@ -883,12 +911,7 @@
 													<reference key="NSWindow"/>
 													<reference key="NSNextKeyView" ref="742737832"/>
 													<reference key="NSDocView" ref="742737832"/>
-													<object class="NSColor" key="NSBGColor">
-														<int key="NSColorSpace">6</int>
-														<string key="NSCatalogName">System</string>
-														<string key="NSColorName">controlColor</string>
-														<reference key="NSColor" ref="261744573"/>
-													</object>
+													<reference key="NSBGColor" ref="397259003"/>
 													<int key="NScvFlags">4</int>
 												</object>
 												<object class="NSScroller" id="370174739">
@@ -1305,6 +1328,14 @@
 					</object>
 					<int key="connectionID">787</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">rateText</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="25314792"/>
+					</object>
+					<int key="connectionID">790</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -1699,6 +1730,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="186622321"/>
 							<reference ref="947010822"/>
+							<reference ref="25314792"/>
 						</object>
 						<reference key="parent" ref="380538620"/>
 					</object>
@@ -1819,6 +1851,20 @@
 						<reference key="object" ref="93928669"/>
 						<reference key="parent" ref="947010822"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">788</int>
+						<reference key="object" ref="25314792"/>
+						<object class="NSMutableArray" key="children">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<reference ref="456623023"/>
+						</object>
+						<reference key="parent" ref="533517072"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">789</int>
+						<reference key="object" ref="456623023"/>
+						<reference key="parent" ref="25314792"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -1929,6 +1975,8 @@
 					<string>775.IBPluginDependency</string>
 					<string>784.IBPluginDependency</string>
 					<string>785.IBPluginDependency</string>
+					<string>788.IBPluginDependency</string>
+					<string>789.IBPluginDependency</string>
 					<string>81.IBEditorWindowLastContentRect</string>
 					<string>81.IBPluginDependency</string>
 					<string>81.ImportedFromIB2</string>
@@ -2046,6 +2094,8 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>{{452, 109}, {196, 203}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
@@ -2070,7 +2120,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">787</int>
+			<int key="maxID">790</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2121,6 +2171,7 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>rateText</string>
 							<string>searchField</string>
 							<string>sourceListController</string>
 							<string>statsButton</string>
@@ -2129,6 +2180,7 @@
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>NSTextField</string>
 							<string>NSSearchField</string>
 							<string>SourceListController</string>
 							<string>NSButton</string>
@@ -2140,6 +2192,7 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>rateText</string>
 							<string>searchField</string>
 							<string>sourceListController</string>
 							<string>statsButton</string>
@@ -2148,6 +2201,10 @@
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<object class="IBToOneOutletInfo">
+								<string key="name">rateText</string>
+								<string key="candidateClassName">NSTextField</string>
+							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">searchField</string>
 								<string key="candidateClassName">NSSearchField</string>

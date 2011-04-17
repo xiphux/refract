@@ -16,6 +16,8 @@
 
 @interface RefractAppDelegate ()
 - (void)updateFilterPredicate;
+- (void)updateStatsButton;
+- (void)updateRateText;
 @end
 
 @implementation RefractAppDelegate
@@ -24,6 +26,7 @@
 @synthesize sourceListController;
 @synthesize torrentListController;
 @synthesize searchField;
+@synthesize rateText;
 @synthesize statsButton;
 @synthesize engine;
 @synthesize torrentList;
@@ -193,21 +196,33 @@
 
 - (void)afterStatsRefresh
 {
+    [self updateStatsButton];
+    [self updateRateText];
+}
+
+- (void)updateStatsButton
+{
     NSString *label;
     if (showTotalStats) {
-        label = [NSString stringWithFormat:@"Total DL: %@ UL: %@", [RFUtils readableBytesDecimal:[engine totalDownloadedBytes]], [RFUtils readableBytesDecimal:[engine totalUploadedBytes]]];
+        label = [NSString stringWithFormat:@"Total D: %@ U: %@", [RFUtils readableBytesDecimal:[engine totalDownloadedBytes]], [RFUtils readableBytesDecimal:[engine totalUploadedBytes]]];
     } else {
-        label = [NSString stringWithFormat:@"Session DL: %@ UL: %@", [RFUtils readableBytesDecimal:[engine sessionDownloadedBytes]], [RFUtils readableBytesDecimal:[engine sessionUploadedBytes]]];
+        label = [NSString stringWithFormat:@"Session D: %@ U: %@", [RFUtils readableBytesDecimal:[engine sessionDownloadedBytes]], [RFUtils readableBytesDecimal:[engine sessionUploadedBytes]]];
     }
     [statsButton setTitle:label];
     [statsButton sizeToFit];
+}
+
+- (void)updateRateText
+{
+    NSString *label = [NSString stringWithFormat:@"D: %@ U: %@", [RFUtils readableRateDecimal:[engine downloadSpeed]], [RFUtils readableRateDecimal:[engine uploadSpeed]]];
+    [rateText setStringValue:label];
 }
 
 - (IBAction)statsButtonClick:(id)sender
 {
     showTotalStats = !showTotalStats;
     [[NSUserDefaults standardUserDefaults] setBool:showTotalStats forKey:REFRACT_USERDEFAULT_TOTAL_SIZE];
-    [self afterStatsRefresh];
+    [self updateStatsButton];
 }
 
 - (IBAction)openPreferences:(id)sender
