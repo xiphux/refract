@@ -22,6 +22,22 @@
 
 @implementation RefractAppDelegate
 
+- (void)dealloc
+{
+    [window release];
+    [sourceListController release];
+    [torrentListController release];
+    [preferencesController release];   
+    [searchField release];
+    [statsButton release];
+    [rateText release];
+    [self destroyEngine];
+    [torrentList release];
+    [searchPredicate release];
+
+    [super dealloc];
+}
+
 @synthesize window;
 @synthesize sourceListController;
 @synthesize torrentListController;
@@ -227,10 +243,10 @@
 
 - (IBAction)openPreferences:(id)sender
 {
-    if (![NSBundle loadNibNamed:@"Preferences" owner:self])
-    {
-        NSLog(@"Could not load preferences nib");
+    if (preferencesController == nil) {
+        preferencesController = [[PreferencesController alloc] init];
     }
+    [preferencesController showWindow:self];
 }
 
 - (void)settingsChanged:(NSNotification *)notification

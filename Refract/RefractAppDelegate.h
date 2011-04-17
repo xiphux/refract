@@ -10,12 +10,14 @@
 #import "RFEngine.h"
 #import "RFTorrentList.h"
 #import "SourceListController.h"
+#import "PreferencesController.h"
 
 @interface RefractAppDelegate : NSObject <NSApplicationDelegate> {
 @private
     NSWindow IBOutlet *window;
     SourceListController IBOutlet *sourceListController;
     NSArrayController IBOutlet *torrentListController;
+    PreferencesController *preferencesController;
     NSSearchField IBOutlet *searchField;
     NSButton IBOutlet *statsButton;
     NSTextField IBOutlet *rateText;
