@@ -42,6 +42,8 @@
 @synthesize peersDownload;
 @synthesize eta;
 @synthesize recheckPercent;
+@synthesize ratio;
+@synthesize uploadedSize;
 
 - (bool)isEqual:(id)other
 {
@@ -80,7 +82,9 @@
             ([self peersUpload] == [other peersUpload]) &&
             ([self peersDownload] == [other peersDownload]) &&
             ([self eta] == [other eta]) &&
-            ([self recheckPercent] == [other recheckPercent])
+            ([self recheckPercent] == [other recheckPercent]) &&
+            ([self ratio] == [other ratio]) &&
+            ([self uploadedSize] == [other uploadedSize])
             );
 }
 

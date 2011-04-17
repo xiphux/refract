@@ -124,7 +124,7 @@
 {
     SBJsonWriter *writer = [[SBJsonWriter alloc] init];
     
-    NSArray *fields = [NSArray arrayWithObjects:@"id", @"name", @"totalSize", @"sizeWhenDone", @"leftUntilDone", @"rateDownload", @"rateUpload", @"status", @"percentDone", @"eta", @"peersConnected", @"peersGettingFromUs", @"peersSendingToUs", @"recheckPercent", nil];
+    NSArray *fields = [NSArray arrayWithObjects:@"id", @"name", @"totalSize", @"sizeWhenDone", @"leftUntilDone", @"rateDownload", @"rateUpload", @"status", @"percentDone", @"eta", @"peersConnected", @"peersGettingFromUs", @"peersSendingToUs", @"recheckPercent", @"uploadedEver", @"uploadRatio", nil];
     NSDictionary *args = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObject:fields] forKeys:[NSArray arrayWithObject:@"fields"]];
     NSDictionary *requestData = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:args, @"torrent-get", nil] forKeys:[NSArray arrayWithObjects:@"arguments", @"method", nil]];
     NSString *requestStr = [writer stringWithObject:requestData];
@@ -267,6 +267,16 @@
             NSNumber *recheckProgress = [torrentDict objectForKey:@"recheckProgress"];
             if (recheckProgress) {
                 torrent.recheckPercent = [recheckProgress doubleValue] * 100;
+            }
+            
+            NSNumber *uploadedEver = [torrentDict objectForKey:@"uploadedEver"];
+            if (uploadedEver) {
+                torrent.uploadedSize = [uploadedEver unsignedLongValue];
+            }
+            
+            NSNumber *uploadRatio = [torrentDict objectForKey:@"uploadRatio"];
+            if (uploadRatio) {
+                torrent.ratio = [uploadRatio doubleValue];
             }
             
             [torrent signalUpdated];

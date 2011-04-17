@@ -74,11 +74,11 @@
                 label = [NSString stringWithFormat:@"%@ of %@ (%.2f%%) - %d remaining", [RFUtils readableBytesDecimal:[t currentSize]], [RFUtils readableBytesDecimal:[t doneSize]], [t percent], [t eta]];
                 break;
             case stSeeding:
-                // TODO: ratio, uploaded amount, convert eta to readable
-                label = [NSString stringWithFormat:@"%@, uploaded  (Ratio: ) - %d remaining", [RFUtils readableBytesDecimal:[t doneSize]], [t eta]];
+                // TODO: convert eta to readable
+                label = [NSString stringWithFormat:@"%@, uploaded %@ (Ratio: %.2f) - %d remaining", [RFUtils readableBytesDecimal:[t doneSize]], [RFUtils readableBytesDecimal:[t uploadedSize]], [t ratio], [t eta]];
                 break;
             case stStopped:
-                label = [NSString stringWithFormat:@"%@, uploaded  (Ratio: )", [RFUtils readableBytesDecimal:[t doneSize]]];
+                label = [NSString stringWithFormat:@"%@, uploaded %@ (Ratio: %.2f)", [RFUtils readableBytesDecimal:[t doneSize]], [RFUtils readableBytesDecimal:[t uploadedSize]], [t ratio]];
                 break;
         }
     }

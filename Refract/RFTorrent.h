@@ -25,6 +25,7 @@ typedef enum {
     unsigned long currentSize;
     unsigned long doneSize;
     unsigned long totalSize;
+    unsigned long uploadedSize;
     
     unsigned long uploadRate;
     unsigned long downloadRate;
@@ -37,6 +38,8 @@ typedef enum {
     
     double percent;
     double recheckPercent;
+    
+    double ratio;
 
     RFTorrentStatus status;
 }
@@ -54,8 +57,9 @@ typedef enum {
 @property unsigned long peersUpload;
 @property double recheckPercent;
 @property long eta;
-
+@property double ratio;
 @property double percent;
+@property unsigned long uploadedSize;
 
 - (bool)isEqual:(id)other;
 - (bool)dataEqual:(RFTorrent *)other;
