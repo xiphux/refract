@@ -77,6 +77,7 @@
     NSView *contentView = [window contentView];
     [[contentView animator] addSubview:general];
     current = general;
+    [window setTitle:@"General"];
     [toolbar setSelectedItemIdentifier:[generalButton itemIdentifier]];
     [self updateWindowSize];
     [window makeKeyAndOrderFront:self];
@@ -88,6 +89,7 @@
         return;
     }
     [self setCurrent:general];
+    [window setTitle:@"General"];
 }
 
 - (IBAction)switchToEngine:(id)sender
@@ -96,6 +98,7 @@
         return;
     }
     [self setCurrent:engine];
+    [window setTitle:@"Engine"];
 }
 
 - (void)updateWindowSize
