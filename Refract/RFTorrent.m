@@ -7,7 +7,7 @@
 //
 
 #import "RFTorrent.h"
-
+#import "NotificationController.h"
 
 @implementation RFTorrent
 
@@ -140,6 +140,10 @@
 {
     if (status == newStatus) {
         return;
+    }
+    
+    if ((status == stDownloading) && (newStatus > 0)) {
+        downloadJustFinished = true;
     }
     
     status = newStatus;
@@ -275,6 +279,22 @@
     updated = true;
 }
 
+- (time_t)doneDate
+{
+    return doneDate;
+}
+
+- (void)setDoneDate:(time_t)newDoneDate
+{
+    if (doneDate == newDoneDate) {
+        return;
+    }
+    
+    doneDate = newDoneDate;
+    
+    updated = true;
+}
+
 - (bool)isEqual:(id)other
 {
     if (other == self) {
@@ -314,13 +334,19 @@
             ([self eta] == [other eta]) &&
             ([self recheckPercent] == [other recheckPercent]) &&
             ([self ratio] == [other ratio]) &&
-            ([self uploadedSize] == [other uploadedSize])
+            ([self uploadedSize] == [other uploadedSize]) &&
+            ([self doneDate] == [other doneDate])
             );
 }
 
 - (void)signalUpdated
 {
     if (updated) {
+        if (downloadJustFinished && (doneDate > 0)) {
+            [[NotificationController sharedNotificationController] notifyDownloadFinished:self];
+            downloadJustFinished = false;
+        }
+        
         [[NSNotificationCenter defaultCenter] postNotificationName:@"TorrentUpdated" object:self];
         updated = false;
     }

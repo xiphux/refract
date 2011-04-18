@@ -20,6 +20,7 @@ typedef enum {
 @private
     
     bool updated;
+    bool downloadJustFinished;
     
     NSString *name;
     NSString *tid;
@@ -44,6 +45,8 @@ typedef enum {
     double ratio;
 
     RFTorrentStatus status;
+    
+    time_t doneDate;
 }
 
 @property(copy) NSString *name;
@@ -62,6 +65,7 @@ typedef enum {
 @property double ratio;
 @property double percent;
 @property unsigned long uploadedSize;
+@property time_t doneDate;
 
 - (id)initWithTid:(NSString *)initTid;
 

@@ -37,6 +37,10 @@
 		C6B914D2135A50D90008B707 /* RFUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = C6B914D1135A50D90008B707 /* RFUtils.m */; };
 		C6B914D5135AB05E0008B707 /* PreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = C6B914D4135AB05E0008B707 /* PreferencesController.m */; };
 		C6B914D8135AC7590008B707 /* TorrentItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C6B914D7135AC7590008B707 /* TorrentItem.m */; };
+		C6B914DA135BBD070008B707 /* Growl Registration Ticket.growlRegDict in Resources */ = {isa = PBXBuildFile; fileRef = C6B914D9135BBD070008B707 /* Growl Registration Ticket.growlRegDict */; };
+		C6B914DD135BBDA70008B707 /* NotificationController.m in Sources */ = {isa = PBXBuildFile; fileRef = C6B914DC135BBDA60008B707 /* NotificationController.m */; };
+		C6B914E3135BC77C0008B707 /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6B914E2135BC77C0008B707 /* Growl.framework */; };
+		C6B914E4135BC78F0008B707 /* Growl.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6B914E2135BC77C0008B707 /* Growl.framework */; };
 		C6CB30D1134C0CE100CDCFFB /* RFTorrentList.m in Sources */ = {isa = PBXBuildFile; fileRef = C6CB30D0134C0CE100CDCFFB /* RFTorrentList.m */; };
 		C6F920C1134939FB0047C777 /* PreferencesDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C6F920C0134939FB0047C777 /* PreferencesDelegate.m */; };
 /* End PBXBuildFile section */
@@ -78,6 +82,19 @@
 			remoteInfo = libjsontests;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		C6B914E0135BBE490008B707 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				C6B914E4135BC78F0008B707 /* Growl.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		C60BA3DA13484DD800D0AB08 /* RFTorrentGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFTorrentGroup.h; sourceTree = "<group>"; };
@@ -136,6 +153,10 @@
 		C6B914D4135AB05E0008B707 /* PreferencesController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreferencesController.m; sourceTree = "<group>"; };
 		C6B914D6135AC7590008B707 /* TorrentItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TorrentItem.h; sourceTree = "<group>"; };
 		C6B914D7135AC7590008B707 /* TorrentItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TorrentItem.m; sourceTree = "<group>"; };
+		C6B914D9135BBD070008B707 /* Growl Registration Ticket.growlRegDict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "Growl Registration Ticket.growlRegDict"; sourceTree = "<group>"; };
+		C6B914DB135BBDA50008B707 /* NotificationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationController.h; sourceTree = "<group>"; };
+		C6B914DC135BBDA60008B707 /* NotificationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationController.m; sourceTree = "<group>"; };
+		C6B914E2135BC77C0008B707 /* Growl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Growl.framework; sourceTree = "<group>"; };
 		C6CB30CF134C0CE100CDCFFB /* RFTorrentList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFTorrentList.h; sourceTree = "<group>"; };
 		C6CB30D0134C0CE100CDCFFB /* RFTorrentList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFTorrentList.m; sourceTree = "<group>"; };
 		C6F920BF134939FB0047C777 /* PreferencesDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencesDelegate.h; sourceTree = "<group>"; };
@@ -151,6 +172,7 @@
 				C60C32601357E6E200CB14CD /* Carbon.framework in Frameworks */,
 				C678621A13478B0900892BC2 /* JSON.framework in Frameworks */,
 				C67861971346E41100892BC2 /* Cocoa.framework in Frameworks */,
+				C6B914E3135BC77C0008B707 /* Growl.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -198,6 +220,8 @@
 				C637EFF01349229100860228 /* Preferences */,
 				C64DF9AA1348E48300CB08EF /* Torrent */,
 				C64DF9A81348E46A00CB08EF /* Main */,
+				C6B914DB135BBDA50008B707 /* NotificationController.h */,
+				C6B914DC135BBDA60008B707 /* NotificationController.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -226,9 +250,6 @@
 		C67861871346E41100892BC2 = {
 			isa = PBXGroup;
 			children = (
-				C60C32611357E6EC00CB14CD /* Security.framework */,
-				C60C325F1357E6E100CB14CD /* Carbon.framework */,
-				C678621913478B0900892BC2 /* JSON.framework */,
 				C678620913478A8000892BC2 /* JSON.xcodeproj */,
 				C678619C1346E41100892BC2 /* Refract */,
 				C67861B71346E41100892BC2 /* RefractTests */,
@@ -258,6 +279,10 @@
 		C67861981346E41100892BC2 /* Other Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C6B914E2135BC77C0008B707 /* Growl.framework */,
+				C678621913478B0900892BC2 /* JSON.framework */,
+				C60C32611357E6EC00CB14CD /* Security.framework */,
+				C60C325F1357E6E100CB14CD /* Carbon.framework */,
 				C67861991346E41100892BC2 /* AppKit.framework */,
 				C678619A1346E41100892BC2 /* CoreData.framework */,
 				C678619B1346E41100892BC2 /* Foundation.framework */,
@@ -285,6 +310,7 @@
 				C67861A21346E41100892BC2 /* Refract-Prefix.pch */,
 				C67861A31346E41100892BC2 /* main.m */,
 				C67861A51346E41100892BC2 /* Credits.rtf */,
+				C6B914D9135BBD070008B707 /* Growl Registration Ticket.growlRegDict */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -380,6 +406,7 @@
 				C678618E1346E41100892BC2 /* Sources */,
 				C678618F1346E41100892BC2 /* Frameworks */,
 				C67861901346E41100892BC2 /* Resources */,
+				C6B914E0135BBE490008B707 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -479,6 +506,7 @@
 				C67861AD1346E41100892BC2 /* MainMenu.xib in Resources */,
 				C64DF9A61348E3B200CB08EF /* Torrent.xib in Resources */,
 				C683C39013492A330039B953 /* Preferences.xib in Resources */,
+				C6B914DA135BBD070008B707 /* Growl Registration Ticket.growlRegDict in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -533,6 +561,7 @@
 				C6B914D2135A50D90008B707 /* RFUtils.m in Sources */,
 				C6B914D5135AB05E0008B707 /* PreferencesController.m in Sources */,
 				C6B914D8135AC7590008B707 /* TorrentItem.m in Sources */,
+				C6B914DD135BBDA70008B707 /* NotificationController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
