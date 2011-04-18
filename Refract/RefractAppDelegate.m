@@ -18,6 +18,7 @@
 - (void)updateFilterPredicate;
 - (void)updateStatsButton;
 - (void)updateRateText;
+- (void)updateDockBadge;
 @end
 
 @implementation RefractAppDelegate
@@ -206,6 +207,8 @@
         [sourceListController removeStatusGroup:stSeeding];
     }
     
+    [self updateDockBadge];
+    
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSTimeInterval update = [defaults doubleForKey:REFRACT_USERDEFAULT_UPDATE_FREQUENCY];
     [NSTimer scheduledTimerWithTimeInterval:update target:self selector:@selector(refresh) userInfo:nil repeats:false];
@@ -233,6 +236,17 @@
 {
     NSString *label = [NSString stringWithFormat:@"D: %@ U: %@", [RFUtils readableRateDecimal:[engine downloadSpeed]], [RFUtils readableRateDecimal:[engine uploadSpeed]]];
     [rateText setStringValue:label];
+}
+
+- (void)updateDockBadge
+{
+    NSUInteger activeCount = [[[torrentList torrents] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"status == %d", stDownloading]] count];
+    
+    if (activeCount > 0) {
+        [[[NSApplication sharedApplication] dockTile] setBadgeLabel:[NSString stringWithFormat:@"%d", activeCount]];
+    } else {
+        [[[NSApplication sharedApplication] dockTile] setBadgeLabel:nil];
+    }
 }
 
 - (IBAction)statsButtonClick:(id)sender
