@@ -67,7 +67,7 @@ static NotificationController *sharedInstance = nil;
 
 - (void)notifyDownloadFinished:(RFTorrent *)torrent
 {
-    NSString *title = @"Download finished";
+    NSString *title = @"Download Finished";
     
     NSString *desc = [NSString stringWithFormat:@"%@ (%@)", [torrent name], [RFUtils readableBytesDecimal:[torrent doneSize]]];
     
