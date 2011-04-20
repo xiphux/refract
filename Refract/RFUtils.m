@@ -9,8 +9,8 @@
 #import "RFUtils.h"
 
 #define MIN_SECS 60
-#define HOUR_SECS 60*MIN_SECS
-#define DAY_SECS 24*HOUR_SECS
+#define HOUR_SECS (60*MIN_SECS)
+#define DAY_SECS (24*HOUR_SECS)
 
 @interface RFUtils ()
 + (unsigned int)readableBytesReducePower:(unsigned long)bytes unit:(unsigned int)unit;
