@@ -17,6 +17,10 @@
 }
 
 - (void)notifyDownloadFinished:(RFTorrent *)torrent;
+- (void)notifyDownloadAdded:(RFTorrent *)torrent;
+- (void)notifyDownloadRemoved:(RFTorrent *)torrent;
+- (void)notifyMultipleAdded:(NSUInteger)count;
+- (void)notifyMultipleRemoved:(NSUInteger)count;
 
 + (NotificationController *)sharedNotificationController;
 

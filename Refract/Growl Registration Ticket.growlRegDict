@@ -6,11 +6,15 @@
 	<integer>1</integer>
 	<key>DefaultNotifications</key>
 	<array>
-		<string>DownloadFinished</string>
+		<string>Download Finished</string>
+        <string>Download Added</string>
+        <string>Download Removed</string>
 	</array>
 	<key>AllNotifications</key>
 	<array>
-		<string>DownloadFinished</string>
+		<string>Download Finished</string>
+        <string>Download Added</string>
+        <string>Download Removed</string>
 	</array>
 </dict>
 </plist>

@@ -67,11 +67,68 @@ static NotificationController *sharedInstance = nil;
 
 - (void)notifyDownloadFinished:(RFTorrent *)torrent
 {
+    if (!torrent) {
+        return;
+    }
+    
     NSString *title = @"Download Finished";
     
     NSString *desc = [NSString stringWithFormat:@"%@ (%@)", [torrent name], [RFUtils readableBytesDecimal:[torrent doneSize]]];
     
-    [GrowlApplicationBridge notifyWithTitle:title description:desc notificationName:@"DownloadFinished" iconData:nil priority:0 isSticky:NO clickContext:nil];
+    [GrowlApplicationBridge notifyWithTitle:title description:desc notificationName:@"Download Finished" iconData:nil priority:0 isSticky:NO clickContext:nil];
+}
+
+- (void)notifyDownloadAdded:(RFTorrent *)torrent
+{
+    if (!torrent) {
+        return;
+    }
+    
+    NSString *title = @"Download Added";
+    
+    NSString *desc = [NSString stringWithFormat:@"%@ (%@)", [torrent name], [RFUtils readableBytesDecimal:[torrent doneSize]]];
+    
+    [GrowlApplicationBridge notifyWithTitle:title description:desc notificationName:@"Download Added" iconData:nil priority:0 isSticky:NO clickContext:nil];    
+}
+
+- (void)notifyDownloadRemoved:(RFTorrent *)torrent
+{
+    if (!torrent) {
+        return;
+    }
+    
+    NSString *title = @"Download Removed";
+    
+    NSString *desc = [NSString stringWithFormat:@"%@ (%@)", [torrent name], [RFUtils readableBytesDecimal:[torrent doneSize]]];
+    
+    [GrowlApplicationBridge notifyWithTitle:title description:desc notificationName:@"Download Removed" iconData:nil priority:0 isSticky:NO clickContext:nil];        
+}
+
+- (void)notifyMultipleAdded:(NSUInteger)count
+{
+    if (count < 2) {
+        return;
+    }
+    
+    NSString *title = @"Downloads Added";
+    
+    NSString *desc = [NSString stringWithFormat:@"%d downloads added", count];
+    
+    [GrowlApplicationBridge notifyWithTitle:title description:desc notificationName:@"Download Added" iconData:nil priority:0 isSticky:NO clickContext:nil];
+}
+
+- (void)notifyMultipleRemoved:(NSUInteger)count
+{
+    if (count < 1) {
+        return;
+    }
+    
+    
+    NSString *title = @"Downloads Removed";
+    
+    NSString *desc = [NSString stringWithFormat:@"%d downloads removed", count];
+    
+    [GrowlApplicationBridge notifyWithTitle:title description:desc notificationName:@"Download Removed" iconData:nil priority:0 isSticky:NO clickContext:nil];
 }
 
 + (NotificationController *)sharedNotificationController

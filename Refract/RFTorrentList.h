@@ -15,9 +15,11 @@
 @private
     NSArray *allTorrents;
     NSMutableArray *torrents;
+    bool initialized;
 }
 
 @property (retain) NSMutableArray *torrents;
+@property bool initialized;
 
 - (NSUInteger)countOfTorrents;
 - (id)objectInTorrentsAtIndex:(NSUInteger)index;
