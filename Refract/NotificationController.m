@@ -9,6 +9,7 @@
 #import "NotificationController.h"
 
 #import "RFUtils.h"
+#import "RFConstants.h"
 
 static NotificationController *sharedInstance = nil;
 
@@ -65,9 +66,23 @@ static NotificationController *sharedInstance = nil;
     growlReady = true;
 }
 
+- (void)setDefaults
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSMutableDictionary *appDefaults = [NSMutableDictionary dictionary];
+    
+    [appDefaults setObject:[NSNumber numberWithInt:1] forKey:REFRACT_USERDEFAULT_NOTIFICATION_DOWNLOAD_FINISHED];
+    
+    [defaults registerDefaults:appDefaults];
+}
+
 - (void)notifyDownloadFinished:(RFTorrent *)torrent
 {
     if (!torrent) {
+        return;
+    }
+    
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:REFRACT_USERDEFAULT_NOTIFICATION_DOWNLOAD_FINISHED]) {
         return;
     }
     
@@ -84,6 +99,10 @@ static NotificationController *sharedInstance = nil;
         return;
     }
     
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:REFRACT_USERDEFAULT_NOTIFICATION_DOWNLOAD_ADDED]) {
+        return;
+    }
+    
     NSString *title = @"Download Added";
     
     NSString *desc = [NSString stringWithFormat:@"%@ (%@)", [torrent name], [RFUtils readableBytesDecimal:[torrent doneSize]]];
@@ -94,6 +113,10 @@ static NotificationController *sharedInstance = nil;
 - (void)notifyDownloadRemoved:(RFTorrent *)torrent
 {
     if (!torrent) {
+        return;
+    }
+    
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:REFRACT_USERDEFAULT_NOTIFICATION_DOWNLOAD_REMOVED]) {
         return;
     }
     
@@ -110,6 +133,10 @@ static NotificationController *sharedInstance = nil;
         return;
     }
     
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:REFRACT_USERDEFAULT_NOTIFICATION_DOWNLOAD_ADDED]) {
+        return;
+    }
+    
     NSString *title = @"Downloads Added";
     
     NSString *desc = [NSString stringWithFormat:@"%d downloads added", count];
@@ -123,6 +150,9 @@ static NotificationController *sharedInstance = nil;
         return;
     }
     
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:REFRACT_USERDEFAULT_NOTIFICATION_DOWNLOAD_REMOVED]) {
+        return;
+    }
     
     NSString *title = @"Downloads Removed";
     

@@ -15,9 +15,11 @@
 @synthesize window;
 @synthesize general;
 @synthesize engine;
+@synthesize notifications;
 @synthesize toolbar;
 @synthesize generalButton;
 @synthesize engineButton;
+@synthesize notificationsButton;
 @synthesize transmissionUsernameField;
 @synthesize transmissionPasswordField;
 
@@ -99,6 +101,15 @@
     }
     [self setCurrent:engine];
     [window setTitle:@"Engine"];
+}
+
+- (IBAction)switchToNotifications:(id)sender
+{
+    if (current == notifications) {
+        return;
+    }
+    [self setCurrent:notifications];
+    [window setTitle:@"Notifications"];
 }
 
 - (void)updateWindowSize

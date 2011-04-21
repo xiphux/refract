@@ -16,6 +16,7 @@
     bool growlReady;
 }
 
+- (void)setDefaults;
 - (void)notifyDownloadFinished:(RFTorrent *)torrent;
 - (void)notifyDownloadAdded:(RFTorrent *)torrent;
 - (void)notifyDownloadRemoved:(RFTorrent *)torrent;

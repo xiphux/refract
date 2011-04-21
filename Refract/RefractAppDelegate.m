@@ -13,6 +13,7 @@
 #import "RFTorrentGroup.h"
 #import "RFConstants.h"
 #import "RFEngineTransmission.h"
+#import "NotificationController.h"
 
 @interface RefractAppDelegate ()
 - (void)updateFilterPredicate;
@@ -81,6 +82,8 @@
     [appDefaults setObject:[NSNumber numberWithDouble:5.0] forKey:REFRACT_USERDEFAULT_UPDATE_FREQUENCY];
     
     [defaults registerDefaults:appDefaults];
+    
+    [[NotificationController sharedNotificationController] setDefaults];
 }
 
 - (bool)initEngine
