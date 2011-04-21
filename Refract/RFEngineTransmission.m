@@ -376,6 +376,7 @@
     SBJsonParser *parser = [[SBJsonParser alloc] init];
     NSDictionary *responseDict = [parser objectWithString:responseStr];
     [parser release];
+    [responseStr release];
     
     if (![[responseDict objectForKey:@"result"] isEqualToString:@"success"]) {
         return;

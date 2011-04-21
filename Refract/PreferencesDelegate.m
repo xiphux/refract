@@ -72,7 +72,6 @@
                 transmissionPassword = [tmPass password];   
                 [self didChangeValueForKey:@"transmissionPassword"];
             }
-            [tmPass release];
         }
     }
     
@@ -142,7 +141,6 @@
     EMGenericKeychainItem *oldPass = [EMGenericKeychainItem genericKeychainItemForService:REFRACT_KEYCHAIN_TRANSMISSION withUsername:transmissionUsername];
     if (oldPass) {
         [oldPass removeFromKeychain];
-        [oldPass release];
     }
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
