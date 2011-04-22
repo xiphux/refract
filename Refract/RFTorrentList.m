@@ -81,6 +81,10 @@
         [self setTorrents:[NSMutableArray array]];
     }
     
+    if (initialized) {
+        [[NotificationController sharedNotificationController] startQueue];
+    }
+    
     // prune torrents no longer matching
     NSMutableArray *prune = [NSMutableArray array];
     for (RFTorrent *t in torrents) {
@@ -90,21 +94,10 @@
     }
     for (RFTorrent *t in prune) {
         [self removeTorrentsObject:t];
-    }
-    
-    if (initialized) {
-        if ([prune count] > 0) {
-            if ([prune count] > 2) {
-                [[NotificationController sharedNotificationController] notifyMultipleRemoved:[prune count]];
-            } else {
-                for (RFTorrent *t in prune) {
-                    [[NotificationController sharedNotificationController] notifyDownloadRemoved:t];
-                }
-            }
+        if (initialized) {
+            [[NotificationController sharedNotificationController] notifyDownloadRemoved:t];
         }
     }
-    
-    NSMutableArray *added = [NSMutableArray array];
     
     // update torrents that have changed
     for (RFTorrent *t in allTorrents) {
@@ -115,21 +108,16 @@
             }
         } else {
             [self addTorrentsObject:t];
-            [added addObject:t];
-        }
-    }
-    
-    if (initialized) {
-        if ([added count] > 0) {
-            if ([added count] > 2) {
-                [[NotificationController sharedNotificationController] notifyMultipleAdded:[added count]];
-            } else {
-                for (RFTorrent *t in added) {
-                    [[NotificationController sharedNotificationController] notifyDownloadAdded:t];
-                }
+            if (initialized) {
+                [[NotificationController sharedNotificationController] notifyDownloadAdded:t];
             }
         }
     }
+    
+    if ([[NotificationController sharedNotificationController] queueing]) {
+        [[NotificationController sharedNotificationController] flushQueue];
+    }
+    
 }
 
 @end

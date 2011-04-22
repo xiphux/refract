@@ -12,6 +12,7 @@
 #import "RFURLConnection.h"
 #import "RFConstants.h"
 #import "EMKeychainItem.h"
+#import "NotificationController.h"
 #import <JSON/JSON.h>
 
 @interface RFEngineTransmission ()
@@ -166,6 +167,8 @@
 
 - (void)parseTorrentList:(NSArray *)torrentList
 {
+    [[NotificationController sharedNotificationController] startQueue];
+    
     NSMutableArray *existingIDs = [NSMutableArray array];
     
     for (NSString *key in torrents) {
@@ -292,6 +295,8 @@
     for (NSString *delID in existingIDs) {
         [torrents removeObjectForKey:delID];
     }
+    
+    [[NotificationController sharedNotificationController] flushQueue];
 }
 
 - (void)settingsChanged:(NSNotification *)notification

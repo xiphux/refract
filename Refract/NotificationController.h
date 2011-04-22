@@ -14,14 +14,25 @@
 @interface NotificationController : NSObject <GrowlApplicationBridgeDelegate> {
 @private
     bool growlReady;
+    
+    bool queueing;
+    
+    NSMutableArray *queuedDownloadFinished;
+    NSMutableArray *queuedDownloadAdded;
+    NSMutableArray *queuedDownloadRemoved;
+    
+    NSOperationQueue *notificationQueue;
 }
+
+@property (readonly) bool queueing;
 
 - (void)setDefaults;
 - (void)notifyDownloadFinished:(RFTorrent *)torrent;
 - (void)notifyDownloadAdded:(RFTorrent *)torrent;
 - (void)notifyDownloadRemoved:(RFTorrent *)torrent;
-- (void)notifyMultipleAdded:(NSUInteger)count;
-- (void)notifyMultipleRemoved:(NSUInteger)count;
+
+- (void)startQueue;
+- (void)flushQueue;
 
 + (NotificationController *)sharedNotificationController;
 
