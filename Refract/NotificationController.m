@@ -238,7 +238,7 @@ static NotificationController *sharedInstance = nil;
 
 - (void)flushQueue
 {
-    [notificationQueue addOperation:[[NSBlockOperation blockOperationWithBlock:^{
+    [notificationQueue addOperationWithBlock:^{
         NSMutableArray *copyQueuedAdded = nil;
         NSMutableArray *copyQueuedRemoved = nil;
         NSMutableArray *copyQueuedFinished = nil;
@@ -291,7 +291,7 @@ static NotificationController *sharedInstance = nil;
                 }
             }
         }
-    }] autorelease]];
+    }];
     
 }
 
