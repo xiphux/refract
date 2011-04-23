@@ -22,6 +22,7 @@
 - (NSMutableURLRequest *)createRequest;
 - (void)settingsChanged:(NSNotification *)notification;
 - (void)handleResponse:(NSData *)responseData userInfo:(NSDictionary *)userInfo;
+- (void)notify:(NSString *)type;
 @end
 
 @implementation RFEngineTransmission
@@ -62,6 +63,8 @@
         username = [NSString stringWithString:initUser];
         password = [NSString stringWithString:initPass];
         
+        updateQueue = [[NSOperationQueue alloc] init];
+        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsChanged:) name:NSUserDefaultsDidChangeNotification object:nil];
     }
     
@@ -74,6 +77,7 @@
     [username release];
     [password release];
     [torrents release];
+    [updateQueue release];
     [super dealloc];
 }
 
@@ -388,57 +392,80 @@
     }
     
     if ([type isEqualToString:@"refresh"]) {
+        
         NSArray *torrentList = [[responseDict objectForKey:@"arguments"] objectForKey:@"torrents"];
-        [self parseTorrentList:torrentList];
+        
+        NSInvocationOperation *refreshOp = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(parseTorrentList:) object:torrentList];
+        [refreshOp setCompletionBlock:^{
+            [self performSelectorOnMainThread:@selector(notify:) withObject:type waitUntilDone:NO];
+        }];
+        [updateQueue addOperation:refreshOp];
+        [refreshOp release];
+        
     } else if ([type isEqualToString:@"stats"]) {
+        
         NSDictionary *statsDict = [responseDict objectForKey:@"arguments"];
         
-        NSNumber *downSpeed = [statsDict objectForKey:@"downloadSpeed"];
-        if (downSpeed && ([downSpeed unsignedLongValue] != downloadSpeed)) {
-            [self willChangeValueForKey:@"downloadSpeed"];
-            downloadSpeed = [downSpeed unsignedLongValue];
-            [self didChangeValueForKey:@"downloadSpeed"];
-        }
+        NSBlockOperation *statsOp = [NSBlockOperation blockOperationWithBlock:^{
         
-        NSNumber *upSpeed = [statsDict objectForKey:@"uploadSpeed"];
-        if (upSpeed && ([upSpeed unsignedLongValue] != uploadSpeed)) {
-            [self willChangeValueForKey:@"uploadSpeed"];
-            uploadSpeed = [upSpeed unsignedLongValue];
-            [self didChangeValueForKey:@"uploadSpeed"];
-        }
+            NSNumber *downSpeed = [statsDict objectForKey:@"downloadSpeed"];
+            if (downSpeed && ([downSpeed unsignedLongValue] != downloadSpeed)) {
+                [self willChangeValueForKey:@"downloadSpeed"];
+                downloadSpeed = [downSpeed unsignedLongValue];
+                [self didChangeValueForKey:@"downloadSpeed"];
+            }
+            
+            NSNumber *upSpeed = [statsDict objectForKey:@"uploadSpeed"];
+            if (upSpeed && ([upSpeed unsignedLongValue] != uploadSpeed)) {
+                [self willChangeValueForKey:@"uploadSpeed"];
+                uploadSpeed = [upSpeed unsignedLongValue];
+                [self didChangeValueForKey:@"uploadSpeed"];
+            }
+            
+            NSDictionary *sessionDict = [statsDict objectForKey:@"current-stats"];
+            
+            NSNumber *sUpBytes = [sessionDict objectForKey:@"uploadedBytes"];
+            if (sUpBytes && ([sUpBytes unsignedLongValue] != sessionUploadedBytes)) {
+                [self willChangeValueForKey:@"sessionUploadedBytes"];
+                sessionUploadedBytes = [sUpBytes unsignedLongValue];
+                [self didChangeValueForKey:@"sessionUploadedBytes"];
+            }
+            
+            NSNumber *sDownBytes = [sessionDict objectForKey:@"downloadedBytes"];
+            if (sDownBytes && ([sDownBytes unsignedLongValue] != sessionDownloadedBytes)) {
+                [self willChangeValueForKey:@"sessionDownloadedBytes"];
+                sessionDownloadedBytes = [sDownBytes unsignedLongValue];
+                [self didChangeValueForKey:@"sessionDownloadedBytes"];
+            }
+            
+            NSDictionary *totalDict = [statsDict objectForKey:@"cumulative-stats"];
+            
+            NSNumber *tUpBytes = [totalDict objectForKey:@"uploadedBytes"];
+            if (tUpBytes && ([tUpBytes unsignedLongValue] != totalUploadedBytes)) {
+                [self willChangeValueForKey:@"totalUploadedBytes"];
+                totalUploadedBytes = [tUpBytes unsignedLongValue];
+                [self didChangeValueForKey:@"totalUploadedBytes"];
+            }
+            
+            NSNumber *tDownBytes = [totalDict objectForKey:@"downloadedBytes"];
+            if (tDownBytes && ([tDownBytes unsignedLongValue] != totalDownloadedBytes)) {
+                [self willChangeValueForKey:@"totalDownloadedBytes"];
+                totalDownloadedBytes = [tDownBytes unsignedLongValue];
+                [self didChangeValueForKey:@"totalDownloadedBytes"];
+            }
+            
+        }];
+        [statsOp setCompletionBlock:^{
+            [self performSelectorOnMainThread:@selector(notify:) withObject:type waitUntilDone:NO];
+        }];
+        [updateQueue addOperation:statsOp];
+        [statsOp release];
         
-        NSDictionary *sessionDict = [statsDict objectForKey:@"current-stats"];
-        
-        NSNumber *sUpBytes = [sessionDict objectForKey:@"uploadedBytes"];
-        if (sUpBytes && ([sUpBytes unsignedLongValue] != sessionUploadedBytes)) {
-            [self willChangeValueForKey:@"sessionUploadedBytes"];
-            sessionUploadedBytes = [sUpBytes unsignedLongValue];
-            [self didChangeValueForKey:@"sessionUploadedBytes"];
-        }
-        
-        NSNumber *sDownBytes = [sessionDict objectForKey:@"downloadedBytes"];
-        if (sDownBytes && ([sDownBytes unsignedLongValue] != sessionDownloadedBytes)) {
-            [self willChangeValueForKey:@"sessionDownloadedBytes"];
-            sessionDownloadedBytes = [sDownBytes unsignedLongValue];
-            [self didChangeValueForKey:@"sessionDownloadedBytes"];
-        }
-        
-        NSDictionary *totalDict = [statsDict objectForKey:@"cumulative-stats"];
-        
-        NSNumber *tUpBytes = [totalDict objectForKey:@"uploadedBytes"];
-        if (tUpBytes && ([tUpBytes unsignedLongValue] != totalUploadedBytes)) {
-            [self willChangeValueForKey:@"totalUploadedBytes"];
-            totalUploadedBytes = [tUpBytes unsignedLongValue];
-            [self didChangeValueForKey:@"totalUploadedBytes"];
-        }
-        
-        NSNumber *tDownBytes = [totalDict objectForKey:@"downloadedBytes"];
-        if (tDownBytes && ([tDownBytes unsignedLongValue] != totalDownloadedBytes)) {
-            [self willChangeValueForKey:@"totalDownloadedBytes"];
-            totalDownloadedBytes = [tDownBytes unsignedLongValue];
-            [self didChangeValueForKey:@"totalDownloadedBytes"];
-        }
     }
+}
+
+- (void)notify:(NSString *)type
+{
     [[NSNotificationCenter defaultCenter] postNotificationName:type object:self];
 }
 

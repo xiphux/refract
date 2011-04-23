@@ -23,6 +23,8 @@
     unsigned long sessionDownloadedBytes;
     unsigned long totalUploadedBytes;
     unsigned long totalDownloadedBytes;
+    
+    NSOperationQueue *updateQueue;
 }
 
 @property (readonly, retain) NSMutableDictionary *torrents;
