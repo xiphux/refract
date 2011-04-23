@@ -64,7 +64,7 @@
     showTotalStats = [[NSUserDefaults standardUserDefaults] boolForKey:REFRACT_USERDEFAULT_TOTAL_SIZE];
     
     RFTorrentList *tList = [[RFTorrentList alloc] init];
-    
+    [tList setDelegate:self];
     [self setTorrentList:tList];
      
     if ([self initEngine]) {
@@ -156,7 +156,10 @@
     NSArray *allTorrents = [[engine torrents] allValues];
     
     [[self torrentList] loadTorrents:allTorrents];
-    
+}
+
+- (void)torrentListDidFinishLoading:(RFTorrentList *)list
+{
     [torrentListController rearrangeObjects];
     
     bool downloading = false;
@@ -164,7 +167,7 @@
     bool waiting = false;
     bool checking = false;
     bool seeding = false;
-    for (RFTorrent *t in allTorrents) {
+    for (RFTorrent *t in [list torrents]) {
         switch ([t status]) {
             case stDownloading:
                 downloading = true;

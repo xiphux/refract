@@ -31,6 +31,7 @@
 }
 
 @synthesize torrents;
+@synthesize delegate;
 
 - (NSUInteger)countOfTorrents
 {
@@ -73,6 +74,12 @@
     allTorrents = torrentList;
     [self updateList];
     initialized = true;
+    
+    if ([self delegate]) {
+        if ([[self delegate] respondsToSelector:@selector(torrentListDidFinishLoading:)]) {
+            [[self delegate] torrentListDidFinishLoading:self];
+        }
+    }
 }
 
 - (void)updateList

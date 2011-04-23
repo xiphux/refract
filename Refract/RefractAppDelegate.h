@@ -12,7 +12,7 @@
 #import "SourceListController.h"
 #import "PreferencesController.h"
 
-@interface RefractAppDelegate : NSObject <NSApplicationDelegate, NSSplitViewDelegate> {
+@interface RefractAppDelegate : NSObject <NSApplicationDelegate, NSSplitViewDelegate, RFTorrentListDelegate> {
 @private
     NSWindow IBOutlet *window;
     SourceListController IBOutlet *sourceListController;

@@ -11,14 +11,19 @@
 #import "RFTorrent.h"
 #import "RFTorrentFilter.h"
 
+@protocol RFTorrentListDelegate;
+
 @interface RFTorrentList : NSObject {
 @private
     NSArray *allTorrents;
     NSMutableArray *torrents;
     bool initialized;
+    
+    id <RFTorrentListDelegate> delegate;
 }
 
 @property (retain) NSMutableArray *torrents;
+@property (nonatomic, assign) id <RFTorrentListDelegate> delegate;
 @property bool initialized;
 
 - (NSUInteger)countOfTorrents;
@@ -29,4 +34,10 @@
 
 - (void)loadTorrents:(NSArray *)torrentList;
 
+@end
+
+
+@protocol RFTorrentListDelegate <NSObject>
+@optional
+- (void)torrentListDidFinishLoading:(RFTorrentList *)list;
 @end
