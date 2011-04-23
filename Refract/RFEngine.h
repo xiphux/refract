@@ -12,9 +12,14 @@ typedef enum {
     engTransmission = 1
 } RFEngineType;
 
+@protocol RFEngineDelegate;
+
 @interface RFEngine : NSObject {
-@private
+@protected
+    NSObject <RFEngineDelegate> *delegate;
 }
+
+@property (nonatomic, assign) NSObject <RFEngineDelegate> *delegate;
 
 - (bool)connect;
 - (bool)disconnect;
@@ -32,4 +37,10 @@ typedef enum {
 + (id)engineOfType:(RFEngineType)type;
 + (id)engine;
 
+@end
+
+@protocol RFEngineDelegate <NSObject>
+@optional
+- (void)engineDidRefreshTorrents:(RFEngine *)engine;
+- (void)engineDidRefreshStats:(RFEngine *)engine;
 @end

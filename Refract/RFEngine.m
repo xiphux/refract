@@ -25,6 +25,8 @@
     [super dealloc];
 }
 
+@synthesize delegate;
+
 - (bool)connect
 {
     [self doesNotRecognizeSelector:_cmd];
@@ -93,7 +95,7 @@
 
 - (RFEngineType)type
 {
-    return engTransmission;
+    return 0;
 }
 
 + (id)engineOfType:(RFEngineType)type

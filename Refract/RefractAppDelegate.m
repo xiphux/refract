@@ -58,9 +58,6 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sourceListSelectionChanged:) name:@"SourceListSelectionChanged" object:sourceListController];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(afterRefresh) name:@"refresh" object:engine];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(afterStatsRefresh) name:@"stats" object:engine];
-    
     showTotalStats = [[NSUserDefaults standardUserDefaults] boolForKey:REFRACT_USERDEFAULT_TOTAL_SIZE];
     
     RFTorrentList *tList = [[RFTorrentList alloc] init];
@@ -95,6 +92,8 @@
     if (!engine) {
         return false;
     }
+    
+    [engine setDelegate:self];
     
     return [engine connect];
 }
@@ -151,9 +150,9 @@
     [engine refresh];
 }
      
-- (void)afterRefresh
+- (void)engineDidRefreshTorrents:(RFEngine *)eng
 {    
-    NSArray *allTorrents = [[engine torrents] allValues];
+    NSArray *allTorrents = [[eng torrents] allValues];
     
     [[self torrentList] loadTorrents:allTorrents];
 }
@@ -220,7 +219,7 @@
     [NSTimer scheduledTimerWithTimeInterval:update target:self selector:@selector(refresh) userInfo:nil repeats:false];
 }
 
-- (void)afterStatsRefresh
+- (void)engineDidRefreshStats:(RFEngine *)engine
 {
     [self updateStatsButton];
     [self updateRateText];

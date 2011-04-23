@@ -12,7 +12,7 @@
 #import "SourceListController.h"
 #import "PreferencesController.h"
 
-@interface RefractAppDelegate : NSObject <NSApplicationDelegate, NSSplitViewDelegate, RFTorrentListDelegate> {
+@interface RefractAppDelegate : NSObject <NSApplicationDelegate, NSSplitViewDelegate, RFTorrentListDelegate, RFEngineDelegate> {
 @private
     NSWindow IBOutlet *window;
     SourceListController IBOutlet *sourceListController;
@@ -49,8 +49,6 @@
 - (void)stopEngine;
 - (void)destroyEngine;
 - (void)refresh;
-- (void)afterRefresh;
-- (void)afterStatsRefresh;
 - (void)settingsChanged:(NSNotification *)notification;
 - (void)sourceListSelectionChanged:(NSNotification *)notification;
 

@@ -22,7 +22,6 @@
 - (NSMutableURLRequest *)createRequest;
 - (void)settingsChanged:(NSNotification *)notification;
 - (void)handleResponse:(NSData *)responseData userInfo:(NSDictionary *)userInfo;
-- (void)notify:(NSString *)type;
 @end
 
 @implementation RFEngineTransmission
@@ -92,6 +91,11 @@
 @synthesize sessionDownloadedBytes;
 @synthesize totalUploadedBytes;
 @synthesize totalDownloadedBytes;
+
+- (RFEngineType)type
+{
+    return engTransmission;
+}
 
 - (bool)connect
 {
@@ -397,7 +401,11 @@
         
         NSInvocationOperation *refreshOp = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(parseTorrentList:) object:torrentList];
         [refreshOp setCompletionBlock:^{
-            [self performSelectorOnMainThread:@selector(notify:) withObject:type waitUntilDone:NO];
+            if ([self delegate]) {
+                if ([[self delegate] respondsToSelector:@selector(engineDidRefreshTorrents:)]) {
+                    [[self delegate] performSelectorOnMainThread:@selector(engineDidRefreshTorrents:) withObject:self waitUntilDone:NO];
+                }
+            }
         }];
         [updateQueue addOperation:refreshOp];
         [refreshOp release];
@@ -456,17 +464,16 @@
             
         }];
         [statsOp setCompletionBlock:^{
-            [self performSelectorOnMainThread:@selector(notify:) withObject:type waitUntilDone:NO];
+            if ([self delegate]) {
+                if ([[self delegate] respondsToSelector:@selector(engineDidRefreshStats:)]) {
+                    [[self delegate] performSelectorOnMainThread:@selector(engineDidRefreshStats:) withObject:self waitUntilDone:NO];
+                }
+            }
         }];
         [updateQueue addOperation:statsOp];
         [statsOp release];
         
     }
-}
-
-- (void)notify:(NSString *)type
-{
-    [[NSNotificationCenter defaultCenter] postNotificationName:type object:self];
 }
 
 @end
