@@ -26,6 +26,8 @@
     
     NSString *transmissionUsername;
     NSString *transmissionPassword;
+    
+    NSURL *downloadLocation;
 }
 
 @property (retain) IBOutlet NSWindow *window;
@@ -41,6 +43,7 @@
 @property (retain) IBOutlet NSTextField *transmissionPasswordField;
 @property (copy) NSString *transmissionUsername;
 @property (copy) NSString *transmissionPassword;
+@property (copy) NSURL *downloadLocation;
 
 - (void)awakeFromNib;
 - (IBAction)switchToGeneral:(id)sender;

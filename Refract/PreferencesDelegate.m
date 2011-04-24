@@ -75,6 +75,13 @@
         }
     }
     
+    NSString *downloadLocationSetting = [defaults stringForKey:REFRACT_USERDEFAULT_DOWNLOAD_LOCATION];
+    if ([downloadLocationSetting length] > 0) {
+        [self willChangeValueForKey:@"downloadLocation"];
+        downloadLocation = [NSURL fileURLWithPath:downloadLocationSetting];
+        [self didChangeValueForKey:@"downloadLocation"];
+    }
+    
     NSView *contentView = [window contentView];
     [[contentView animator] addSubview:general];
     current = general;
@@ -189,6 +196,26 @@
     }
     
     transmissionPassword = newTransmissionPassword;
+}
+
+- (NSURL *)downloadLocation
+{
+    return downloadLocation;
+}
+
+- (void)setDownloadLocation:(NSURL *)newDownloadLocation
+{
+    if ([newDownloadLocation isEqual:downloadLocation]) {
+        return;
+    }
+    
+    downloadLocation = [newDownloadLocation copy];
+    
+    if (downloadLocation && ([[downloadLocation path] length] > 0)) {
+        [[NSUserDefaults standardUserDefaults] setObject:[downloadLocation path] forKey:REFRACT_USERDEFAULT_DOWNLOAD_LOCATION];
+    } else {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:REFRACT_USERDEFAULT_DOWNLOAD_LOCATION];
+    }
 }
 
 @end
