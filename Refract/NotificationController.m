@@ -111,7 +111,9 @@ static NotificationController *sharedInstance = nil;
     }
     
     if (queueing) {
-        [queuedDownloadFinished addObject:torrent];
+        @synchronized (self) {
+            [queuedDownloadFinished addObject:torrent];
+        }
     } else {
         [notificationQueue addOperation:[[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(doNotifyDownloadFinished:) object:torrent] autorelease]];
     }
@@ -141,7 +143,9 @@ static NotificationController *sharedInstance = nil;
     }
     
     if (queueing) {
-        [queuedDownloadAdded addObject:torrent];
+        @synchronized (self) {
+            [queuedDownloadAdded addObject:torrent];
+        }
     } else {
         [notificationQueue addOperation:[[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(doNotifyDownloadAdded:) object:torrent] autorelease]];
     }
@@ -171,7 +175,9 @@ static NotificationController *sharedInstance = nil;
     }   
     
     if (queueing) {
-        [queuedDownloadRemoved addObject:torrent];
+        @synchronized (self) {
+            [queuedDownloadRemoved addObject:torrent];
+        }
     } else {
         [notificationQueue addOperation:[[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(doNotifyDownloadRemoved:) object:self] autorelease]];
     }
@@ -231,36 +237,35 @@ static NotificationController *sharedInstance = nil;
 
 - (void)startQueue
 {
-    @synchronized (self) {
-        queueing = true;
-    }
+    queueing = true;
 }
 
 - (void)flushQueue
 {
-    [notificationQueue addOperationWithBlock:^{
-        NSMutableArray *copyQueuedAdded = nil;
-        NSMutableArray *copyQueuedRemoved = nil;
-        NSMutableArray *copyQueuedFinished = nil;
-        
-        @synchronized (self) {
-            queueing = false;
-            
-            if ([queuedDownloadAdded count] > 0) {
-                copyQueuedAdded = [NSMutableArray arrayWithArray:queuedDownloadAdded];
-                [queuedDownloadAdded removeAllObjects];
-            }
-            
-            if ([queuedDownloadRemoved count] > 0) {
-                copyQueuedRemoved = [NSMutableArray arrayWithArray:queuedDownloadRemoved];
-                [queuedDownloadRemoved removeAllObjects];
-            }
-            
-            if ([queuedDownloadFinished count] > 0) {
-                copyQueuedFinished = [NSMutableArray arrayWithArray:queuedDownloadFinished];
-                [queuedDownloadFinished removeAllObjects];
-            }
+    queueing = false;
+    
+    NSMutableArray *copyQueuedAdded = nil;
+    NSMutableArray *copyQueuedRemoved = nil;
+    NSMutableArray *copyQueuedFinished = nil;
+    
+    @synchronized (self) {
+        if ([queuedDownloadAdded count] > 0) {
+            copyQueuedAdded = [NSMutableArray arrayWithArray:queuedDownloadAdded];
+            [queuedDownloadAdded removeAllObjects];
         }
+        
+        if ([queuedDownloadRemoved count] > 0) {
+            copyQueuedRemoved = [NSMutableArray arrayWithArray:queuedDownloadRemoved];
+            [queuedDownloadRemoved removeAllObjects];
+        }
+        
+        if ([queuedDownloadFinished count] > 0) {
+            copyQueuedFinished = [NSMutableArray arrayWithArray:queuedDownloadFinished];
+            [queuedDownloadFinished removeAllObjects];
+        }
+    }
+    
+    [notificationQueue addOperationWithBlock:^{
         
         if (copyQueuedAdded) {
             if ([copyQueuedAdded count] > 2) {
