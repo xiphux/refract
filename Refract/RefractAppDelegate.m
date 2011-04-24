@@ -294,6 +294,29 @@
     [self updateFilterPredicate];
 }
 
+- (IBAction)startStopClicked:(id)sender
+{
+    NSInteger clickedSegment = [sender selectedSegment];
+    NSInteger clickedSegmentTag = [[sender cell] tagForSegment:clickedSegment];
+    
+    NSArray *selected = [torrentListController selectedObjects];
+    if ([selected count] < 1) {
+        return;
+    }
+    
+    if (clickedSegmentTag == 0) {
+        // stop
+        if (started) {
+            [engine stopTorrents:selected];
+        }
+    } else if (clickedSegmentTag == 1) {
+        // start
+        if (started) {
+            [engine startTorrents:selected];
+        }
+    }
+}
+
 - (void)updateFilterPredicate
 {
     NSMutableArray *allPredicates = [NSMutableArray array];

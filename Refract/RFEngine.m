@@ -51,6 +51,18 @@
     return nil;
 }
 
+- (bool)startTorrents:(NSArray *)list
+{
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
+
+- (bool)stopTorrents:(NSArray *)list
+{
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
+
 - (NSMutableDictionary *)torrents
 {
     [self doesNotRecognizeSelector:_cmd];

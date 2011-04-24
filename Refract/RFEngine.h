@@ -25,6 +25,9 @@ typedef enum {
 - (bool)disconnect;
 - (bool)connected;
 - (bool)refresh;
+- (bool)startTorrents:(NSArray *)list;
+- (bool)stopTorrents:(NSArray *)list;
+
 - (NSDictionary *)torrents;
 - (RFEngineType)type;
 - (unsigned long)uploadSpeed;

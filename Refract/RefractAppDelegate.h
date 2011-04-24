@@ -43,6 +43,7 @@
 - (IBAction)openPreferences:(id)sender;
 - (IBAction)search:(id)sender;
 - (IBAction)statsButtonClick:(id)sender;
+- (IBAction)startStopClicked:(id)sender;
 - (void)setDefaults;
 - (bool)initEngine;
 - (bool)startEngine;
