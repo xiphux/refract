@@ -21,6 +21,8 @@
     NSSearchField IBOutlet *searchField;
     NSButton IBOutlet *statsButton;
     NSTextField IBOutlet *rateText;
+    NSMenu IBOutlet *removeMenu;
+    NSSegmentedControl IBOutlet *removeButton;
     
     RFEngine *engine;
     RFTorrentList *torrentList;
@@ -36,6 +38,8 @@
 @property (retain) IBOutlet NSSearchField *searchField;
 @property (retain) IBOutlet NSTextField *rateText;
 @property (retain) IBOutlet NSButton *statsButton;
+@property (retain) IBOutlet NSMenu *removeMenu;
+@property (retain) IBOutlet NSSegmentedControl *removeButton;
 
 @property (assign) RFEngine *engine;
 @property (retain) RFTorrentList *torrentList;
@@ -44,6 +48,8 @@
 - (IBAction)search:(id)sender;
 - (IBAction)statsButtonClick:(id)sender;
 - (IBAction)startStopClicked:(id)sender;
+- (IBAction)removeClicked:(id)sender;
+- (IBAction)removeAndDeleteClicked:(id)sender;
 - (void)setDefaults;
 - (bool)initEngine;
 - (bool)startEngine;

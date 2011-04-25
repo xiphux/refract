@@ -63,6 +63,12 @@
     return nil;
 }
 
+- (bool)removeTorrents:(NSArray *)list deleteData:(bool)del
+{
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
+
 - (NSMutableDictionary *)torrents
 {
     [self doesNotRecognizeSelector:_cmd];

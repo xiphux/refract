@@ -207,6 +207,41 @@
     return true;
 }
 
+- (bool)removeTorrents:(NSArray *)list deleteData:(bool)del
+{   
+    if (!list) {
+        return false;
+    }
+    
+    if ([list count] < 1) {
+        return false;
+    }
+    
+    SBJsonWriter *writer = [[SBJsonWriter alloc] init];
+    NSMutableArray *ids = [NSMutableArray array];
+    for (RFTorrent *t in list) {
+        if ([[t tid] length] > 0) {
+            [ids addObject:[NSNumber numberWithInt:[[t tid] intValue]]];
+        }
+    }
+    NSDictionary *args = [NSMutableDictionary dictionaryWithObjects:[NSArray arrayWithObjects:ids, [NSNumber numberWithBool:del], nil] forKeys:[NSArray arrayWithObjects:@"ids", @"delete-local-data", nil]];
+    NSDictionary *requestData = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:args, @"torrent-remove", nil] forKeys:[NSArray arrayWithObjects:@"arguments", @"method", nil]];
+    NSString *requestStr = [writer stringWithObject:requestData];
+    NSData *requestJson = [requestStr dataUsingEncoding:NSUTF8StringEncoding];
+    [writer release];
+    
+    NSString *type;
+    if (del) {
+        type = @"removedelete";
+    } else {
+        type = @"remove";
+    }
+    
+    [self rpcRequest:type data:requestJson];
+    
+    return true;
+}
+
 - (bool)rpcRequest:(NSString *)type data:(NSData *)requestBody
 {
     NSMutableURLRequest *request = [self createRequest];

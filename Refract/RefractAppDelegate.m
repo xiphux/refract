@@ -20,6 +20,8 @@
 - (void)updateStatsButton;
 - (void)updateRateText;
 - (void)updateDockBadge;
+- (void)alertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode
+        contextInfo:(void *)contextInfo;
 @end
 
 @implementation RefractAppDelegate
@@ -46,9 +48,16 @@
 @synthesize searchField;
 @synthesize rateText;
 @synthesize statsButton;
+@synthesize removeMenu;
+@synthesize removeButton;
 
 @synthesize engine;
 @synthesize torrentList;
+
+- (void)awakeFromNib
+{
+    [removeButton setMenu:removeMenu forSegment:0];
+}
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
@@ -314,6 +323,78 @@
         if (started) {
             [engine startTorrents:selected];
         }
+    }
+}
+
+- (IBAction)removeClicked:(id)sender
+{
+    NSArray *selected = [torrentListController selectedObjects];
+    if ([selected count] < 1) {
+        return;
+    }
+    
+    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+    [alert addButtonWithTitle:@"Cancel"];
+    [alert addButtonWithTitle:@"Remove"];
+    if ([selected count] > 1) {
+        [alert setMessageText:@"Are you sure you want to remove these torrents?"];
+        [alert setInformativeText:[NSString stringWithFormat:@"%d torrents will be removed.", [selected count]]];
+    } else {
+        [alert setMessageText:@"Are you sure you want to remove this torrent?"];
+        [alert setInformativeText:[NSString stringWithFormat:@"%@ will be removed.", [[selected objectAtIndex:0] name]]];
+    }
+    [alert setAlertStyle:NSWarningAlertStyle];
+    
+    NSDictionary *context = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSArray arrayWithArray:selected], @"remove", nil] forKeys:[NSArray arrayWithObjects:@"selected", @"type", nil]];
+    
+    [alert beginSheetModalForWindow:window modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:context];
+}
+
+- (IBAction)removeAndDeleteClicked:(id)sender
+{
+    NSArray *selected = [torrentListController selectedObjects];
+    if ([selected count] < 1) {
+        return;
+    }
+    
+    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+    [alert addButtonWithTitle:@"Cancel"];
+    [alert addButtonWithTitle:@"Remove and Delete"];
+    if ([selected count] > 1) {
+        [alert setMessageText:@"Are you sure you want to remove and delete these torrents?"];
+        [alert setInformativeText:[NSString stringWithFormat:@"%d torrents will be removed and their data will be deleted.", [selected count]]];
+    } else {
+        [alert setMessageText:@"Are you sure you want to remove and delete this torrent?"];
+        [alert setInformativeText:[NSString stringWithFormat:@"%@ will be removed and its data will be deleted.", [[selected objectAtIndex:0] name]]];
+    }
+    [alert setAlertStyle:NSWarningAlertStyle];
+    
+    NSDictionary *context = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSArray arrayWithArray:selected], @"removedelete", nil] forKeys:[NSArray arrayWithObjects:@"selected", @"type", nil]];
+    
+    [alert beginSheetModalForWindow:window modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:context];
+}
+
+- (void)alertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode
+        contextInfo:(void *)contextInfo
+{
+    NSDictionary *context = (NSDictionary *)contextInfo;
+    
+    NSString *type = [context objectForKey:@"type"];
+    
+    if ([type isEqualToString:@"remove"]) {
+        
+        if (returnCode == NSAlertSecondButtonReturn) {
+            NSArray *selected = [context objectForKey:@"selected"];
+            [engine removeTorrents:selected deleteData:false];
+        }
+        
+    } else if ([type isEqualToString:@"removedelete"]) {
+        
+        if (returnCode == NSAlertSecondButtonReturn) {
+            NSArray *selected = [context objectForKey:@"selected"];
+            [engine removeTorrents:selected deleteData:true];
+        }
+        
     }
 }
 
