@@ -22,8 +22,8 @@
 		C67861A11346E41100892BC2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C678619F1346E41100892BC2 /* InfoPlist.strings */; };
 		C67861A41346E41100892BC2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C67861A31346E41100892BC2 /* main.m */; };
 		C67861A71346E41100892BC2 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = C67861A51346E41100892BC2 /* Credits.rtf */; };
-		C67861AA1346E41100892BC2 /* RefractAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C67861A91346E41100892BC2 /* RefractAppDelegate.m */; };
-		C67861AD1346E41100892BC2 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = C67861AB1346E41100892BC2 /* MainMenu.xib */; };
+		C67861AA1346E41100892BC2 /* MainWindowDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C67861A91346E41100892BC2 /* MainWindowDelegate.m */; };
+		C67861AD1346E41100892BC2 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = C67861AB1346E41100892BC2 /* MainWindow.xib */; };
 		C67861B41346E41100892BC2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C67861961346E41100892BC2 /* Cocoa.framework */; };
 		C67861BC1346E41100892BC2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C67861BA1346E41100892BC2 /* InfoPlist.strings */; };
 		C67861BF1346E41100892BC2 /* RefractTests.h in Resources */ = {isa = PBXBuildFile; fileRef = C67861BE1346E41100892BC2 /* RefractTests.h */; };
@@ -34,6 +34,9 @@
 		C678621E134795EF00892BC2 /* RFEngineTransmission.m in Sources */ = {isa = PBXBuildFile; fileRef = C678621D134795EF00892BC2 /* RFEngineTransmission.m */; };
 		C67862251347BDEA00892BC2 /* RFBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = C67862241347BDEA00892BC2 /* RFBase64.m */; };
 		C683C39013492A330039B953 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = C683C38F13492A330039B953 /* Preferences.xib */; };
+		C6A8E45013651627006CE0DC /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6A8E44F13651627006CE0DC /* MainMenu.xib */; };
+		C6A8E453136516FD006CE0DC /* RefractAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C6A8E452136516FD006CE0DC /* RefractAppDelegate.m */; };
+		C6A8E45613651874006CE0DC /* MainWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = C6A8E45513651874006CE0DC /* MainWindowController.m */; };
 		C6B914D2135A50D90008B707 /* RFUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = C6B914D1135A50D90008B707 /* RFUtils.m */; };
 		C6B914D5135AB05E0008B707 /* PreferencesController.m in Sources */ = {isa = PBXBuildFile; fileRef = C6B914D4135AB05E0008B707 /* PreferencesController.m */; };
 		C6B914D8135AC7590008B707 /* TorrentItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C6B914D7135AC7590008B707 /* TorrentItem.m */; };
@@ -127,9 +130,9 @@
 		C67861A21346E41100892BC2 /* Refract-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Refract-Prefix.pch"; sourceTree = "<group>"; };
 		C67861A31346E41100892BC2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		C67861A61346E41100892BC2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
-		C67861A81346E41100892BC2 /* RefractAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RefractAppDelegate.h; sourceTree = "<group>"; };
-		C67861A91346E41100892BC2 /* RefractAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RefractAppDelegate.m; sourceTree = "<group>"; };
-		C67861AC1346E41100892BC2 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		C67861A81346E41100892BC2 /* MainWindowDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainWindowDelegate.h; sourceTree = "<group>"; };
+		C67861A91346E41100892BC2 /* MainWindowDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainWindowDelegate.m; sourceTree = "<group>"; };
+		C67861AC1346E41100892BC2 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
 		C67861B31346E41100892BC2 /* RefractTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RefractTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C67861B91346E41100892BC2 /* RefractTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "RefractTests-Info.plist"; sourceTree = "<group>"; };
 		C67861BB1346E41100892BC2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -147,6 +150,11 @@
 		C67862231347BDEA00892BC2 /* RFBase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFBase64.h; sourceTree = "<group>"; };
 		C67862241347BDEA00892BC2 /* RFBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFBase64.m; sourceTree = "<group>"; };
 		C683C38F13492A330039B953 /* Preferences.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Preferences.xib; sourceTree = "<group>"; };
+		C6A8E44F13651627006CE0DC /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
+		C6A8E451136516FD006CE0DC /* RefractAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RefractAppDelegate.h; sourceTree = "<group>"; };
+		C6A8E452136516FD006CE0DC /* RefractAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RefractAppDelegate.m; sourceTree = "<group>"; };
+		C6A8E45413651874006CE0DC /* MainWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainWindowController.h; sourceTree = "<group>"; };
+		C6A8E45513651874006CE0DC /* MainWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainWindowController.m; sourceTree = "<group>"; };
 		C6B914D0135A50D90008B707 /* RFUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFUtils.h; sourceTree = "<group>"; };
 		C6B914D1135A50D90008B707 /* RFUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFUtils.m; sourceTree = "<group>"; };
 		C6B914D3135AB05E0008B707 /* PreferencesController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencesController.h; sourceTree = "<group>"; };
@@ -229,10 +237,10 @@
 		C64DF9A81348E46A00CB08EF /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				C6414DD013515672000F248C /* SourceList */,
-				C67861A81346E41100892BC2 /* RefractAppDelegate.h */,
-				C67861A91346E41100892BC2 /* RefractAppDelegate.m */,
-				C67861AB1346E41100892BC2 /* MainMenu.xib */,
+				C6A8E45713651A81006CE0DC /* Main Window */,
+				C6A8E44F13651627006CE0DC /* MainMenu.xib */,
+				C6A8E451136516FD006CE0DC /* RefractAppDelegate.h */,
+				C6A8E452136516FD006CE0DC /* RefractAppDelegate.m */,
 			);
 			name = Main;
 			sourceTree = "<group>";
@@ -396,6 +404,19 @@
 			name = Utilities;
 			sourceTree = "<group>";
 		};
+		C6A8E45713651A81006CE0DC /* Main Window */ = {
+			isa = PBXGroup;
+			children = (
+				C6A8E45413651874006CE0DC /* MainWindowController.h */,
+				C6A8E45513651874006CE0DC /* MainWindowController.m */,
+				C67861A81346E41100892BC2 /* MainWindowDelegate.h */,
+				C67861A91346E41100892BC2 /* MainWindowDelegate.m */,
+				C67861AB1346E41100892BC2 /* MainWindow.xib */,
+				C6414DD013515672000F248C /* SourceList */,
+			);
+			name = "Main Window";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -503,10 +524,11 @@
 			files = (
 				C67861A11346E41100892BC2 /* InfoPlist.strings in Resources */,
 				C67861A71346E41100892BC2 /* Credits.rtf in Resources */,
-				C67861AD1346E41100892BC2 /* MainMenu.xib in Resources */,
+				C67861AD1346E41100892BC2 /* MainWindow.xib in Resources */,
 				C64DF9A61348E3B200CB08EF /* Torrent.xib in Resources */,
 				C683C39013492A330039B953 /* Preferences.xib in Resources */,
 				C6B914DA135BBD070008B707 /* Growl Registration Ticket.growlRegDict in Resources */,
+				C6A8E45013651627006CE0DC /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -543,7 +565,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C67861A41346E41100892BC2 /* main.m in Sources */,
-				C67861AA1346E41100892BC2 /* RefractAppDelegate.m in Sources */,
+				C67861AA1346E41100892BC2 /* MainWindowDelegate.m in Sources */,
 				C67861D01346ED5C00892BC2 /* RFTorrent.m in Sources */,
 				C67861D41347829D00892BC2 /* RFEngine.m in Sources */,
 				C678621E134795EF00892BC2 /* RFEngineTransmission.m in Sources */,
@@ -562,6 +584,8 @@
 				C6B914D5135AB05E0008B707 /* PreferencesController.m in Sources */,
 				C6B914D8135AC7590008B707 /* TorrentItem.m in Sources */,
 				C6B914DD135BBDA70008B707 /* NotificationController.m in Sources */,
+				C6A8E453136516FD006CE0DC /* RefractAppDelegate.m in Sources */,
+				C6A8E45613651874006CE0DC /* MainWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -600,12 +624,12 @@
 			name = Credits.rtf;
 			sourceTree = "<group>";
 		};
-		C67861AB1346E41100892BC2 /* MainMenu.xib */ = {
+		C67861AB1346E41100892BC2 /* MainWindow.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				C67861AC1346E41100892BC2 /* en */,
 			);
-			name = MainMenu.xib;
+			name = MainWindow.xib;
 			sourceTree = "<group>";
 		};
 		C67861BA1346E41100892BC2 /* InfoPlist.strings */ = {
