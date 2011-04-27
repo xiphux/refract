@@ -69,6 +69,12 @@
     return nil;
 }
 
+- (bool)addTorrent:(NSData *)data
+{
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
+
 - (NSMutableDictionary *)torrents
 {
     [self doesNotRecognizeSelector:_cmd];

@@ -373,6 +373,27 @@
     }
 }
 
+- (IBAction)addClicked:(id)sender
+{
+    NSArray *fileTypes = [NSArray arrayWithObject:@"torrent"];
+    NSOpenPanel *oPanel = [NSOpenPanel openPanel];
+    
+    [oPanel setAllowsMultipleSelection:YES];
+    NSInteger result = [oPanel runModalForDirectory:NSHomeDirectory()
+                                     file:nil types:fileTypes];
+    if (result == NSOKButton) {
+        NSArray *urlsToOpen = [oPanel URLs];
+        NSUInteger i, count = [urlsToOpen count];
+        for (i=0; i<count; i++) {
+            NSURL *url = [urlsToOpen objectAtIndex:i];
+            NSFileWrapper *file = [[NSFileWrapper alloc] initWithURL:url options:0 error:nil];
+            NSData *fileContent = [file regularFileContents];
+            [engine addTorrent:fileContent];
+            [file release];
+        }
+    }
+}
+
 - (void)updateFilterPredicate
 {
     NSMutableArray *allPredicates = [NSMutableArray array];

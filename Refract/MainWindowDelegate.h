@@ -48,6 +48,7 @@
 - (IBAction)startStopClicked:(id)sender;
 - (IBAction)removeClicked:(id)sender;
 - (IBAction)removeAndDeleteClicked:(id)sender;
+- (IBAction)addClicked:(id)sender;
 - (bool)initEngine;
 - (bool)startEngine;
 - (void)stopEngine;
