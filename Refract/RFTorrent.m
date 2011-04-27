@@ -9,6 +9,9 @@
 #import "RFTorrent.h"
 #import "NotificationController.h"
 
+#define NSUINT_BIT (CHAR_BIT * sizeof(NSUInteger))
+#define NSUINTROTATE(val, howmuch) ((((NSUInteger)val) << howmuch) | (((NSUInteger)val) >> (NSUINT_BIT - howmuch)))
+
 @implementation RFTorrent
 
 - (id)init
@@ -47,6 +50,22 @@
     }
     
     name = [NSString stringWithString:newName];
+    
+    updated = true;
+}
+
+- (NSString *)hashString
+{
+    return hashString;
+}
+
+- (void)setHashString:(NSString *)newHashString
+{
+    if ([hashString isEqualToString:newHashString]) {
+        return;
+    }
+    
+    hashString = [NSString stringWithString:newHashString];
     
     updated = true;
 }
@@ -303,12 +322,12 @@
     if (!other || ![other isKindOfClass:[self class]]) {
         return false;
     }
-    return [[self tid] isEqualToString:[other tid]];
+    return [[self tid] isEqualToString:[other tid]] && [[self hashString] isEqualToString:[other hashString]];
 }
 
 - (NSUInteger)hash
 {
-    return [[self tid] hash];
+    return NSUINTROTATE([[self tid] hash], NSUINT_BIT/2) ^ (NSUInteger)[[self hashString] hash];
 }
 
 - (bool)dataEqual:(RFTorrent *)other
@@ -322,6 +341,7 @@
     return (
             [[self name] isEqualToString:[other name]] &&
             [[self tid] isEqualToString:[other tid]] &&
+            [[self hashString] isEqualToString:[other hashString]] &&
             ([self currentSize] == [other currentSize]) &&
             ([self doneSize] == [other doneSize]) &&
             ([self totalSize] == [other totalSize]) &&

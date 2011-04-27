@@ -24,6 +24,7 @@ typedef enum {
     
     NSString *name;
     NSString *tid;
+    NSString *hashString;
     
     unsigned long currentSize;
     unsigned long doneSize;
@@ -51,6 +52,7 @@ typedef enum {
 
 @property(copy) NSString *name;
 @property(readonly) NSString *tid;
+@property(copy) NSString *hashString;
 @property unsigned long currentSize;
 @property unsigned long doneSize;
 @property unsigned long totalSize;

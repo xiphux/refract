@@ -133,7 +133,7 @@
 {
     SBJsonWriter *writer = [[SBJsonWriter alloc] init];
     
-    NSArray *fields = [NSArray arrayWithObjects:@"id", @"name", @"totalSize", @"sizeWhenDone", @"leftUntilDone", @"rateDownload", @"rateUpload", @"status", @"percentDone", @"eta", @"peersConnected", @"peersGettingFromUs", @"peersSendingToUs", @"recheckPercent", @"uploadedEver", @"uploadRatio", @"doneDate", nil];
+    NSArray *fields = [NSArray arrayWithObjects:@"id", @"name", @"totalSize", @"sizeWhenDone", @"leftUntilDone", @"rateDownload", @"rateUpload", @"status", @"percentDone", @"eta", @"peersConnected", @"peersGettingFromUs", @"peersSendingToUs", @"recheckPercent", @"uploadedEver", @"uploadRatio", @"doneDate", @"hashString", nil];
     NSDictionary *args = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObject:fields] forKeys:[NSArray arrayWithObject:@"fields"]];
     NSDictionary *requestData = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:args, @"torrent-get", nil] forKeys:[NSArray arrayWithObjects:@"arguments", @"method", nil]];
     NSString *requestStr = [writer stringWithObject:requestData];
@@ -289,6 +289,11 @@
             NSString *name = [torrentDict objectForKey:@"name"];
             if ([name length] > 0) {
                 torrent.name = name;
+            }
+            
+            NSString *hashString = [torrentDict objectForKey:@"hashString"];
+            if ([hashString length] > 0) {
+                torrent.hashString = hashString;
             }
             
             NSNumber *totalSize = [torrentDict objectForKey:@"totalSize"];
