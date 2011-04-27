@@ -58,8 +58,13 @@
     [allNode setTitle:@"All"];
     [allNode setIsLeaf:true];
     [allNode setSortIndex:0];
-    NSIndexPath *allPath = [NSIndexPath indexPathWithIndex:0];
-    [treeController insertObject:allNode atArrangedObjectIndexPath:allPath];
+    [treeController insertObject:allNode atArrangedObjectIndexPath:[NSIndexPath indexPathWithIndex:0]];
+    
+    CategoryNode *statusCat = [[CategoryNode alloc] init];
+    [statusCat setTitle:@"Status"];
+    [statusCat setSortIndex:1];
+    [statusCat setIsLeaf:false];
+    [treeController insertObject:statusCat atArrangedObjectIndexPath:[NSIndexPath indexPathWithIndex:1]];
 }
 
 - (void)addStatusGroup:(RFTorrentStatus)newStatus
@@ -85,21 +90,14 @@
     }
     
     if (statusCat == nil) {
-        statusCat = [[CategoryNode alloc] init];
-        [statusCat setTitle:@"Status"];
-        [statusCat setSortIndex:1];
-        [statusCat setIsLeaf:false];
-        path = [NSIndexPath indexPathWithIndex:1];
-        manipulatingSourceList = true;
-        [treeController insertObject:statusCat atArrangedObjectIndexPath:path];
-        manipulatingSourceList = false;
-    } else {
-        for (NSUInteger i = 0; i < [[statusCat children] count]; i++) {
-            id stat = [[statusCat children] objectAtIndex:i];
-            if ([stat isKindOfClass:[StatusNode class]]) {
-                if ([stat status] == newStatus) {
-                    return;
-                }
+        return;
+    }
+        
+    for (NSUInteger i = 0; i < [[statusCat children] count]; i++) {
+        id stat = [[statusCat children] objectAtIndex:i];
+        if ([stat isKindOfClass:[StatusNode class]]) {
+            if ([stat status] == newStatus) {
+                return;
             }
         }
     }
@@ -184,20 +182,19 @@
         }
     }
     
-    if (statusNode != nil) {
-        for (NSUInteger i = 0; i < [[statusNode childNodes] count]; i++) {
-            id treenode = [[statusNode childNodes] objectAtIndex:i];
-            id datanode = [treenode representedObject];
-            if ([datanode isKindOfClass:[StatusNode class]]) {
-                if ([datanode status] == remStatus) {
-                    manipulatingSourceList = true;
-                    [treeController removeObjectAtArrangedObjectIndexPath:[treenode indexPath]];
-                    if ([[statusNode childNodes] count] == 0) {
-                        [treeController removeObjectAtArrangedObjectIndexPath:[statusNode indexPath]];
-                    }
-                    manipulatingSourceList = false;
-                    break;
-                }
+    if (statusNode == nil) {
+        return;
+    }
+    
+    for (NSUInteger i = 0; i < [[statusNode childNodes] count]; i++) {
+        id treenode = [[statusNode childNodes] objectAtIndex:i];
+        id datanode = [treenode representedObject];
+        if ([datanode isKindOfClass:[StatusNode class]]) {
+            if ([datanode status] == remStatus) {
+                manipulatingSourceList = true;
+                [treeController removeObjectAtArrangedObjectIndexPath:[treenode indexPath]];
+                manipulatingSourceList = false;
+                break;
             }
         }
     }
