@@ -269,6 +269,7 @@
 
 - (void)sourceListSelectionChanged:(NSNotification *)notification
 {
+    [searchField setStringValue:@""];
     [self updateFilterPredicate];
 }
 
