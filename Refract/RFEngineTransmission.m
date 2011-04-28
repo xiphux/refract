@@ -248,6 +248,10 @@
         return false;
     }
     
+    if ([data length] < 1) {
+        return false;
+    }
+    
     SBJsonWriter *writer = [[SBJsonWriter alloc] init];
     NSDictionary *args = [NSMutableDictionary dictionaryWithObjects:[NSArray arrayWithObject:[RFBase64 encodeBase64WithData:data]] forKeys:[NSArray arrayWithObject:@"metainfo"]];
     NSDictionary *requestData = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:args, @"torrent-add", nil] forKeys:[NSArray arrayWithObjects:@"arguments", @"method", nil]];
