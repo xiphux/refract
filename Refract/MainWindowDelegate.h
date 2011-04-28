@@ -49,6 +49,7 @@
 - (IBAction)removeClicked:(id)sender;
 - (IBAction)removeAndDeleteClicked:(id)sender;
 - (IBAction)addClicked:(id)sender;
+- (bool)addTorrentFile:(NSURL *)url;
 - (bool)initEngine;
 - (bool)startEngine;
 - (void)stopEngine;

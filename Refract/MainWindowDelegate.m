@@ -28,6 +28,7 @@
 
 - (void)dealloc
 {
+    [window unregisterDraggedTypes];
     [window release];
     [sourceListController release];
     [torrentListController release]; 
@@ -55,6 +56,8 @@
 
 - (void)awakeFromNib
 {
+    [window registerForDraggedTypes:[NSArray arrayWithObject:NSFilenamesPboardType]];
+    
     [removeButton setMenu:removeMenu forSegment:0];
     
     [torrentListController setSortDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:true]]];
@@ -313,11 +316,14 @@
     [alert addButtonWithTitle:@"Remove"];
     if ([selected count] > 1) {
         [alert setMessageText:@"Are you sure you want to remove these torrents?"];
-        [alert setInformativeText:[NSString stringWithFormat:@"%d torrents will be removed.", [selected count]]];
     } else {
         [alert setMessageText:@"Are you sure you want to remove this torrent?"];
-        [alert setInformativeText:[NSString stringWithFormat:@"%@ will be removed.", [[selected objectAtIndex:0] name]]];
     }
+    NSMutableArray *names = [NSMutableArray array];
+    for (RFTorrent *t in selected) {
+        [names addObject:[t name]];
+    }
+    [alert setInformativeText:[names componentsJoinedByString:@"\n"]];
     [alert setAlertStyle:NSWarningAlertStyle];
     
     NSDictionary *context = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSArray arrayWithArray:selected], @"remove", nil] forKeys:[NSArray arrayWithObjects:@"selected", @"type", nil]];
@@ -337,11 +343,14 @@
     [alert addButtonWithTitle:@"Remove and Delete"];
     if ([selected count] > 1) {
         [alert setMessageText:@"Are you sure you want to remove and delete these torrents?"];
-        [alert setInformativeText:[NSString stringWithFormat:@"%d torrents will be removed and their data will be deleted.", [selected count]]];
     } else {
         [alert setMessageText:@"Are you sure you want to remove and delete this torrent?"];
-        [alert setInformativeText:[NSString stringWithFormat:@"%@ will be removed and its data will be deleted.", [[selected objectAtIndex:0] name]]];
     }
+    NSMutableArray *names = [NSMutableArray array];
+    for (RFTorrent *t in selected) {
+        [names addObject:[t name]];
+    }
+    [alert setInformativeText:[names componentsJoinedByString:@"\n"]];
     [alert setAlertStyle:NSWarningAlertStyle];
     
     NSDictionary *context = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSArray arrayWithArray:selected], @"removedelete", nil] forKeys:[NSArray arrayWithObjects:@"selected", @"type", nil]];
@@ -370,6 +379,14 @@
             [engine removeTorrents:selected deleteData:true];
         }
         
+    } else if ([type isEqualToString:@"add"]) {
+        if (returnCode == NSAlertSecondButtonReturn) {
+            NSArray *paths = [context objectForKey:@"paths"];
+            for (NSString *path in paths) {
+                NSURL *pathUrl = [NSURL fileURLWithPath:path];
+                [self addTorrentFile:pathUrl];
+            }
+        }
     }
 }
 
@@ -386,12 +403,25 @@
         NSUInteger i, count = [urlsToOpen count];
         for (i=0; i<count; i++) {
             NSURL *url = [urlsToOpen objectAtIndex:i];
-            NSFileWrapper *file = [[NSFileWrapper alloc] initWithURL:url options:0 error:nil];
-            NSData *fileContent = [file regularFileContents];
-            [engine addTorrent:fileContent];
-            [file release];
+            [self addTorrentFile:url];
         }
     }
+}
+
+- (bool)addTorrentFile:(NSURL *)url
+{
+    NSFileWrapper *file = [[NSFileWrapper alloc] initWithURL:url options:0 error:nil];
+    
+    if (!file) {
+        return false;
+    }
+    
+    NSData *fileContent = [file regularFileContents];
+    [engine addTorrent:fileContent];
+    
+    [file release];
+    
+    return true;
 }
 
 - (void)updateFilterPredicate
@@ -433,6 +463,67 @@
 - (BOOL)splitView:(NSSplitView *)splitView shouldHideDividerAtIndex:(NSInteger)dividerIndex
 {
     return NO;
+}
+
+
+- (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender
+{
+    if ((NSDragOperationCopy & [sender draggingSourceOperationMask]) == NSDragOperationCopy) {
+        return NSDragOperationCopy;
+    }
+    
+    return NSDragOperationNone;
+}
+
+- (BOOL)prepareForDragOperation:(id<NSDraggingInfo>)sender
+{
+    if (engine && [engine connected] && started) {
+        return YES;
+    }
+    
+    return NO;
+}
+
+- (BOOL)performDragOperation:(id<NSDraggingInfo>)sender
+{
+    NSPasteboard *paste = [sender draggingPasteboard];
+    
+    if (![[paste types] containsObject:NSFilenamesPboardType]) {
+        return NO;
+    }
+    
+    NSArray *files = [paste propertyListForType:NSFilenamesPboardType];
+    NSMutableArray *torrentFiles = [NSMutableArray array];
+    for (NSString *path in files) {
+        if ([[path pathExtension] isEqualToString:@"torrent"]) {
+            [torrentFiles addObject:path];
+        }
+    }
+    
+    if ([torrentFiles count] < 1) {
+        return NO;
+    }
+    
+    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+    [alert addButtonWithTitle:@"Cancel"];
+    [alert addButtonWithTitle:@"Add"];
+    if ([torrentFiles count] > 1) {
+        [alert setMessageText:@"Are you sure you want to add these torrents?"];
+    } else {
+        [alert setMessageText:@"Are you sure you want to add this torrent?"];
+    }
+    NSMutableArray *displayNames = [NSMutableArray array];
+    for (NSString *path in torrentFiles) {
+        [displayNames addObject:[[NSFileManager defaultManager] displayNameAtPath:path]];
+    }
+    [alert setInformativeText:[displayNames componentsJoinedByString:@"\n"]];
+    [alert setAlertStyle:NSWarningAlertStyle];
+    
+    NSDictionary *context = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSArray arrayWithArray:torrentFiles], @"add", nil] forKeys:[NSArray arrayWithObjects:@"paths", @"type", nil]];
+    
+    [alert beginSheetModalForWindow:window modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:context];
+    
+    return YES;
 }
 
 @end
