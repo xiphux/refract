@@ -29,6 +29,8 @@
     
     bool showTotalStats;
     bool started;
+    
+    NSOperationQueue *updateQueue;
 }
 
 @property (assign) IBOutlet NSWindow *window;

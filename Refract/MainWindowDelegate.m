@@ -26,6 +26,15 @@
 
 @implementation MainWindowDelegate
 
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        updateQueue = [[NSOperationQueue alloc] init];
+    }
+    return self;
+}
+
 - (void)dealloc
 {
     [window unregisterDraggedTypes];
@@ -38,6 +47,7 @@
     [self destroyEngine];
     [torrentList release];
     [searchPredicate release];
+    [updateQueue release];
 
     [super dealloc];
 }
@@ -384,7 +394,8 @@
             NSArray *paths = [context objectForKey:@"paths"];
             for (NSString *path in paths) {
                 NSURL *pathUrl = [NSURL fileURLWithPath:path];
-                [self addTorrentFile:pathUrl];
+                NSInvocationOperation *op = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(addTorrentFile:) object:pathUrl] autorelease];
+                [updateQueue addOperation:op];
             }
         }
     }
@@ -403,7 +414,8 @@
         NSUInteger i, count = [urlsToOpen count];
         for (i=0; i<count; i++) {
             NSURL *url = [urlsToOpen objectAtIndex:i];
-            [self addTorrentFile:url];
+            NSInvocationOperation *op = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(addTorrentFile:) object:url] autorelease];
+            [updateQueue addOperation:op];
         }
     }
 }
