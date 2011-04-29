@@ -9,6 +9,7 @@
 #import "RefractAppDelegate.h"
 #import "RFConstants.h"
 #import "NotificationController.h"
+#import "MainWindowDelegate.h"
 
 @implementation RefractAppDelegate
 
@@ -49,6 +50,16 @@
         [mainWindowController showWindow:self];
     }
     return TRUE;
+}
+
+- (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename
+{
+    if ([[filename pathExtension] isEqualToString:@"torrent"]) {
+        NSURL *fileUrl = [NSURL fileURLWithPath:filename];
+        [(MainWindowDelegate *)[[mainWindowController window] delegate] addTorrentFile:fileUrl];
+        return YES;
+    }
+    return NO;
 }
 
 - (IBAction)openPreferences:(id)sender
