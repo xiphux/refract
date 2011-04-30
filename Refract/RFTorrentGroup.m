@@ -23,10 +23,26 @@
     return self;
 }
 
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [[RFTorrentGroup alloc] init];
+    if (self) {
+        name = [aDecoder decodeObjectForKey:@"name"];
+        gid = [aDecoder decodeIntForKey:@"gid"];
+    }
+    return self;
+}
+
 - (void)dealloc
 {
     [name release];
     [super dealloc];
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeObject:name forKey:@"name"];
+    [aCoder encodeInt:gid forKey:@"gid"];
 }
 
 - (bool)isEqual:(id)other

@@ -74,6 +74,22 @@
     [groups removeObject:group];
 }
 
+- (void)load
+{
+    NSData *savedGroupData = [[NSUserDefaults standardUserDefaults] objectForKey:REFRACT_USERDEFAULT_GROUPS];
+    if (savedGroupData) {
+        NSArray *savedGroups = [NSKeyedUnarchiver unarchiveObjectWithData:savedGroupData];
+        if (savedGroups) {
+            groups = [NSMutableArray arrayWithArray:savedGroups];
+        }
+    }
+}
+
+- (void)save
+{
+    [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:groups] forKey:REFRACT_USERDEFAULT_GROUPS];
+}
+
 
 + (NSUInteger)generateGroupId
 {

@@ -83,6 +83,8 @@
     [self setTorrentList:tList];
     
     [self setGroupList:[[RFGroupList alloc] init]];
+    [groupList load];
+    [sourceListController initGroups:[groupList groups]];
     
     if ([self initEngine]) {
         [self startEngine];
@@ -329,7 +331,13 @@
         return nil;
     }
     
-    return [groupList addGroup:name];
+    RFTorrentGroup *newGroup = [groupList addGroup:name];
+    
+    if (newGroup) {
+        [groupList save];
+    }
+    
+    return newGroup;
 }
 
 - (BOOL)sourceList:(SourceListController *)list canRemoveGroup:(RFTorrentGroup *)group
@@ -344,6 +352,8 @@
     }
     
     [groupList removeGroup:group];
+    
+    [groupList save];
 }
 
 - (BOOL)sourceList:(SourceListController *)list canRenameGroup:(RFTorrentGroup *)group toName:(NSString *)newName
@@ -375,6 +385,8 @@
 - (void)sourceList:(SourceListController *)list didRenameGroup:(RFTorrentGroup *)group toName:(NSString *)newName
 {
     [group setName:newName];
+    
+    [groupList save];
 }
 
 - (IBAction)search:(id)sender

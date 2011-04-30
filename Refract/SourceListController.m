@@ -62,6 +62,13 @@
     [self createStandardNodes];
     [sourceList selectRowIndexes:[NSIndexSet indexSetWithIndex:0] byExtendingSelection:false];
     manipulatingSourceList = false;
+    
+    initialized = true;
+    
+    if (initialGroups) {
+        [self initGroups:initialGroups];
+        [initialGroups release];
+    }
 }
 
 - (void)createStandardNodes
@@ -429,6 +436,53 @@
             [self doRemoveGroup:[context objectForKey:@"group"]];
         }
     }
+}
+
+- (void)initGroups:(NSArray *)groupList
+{
+    if (!groupList) {
+        return;
+    }
+    
+    if ([groupList count] == 0) {
+        return;
+    }
+    
+    if (!initialized) {
+        initialGroups = [NSArray arrayWithArray:groupList];
+        return;
+    }
+    
+    NSTreeNode *groupTreeNode = nil;
+    CategoryNode *groupCat = nil;
+    
+    groupTreeNode = [self findCategoryTreeNode:catGroup];
+    if (!groupTreeNode) {
+        return;
+    }
+    
+    groupCat = [groupTreeNode representedObject];
+    if (!groupCat) {
+        return;
+    }
+    
+    manipulatingSourceList = true;
+    
+    for (NSUInteger i = 0; i < [groupList count]; i++) {
+        RFTorrentGroup *group = [groupList objectAtIndex:i];
+        NSIndexPath *itemPath = [[groupTreeNode indexPath] indexPathByAddingIndex:[[groupCat children] count]];
+        GroupNode *newNode = [[GroupNode alloc] init];
+        [newNode setTitle:[group name]];
+        [newNode setIsLeaf:true];
+        [newNode setSortIndex:1];
+        [newNode setGroup:group];
+        [newNode addObserver:self forKeyPath:@"title" options:0 context:nil];
+        [treeController insertObject:newNode atArrangedObjectIndexPath:itemPath];
+    }
+    
+    [treeController rearrangeObjects];
+    
+    manipulatingSourceList = false;
 }
 
 - (BOOL)control:(NSControl *)control textShouldEndEditing:(NSText *)fieldEditor

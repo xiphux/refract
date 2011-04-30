@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface RFTorrentGroup : NSObject {
+@interface RFTorrentGroup : NSObject <NSCoding> {
 @private
     NSString *name;
     NSUInteger gid;

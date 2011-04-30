@@ -21,6 +21,9 @@
     RFTorrentFilter *filter;
     bool manipulatingSourceList;
     RFTorrentStatus removeStatus;
+    
+    bool initialized;
+    NSArray *initialGroups;
 
     NSObject <SourceListDelegate> *delegate;
 }
@@ -34,6 +37,8 @@
 
 - (void)addStatusGroup:(RFTorrentStatus)newStatus;
 - (void)removeStatusGroup:(RFTorrentStatus)remStatus;
+
+- (void)initGroups:(NSArray *)groupList;
 
 - (IBAction)addGroup:(id)sender;
 - (IBAction)removeGroup:(id)sender;

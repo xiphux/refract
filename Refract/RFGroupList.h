@@ -23,6 +23,9 @@
 - (RFTorrentGroup *)addGroup:(NSString *)name;
 - (void)removeGroup:(RFTorrentGroup *)group;
 
+- (void)load;
+- (void)save;
+
 + (NSUInteger)generateGroupId;
 
 @end
