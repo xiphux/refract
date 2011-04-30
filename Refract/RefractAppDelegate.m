@@ -44,6 +44,11 @@
     [mainWindowController showWindow:self];
 }
 
+- (void)applicationWillTerminate:(NSNotification *)notification
+{
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag
 {
     if (!flag) {
