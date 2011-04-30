@@ -72,7 +72,7 @@
     
     [torrentListController setSortDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:true]]];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sourceListSelectionChanged:) name:@"SourceListSelectionChanged" object:sourceListController];
+    [sourceListController setDelegate:self];
     
     showTotalStats = [[NSUserDefaults standardUserDefaults] boolForKey:REFRACT_USERDEFAULT_TOTAL_SIZE];
     
@@ -280,10 +280,12 @@
     }
 }
 
-- (void)sourceListSelectionChanged:(NSNotification *)notification
+- (void)sourceList:(SourceListController *)list filterDidChange:(RFTorrentFilter *)newFilter
 {
-    [searchField setStringValue:@""];
-    [self updateFilterPredicate];
+    if ([list isEqual:sourceListController]) {
+        [searchField setStringValue:@""];
+        [self updateFilterPredicate];
+    }
 }
 
 - (IBAction)search:(id)sender
@@ -456,6 +458,15 @@
     if (filtType == filtStatus) {
         NSPredicate *statusPredicate = [NSPredicate predicateWithFormat:@"status == %d", [[sourceListController filter] torrentStatus]];
         [allPredicates addObject:statusPredicate];
+    } else if (filtType == filtGroup) {
+        NSPredicate *groupPredicate;
+        if ([[sourceListController filter] torrentGroup] != nil) {
+            groupPredicate = [NSPredicate predicateWithFormat:@"group == %d", [[[sourceListController filter] torrentGroup] gid]];
+        } else {
+            // no group
+            groupPredicate = [NSPredicate predicateWithFormat:@"group == 0"];
+        }
+        [allPredicates addObject:groupPredicate];
     }
     
     if ([allPredicates count] > 0) {

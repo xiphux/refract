@@ -12,7 +12,7 @@
 #import "SourceListController.h"
 #import "PreferencesController.h"
 
-@interface MainWindowDelegate : NSObject <NSSplitViewDelegate, RFTorrentListDelegate, RFEngineDelegate> {
+@interface MainWindowDelegate : NSObject <NSSplitViewDelegate, RFTorrentListDelegate, RFEngineDelegate, SourceListControllerDelegate> {
 @private
     NSWindow IBOutlet *window;
     SourceListController IBOutlet *sourceListController;

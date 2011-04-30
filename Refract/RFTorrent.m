@@ -314,6 +314,22 @@
     updated = true;
 }
 
+- (NSUInteger)group
+{
+    return group;
+}
+
+- (void)setGroup:(NSUInteger)newGroup
+{
+    if (group == newGroup) {
+        return;
+    }
+    
+    group = newGroup;
+    
+    updated = true;
+}
+
 - (bool)isEqual:(id)other
 {
     if (other == self) {
@@ -355,7 +371,8 @@
             ([self recheckPercent] == [other recheckPercent]) &&
             ([self ratio] == [other ratio]) &&
             ([self uploadedSize] == [other uploadedSize]) &&
-            ([self doneDate] == [other doneDate])
+            ([self doneDate] == [other doneDate]) &&
+            ([self group] == [other group])
             );
 }
 

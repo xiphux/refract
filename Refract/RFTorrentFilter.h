@@ -9,20 +9,24 @@
 #import <Foundation/Foundation.h>
 
 #import "RFTorrent.h"
+#import "RFTorrentGroup.h"
 
 typedef enum {
     filtNone,
-    filtStatus
+    filtStatus,
+    filtGroup
 } RFTorrentFilterType;
 
 @interface RFTorrentFilter : NSObject {
 @private
     RFTorrentFilterType filterType;
     RFTorrentStatus torrentStatus;
+    RFTorrentGroup *torrentGroup;
 }
 
 @property (readonly) RFTorrentFilterType filterType;
 @property (readonly) RFTorrentStatus torrentStatus;
+@property (readonly) RFTorrentGroup *torrentGroup;
 
 - (bool)isEqual:(id)other;
 - (NSUInteger)hash;
@@ -30,6 +34,7 @@ typedef enum {
 - (id)initWithFilter:(RFTorrentFilter *)filter;
 - (id)initWithStatus:(RFTorrentStatus)initStatus;
 - (id)initWithType:(RFTorrentFilterType)initType;
+- (id)initwithGroup:(RFTorrentGroup *)group;
 
 - (bool)checkTorrent:(RFTorrent *)t;
 

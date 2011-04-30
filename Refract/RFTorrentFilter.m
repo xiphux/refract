@@ -43,7 +43,18 @@
     if ([obj isKindOfClass:[RFTorrentFilter class]]) {
         if (filterType == filtStatus) {
             torrentStatus = [filter torrentStatus];
+        } else if (filterType == filtGroup) {
+            torrentGroup = [filter torrentGroup];
         }
+    }
+    return obj;
+}
+
+- (id)initwithGroup:(RFTorrentGroup *)initGroup
+{
+    id obj = [self initWithType:filtGroup];
+    if ([obj isKindOfClass:[RFTorrentFilter class]]) {
+        torrentGroup = initGroup;
     }
     return obj;
 }
@@ -55,6 +66,7 @@
 
 @synthesize filterType;
 @synthesize torrentStatus;
+@synthesize torrentGroup;
 
 - (bool)isEqual:(id)other
 {

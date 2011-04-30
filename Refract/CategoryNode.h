@@ -11,8 +11,8 @@
 #import "BaseNode.h"
 
 typedef enum {
-    catStatus,
-    catGroup
+    catStatus = 1,
+    catGroup = 2
 } CategoryNodeType;
 
 @interface CategoryNode : BaseNode {
