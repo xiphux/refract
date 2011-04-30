@@ -10,25 +10,27 @@
 
 #import "RFTorrentFilter.h"
 
-@protocol SourceListControllerDelegate;
+@protocol SourceListDelegate;
 
 @interface SourceListController : NSObject <NSOutlineViewDelegate, NSMenuDelegate> {
 @private
     IBOutlet NSTreeController *treeController;
     IBOutlet NSOutlineView *sourceList;
     IBOutlet NSMenu *contextMenu;
+    IBOutlet NSWindow *window;
     RFTorrentFilter *filter;
     bool manipulatingSourceList;
     RFTorrentStatus removeStatus;
 
-    NSObject <SourceListControllerDelegate> *delegate;
+    NSObject <SourceListDelegate> *delegate;
 }
 
 @property (retain) NSTreeController *treeController;
 @property (retain) NSOutlineView *sourceList;
 @property (retain) NSMenu *contextMenu;
+@property (retain) NSWindow *window;
 @property (readonly) RFTorrentFilter *filter;
-@property (nonatomic, assign) NSObject <SourceListControllerDelegate> *delegate;
+@property (nonatomic, assign) NSObject <SourceListDelegate> *delegate;
 
 - (void)addStatusGroup:(RFTorrentStatus)newStatus;
 - (void)removeStatusGroup:(RFTorrentStatus)remStatus;
@@ -38,15 +40,17 @@
 
 @end
 
-@protocol SourceListControllerDelegate <NSObject>
+@protocol SourceListDelegate <NSObject>
 @optional
 - (void)sourceList:(SourceListController *)list filterDidChange:(RFTorrentFilter *)newFilter;
 
-- (BOOL)sourceList:(SourceListController *)list canRemoveGroup:(NSUInteger)gid;
-- (void)sourceList:(SourceListController *)list didRemoveGroup:(NSUInteger)gid;
+- (NSUInteger)sourceList:(SourceListController *)list torrentsInGroup:(RFTorrentGroup *)group;
 
-- (BOOL)sourceList:(SourceListController *)list canRenameGroup:(NSUInteger)gid toName:(NSString *)newName;
-- (void)sourceList:(SourceListController *)list didRenameGroup:(NSUInteger)gid toName:(NSString *)newName;
+- (BOOL)sourceList:(SourceListController *)list canRemoveGroup:(RFTorrentGroup *)group;
+- (void)sourceList:(SourceListController *)list didRemoveGroup:(RFTorrentGroup *)group;
+
+- (BOOL)sourceList:(SourceListController *)list canRenameGroup:(RFTorrentGroup *) toName:(NSString *)newName;
+- (void)sourceList:(SourceListController *)list didRenameGroup:(RFTorrentGroup *) toName:(NSString *)newName;
 
 - (BOOL)sourceList:(SourceListController *)list canAddGroup:(NSString *)name;
 - (RFTorrentGroup *)sourceList:(SourceListController *)list didAddGroup:(NSString *)name;

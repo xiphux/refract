@@ -9,10 +9,11 @@
 #import <Cocoa/Cocoa.h>
 #import "RFEngine.h"
 #import "RFTorrentList.h"
+#import "RFGroupList.h"
 #import "SourceListController.h"
 #import "PreferencesController.h"
 
-@interface MainWindowDelegate : NSObject <NSSplitViewDelegate, RFTorrentListDelegate, RFEngineDelegate, SourceListControllerDelegate> {
+@interface MainWindowDelegate : NSObject <NSSplitViewDelegate, RFTorrentListDelegate, RFEngineDelegate, SourceListDelegate> {
 @private
     NSWindow IBOutlet *window;
     SourceListController IBOutlet *sourceListController;
@@ -25,6 +26,7 @@
     
     RFEngine *engine;
     RFTorrentList *torrentList;
+    RFGroupList *groupList;
     NSPredicate *searchPredicate;
     
     bool showTotalStats;
@@ -42,8 +44,9 @@
 @property (retain) IBOutlet NSMenu *removeMenu;
 @property (retain) IBOutlet NSSegmentedControl *removeButton;
 
-@property (assign) RFEngine *engine;
+@property (retain) RFEngine *engine;
 @property (retain) RFTorrentList *torrentList;
+@property (retain) RFGroupList *groupList;
 
 - (IBAction)search:(id)sender;
 - (IBAction)statsButtonClick:(id)sender;
@@ -58,6 +61,5 @@
 - (void)destroyEngine;
 - (void)refresh;
 - (void)settingsChanged:(NSNotification *)notification;
-- (void)sourceListSelectionChanged:(NSNotification *)notification;
 
 @end

@@ -46,6 +46,7 @@
     [rateText release];
     [self destroyEngine];
     [torrentList release];
+    [groupList release];
     [searchPredicate release];
     [updateQueue release];
 
@@ -63,6 +64,7 @@
 
 @synthesize engine;
 @synthesize torrentList;
+@synthesize groupList;
 
 - (void)awakeFromNib
 {
@@ -79,6 +81,8 @@
     RFTorrentList *tList = [[RFTorrentList alloc] init];
     [tList setDelegate:self];
     [self setTorrentList:tList];
+    
+    [self setGroupList:[[RFGroupList alloc] init]];
     
     if ([self initEngine]) {
         [self startEngine];
@@ -286,6 +290,60 @@
         [searchField setStringValue:@""];
         [self updateFilterPredicate];
     }
+}
+
+- (NSUInteger)sourceList:(SourceListController *)list torrentsInGroup:(RFTorrentGroup *)group
+{
+    if (!group) {
+        return 0;
+    }
+    
+    if ([group gid] < 1) {
+        return 0;
+    }
+    
+    if (!torrentList) {
+        return 0;
+    }
+    
+    NSArray *torrents = [[torrentList torrents] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"group == %d", [group gid]]];
+    return [torrents count];
+}
+
+- (BOOL)sourceList:(SourceListController *)list canAddGroup:(NSString *)name
+{
+    if (!groupList) {
+        return true;
+    }
+    
+    if ([name length] == 0) {
+        return false;
+    }
+    
+    return ![groupList groupWithNameExists:name];
+}
+
+- (RFTorrentGroup *)sourceList:(SourceListController *)list didAddGroup:(NSString *)name
+{
+    if (!groupList) {
+        return nil;
+    }
+    
+    return [groupList addGroup:name];
+}
+
+- (BOOL)sourceList:(SourceListController *)list canRemoveGroup:(RFTorrentGroup *)group
+{
+    return true;
+}
+
+- (void)sourceList:(SourceListController *)list didRemoveGroup:(RFTorrentGroup *)group
+{
+    if (!groupList) {
+        return;
+    }
+    
+    [groupList removeGroup:group];
 }
 
 - (IBAction)search:(id)sender

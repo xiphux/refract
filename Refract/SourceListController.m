@@ -17,11 +17,14 @@
 - (void)createStandardNodes;
 - (NSUInteger)statusSortIndex:(RFTorrentStatus)status;
 - (void)doRemoveStatusGroup:(RFTorrentStatus)remStatus;
+- (void)doRemoveGroup:(RFTorrentGroup *)group;
 - (NSTreeNode *)findCategoryTreeNode:(CategoryNodeType)type;
 - (NSTreeNode *)findStatusTreeNode:(RFTorrentStatus)status inList:(NSArray *)list;
 - (NSTreeNode *)findStatusTreeNode:(RFTorrentStatus)status;
 - (NSTreeNode *)findSelectedStatusTreeNode:(RFTorrentStatus)status;
 - (NSTreeNode *)findGroupTreeNodeWithName:(NSString *)name;
+- (void)alertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode
+        contextInfo:(void *)contextInfo;
 @end
 
 @implementation SourceListController
@@ -44,6 +47,7 @@
 @synthesize treeController;
 @synthesize sourceList;
 @synthesize contextMenu;
+@synthesize window;
 @synthesize filter;
 @synthesize delegate;
 
@@ -346,7 +350,7 @@
     if ([self delegate]) {
         if ([[self delegate] respondsToSelector:@selector(sourceList:canRemoveGroup:)]) {
             if ([(GroupNode *)node group]) {
-                canremove = [[self delegate] sourceList:self canRemoveGroup:[[(GroupNode *)node group] gid]];
+                canremove = [[self delegate] sourceList:self canRemoveGroup:[(GroupNode *)node group]];
             }
         }
     }
@@ -355,6 +359,37 @@
         return;
     }
     
+    NSUInteger count = 0;
+    if ([self delegate]) {
+        if ([[self delegate] respondsToSelector:@selector(sourceList:torrentsInGroup:)]) {
+            if ([(GroupNode *)node group]) {
+                count = [[self delegate] sourceList:self torrentsInGroup:[(GroupNode *)node group]];
+            }
+        }
+    }
+
+    if (count == 0) {
+        [self doRemoveGroup:[(GroupNode *)node group]];
+        return;
+    }
+    
+    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+    [alert addButtonWithTitle:@"Cancel"];
+    [alert addButtonWithTitle:@"Delete"];
+    [alert setMessageText:@"Are you sure you want to delete this group?"];
+    [alert setInformativeText:[NSString stringWithFormat:@"%d torrents will be returned to the default group.", count]];
+    [alert setAlertStyle:NSWarningAlertStyle];
+    
+    NSDictionary *context = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[(GroupNode *)node group], @"removegroup", nil] forKeys:[NSArray arrayWithObjects:@"group", @"type", nil]];
+    
+    [alert beginSheetModalForWindow:window modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:context];
+}
+
+- (void)doRemoveGroup:(RFTorrentGroup *)group
+{
+    if (!group) {
+        return;
+    }
     
     NSTreeNode *groupCat = [self findCategoryTreeNode:catGroup];
     if (!groupCat) {
@@ -362,22 +397,34 @@
     }
     
     for (NSUInteger i = 0; i < [[groupCat childNodes] count]; i++) {
-        id treenode = [[groupCat childNodes] objectAtIndex:i];
-        id datanode = [treenode representedObject];
+        NSTreeNode *treenode = [[groupCat childNodes] objectAtIndex:i];
+        BaseNode *datanode = [treenode representedObject];
         if ([datanode isKindOfClass:[GroupNode class]]) {
-            if ([datanode isEqual:node]) {
+            if ([[(GroupNode *)datanode group] isEqual:group]) {
                 [treeController removeObjectAtArrangedObjectIndexPath:[treenode indexPath]];
                 
                 if ([self delegate]) {
                     if ([[self delegate] respondsToSelector:@selector(sourceList:didRemoveGroup:)]) {
-                        if ([(GroupNode *)node group]) {
-                            [[self delegate] sourceList:self didRemoveGroup:[[(GroupNode *)node group] gid]];
+                        if ([(GroupNode *)datanode group]) {
+                            [[self delegate] sourceList:self didRemoveGroup:[(GroupNode *)datanode group]];
                         }
                     }
                 }
                 
                 break;
             }
+        }
+    }
+}
+
+- (void)alertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo
+{
+    NSDictionary *context = (NSDictionary *)contextInfo;
+    NSString *type = [context objectForKey:@"type"];
+    
+    if ([type isEqualToString:@"removegroup"]) {
+        if (returnCode == NSAlertSecondButtonReturn) {
+            [self doRemoveGroup:[context objectForKey:@"group"]];
         }
     }
 }
@@ -487,7 +534,7 @@
             }
         }
         if (addgroup) {
-            NSMenuItem *addGroupItem = [[[NSMenuItem alloc] initWithTitle:@"Add Group" action:@selector(addGroup:) keyEquivalent:@""] autorelease];
+            NSMenuItem *addGroupItem = [[[NSMenuItem alloc] initWithTitle:@"Add Group..." action:@selector(addGroup:) keyEquivalent:@""] autorelease];
             [addGroupItem setTarget:self];
             [menu addItem:addGroupItem];
         }
@@ -497,6 +544,13 @@
                 NSMenuItem *delGroupItem = [[[NSMenuItem alloc] initWithTitle:@"Delete" action:@selector(removeGroup:) keyEquivalent:@""] autorelease];
                 [delGroupItem setTarget:self];
                 [menu addItem:delGroupItem];
+                if ([self delegate]) {
+                    if ([[self delegate] respondsToSelector:@selector(sourceList:canRemoveGroup:)]) {
+                        if ([(GroupNode *)node group]) {
+                            [delGroupItem setEnabled:[[self delegate] sourceList:self canRemoveGroup:[(GroupNode *)node group]]];
+                        }
+                    }
+                }
             }
         }
     }

@@ -655,7 +655,6 @@
 											<int key="NSvFlags">289</int>
 											<string key="NSFrame">{{326, 5}, {205, 14}}</string>
 											<reference key="NSSuperview" ref="533517072"/>
-											<reference key="NSNextKeyView"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTextFieldCell" key="NSCell" id="456623023">
 												<int key="NSCellFlags">68288064</int>
@@ -712,7 +711,7 @@
 															<int key="NSvFlags">274</int>
 															<string key="NSFrameSize">{546, 427}</string>
 															<reference key="NSSuperview" ref="557667291"/>
-															<reference key="NSNextKeyView" ref="947010822"/>
+															<reference key="NSNextKeyView" ref="370174739"/>
 															<string key="NSMinGridSize">{0, 0}</string>
 															<string key="NSMaxGridSize">{0, 0}</string>
 															<int key="NSMaxNumberOfGridRows">0</int>
@@ -765,7 +764,7 @@
 											</object>
 											<string key="NSFrame">{{0, 28}, {548, 429}}</string>
 											<reference key="NSSuperview" ref="533517072"/>
-											<reference key="NSNextKeyView" ref="370174739"/>
+											<reference key="NSNextKeyView" ref="557667291"/>
 											<int key="NSsFlags">530</int>
 											<reference key="NSVScroller" ref="370174739"/>
 											<reference key="NSHScroller" ref="963357463"/>
@@ -1196,6 +1195,14 @@
 						<reference key="destination" ref="364194895"/>
 					</object>
 					<int key="connectionID">836</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">window</string>
+						<reference key="source" ref="796525643"/>
+						<reference key="destination" ref="1028704394"/>
+					</object>
+					<int key="connectionID">838</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1705,7 +1712,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">837</int>
+			<int key="maxID">838</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes"/>
 		<int key="IBDocument.localizationMode">0</int>

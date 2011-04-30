@@ -77,7 +77,7 @@
         return false;
     }
     
-    return ((filterType == [other filterType]) && (torrentStatus == [other torrentStatus]));
+    return ((filterType == [other filterType]) && (torrentStatus == [other torrentStatus]) && ([torrentGroup isEqual:[other torrentGroup]]));
 }
 
 - (NSUInteger)hash
