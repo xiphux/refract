@@ -311,6 +311,7 @@
     [newNode setTitle:name];
     [newNode setIsLeaf:true];
     [newNode setSortIndex:1];
+    [newNode addObserver:self forKeyPath:@"title" options:0 context:nil];
     manipulatingSourceList = true;
     [treeController insertObject:newNode atArrangedObjectIndexPath:itemPath];
     [treeController rearrangeObjects];
@@ -401,6 +402,7 @@
         BaseNode *datanode = [treenode representedObject];
         if ([datanode isKindOfClass:[GroupNode class]]) {
             if ([[(GroupNode *)datanode group] isEqual:group]) {
+                [datanode removeObserver:self forKeyPath:@"title"];
                 [treeController removeObjectAtArrangedObjectIndexPath:[treenode indexPath]];
                 
                 if ([self delegate]) {
@@ -426,6 +428,57 @@
         if (returnCode == NSAlertSecondButtonReturn) {
             [self doRemoveGroup:[context objectForKey:@"group"]];
         }
+    }
+}
+
+- (BOOL)control:(NSControl *)control textShouldEndEditing:(NSText *)fieldEditor
+{
+    if ([control isEqual:sourceList]) {
+        
+        if ([[fieldEditor string] length] == 0) {
+            return false;
+        }
+        
+        if (![self delegate]) {
+            return true;
+        }
+        
+        NSInteger row = [sourceList editedRow];
+        
+        id item = [sourceList itemAtRow:row];
+        BaseNode *node = [item representedObject];
+        
+        if ([node isKindOfClass:[GroupNode class]]) {
+        
+            if (![[self delegate] respondsToSelector:@selector(sourceList:canRenameGroup:toName:)]) {
+                return true;
+            }
+            
+            return [[self delegate] sourceList:self canRenameGroup:[(GroupNode *)node group] toName:[fieldEditor string]];
+        }
+    }
+    return true;
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([object isKindOfClass:[GroupNode class]]) {
+        
+        [treeController rearrangeObjects];
+        
+        if (![(GroupNode *)object group]) {
+            return;
+        }
+        
+        if (![self delegate]) {
+            return;
+        }
+        
+        if (![[self delegate] respondsToSelector:@selector(sourceList:didRenameGroup:toName:)]) {
+            return;
+        }
+        
+        [[self delegate] sourceList:self didRenameGroup:[(GroupNode *)object group] toName:[(GroupNode *)object title]];
     }
 }
 

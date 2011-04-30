@@ -49,8 +49,8 @@
 - (BOOL)sourceList:(SourceListController *)list canRemoveGroup:(RFTorrentGroup *)group;
 - (void)sourceList:(SourceListController *)list didRemoveGroup:(RFTorrentGroup *)group;
 
-- (BOOL)sourceList:(SourceListController *)list canRenameGroup:(RFTorrentGroup *) toName:(NSString *)newName;
-- (void)sourceList:(SourceListController *)list didRenameGroup:(RFTorrentGroup *) toName:(NSString *)newName;
+- (BOOL)sourceList:(SourceListController *)list canRenameGroup:(RFTorrentGroup *)group toName:(NSString *)newName;
+- (void)sourceList:(SourceListController *)list didRenameGroup:(RFTorrentGroup *)group toName:(NSString *)newName;
 
 - (BOOL)sourceList:(SourceListController *)list canAddGroup:(NSString *)name;
 - (RFTorrentGroup *)sourceList:(SourceListController *)list didAddGroup:(NSString *)name;

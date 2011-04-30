@@ -10,14 +10,14 @@
 
 
 @interface BaseNode : NSObject {
-@private
+@protected
     NSString *title;
     NSMutableArray *children;
     bool isLeaf;
     NSUInteger sortIndex;
 }
 
-@property (retain) NSString *title;
+@property (copy) NSString *title;
 @property (copy) NSMutableArray *children;
 @property (assign) bool isLeaf;
 @property (assign) NSUInteger sortIndex;

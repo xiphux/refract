@@ -346,6 +346,37 @@
     [groupList removeGroup:group];
 }
 
+- (BOOL)sourceList:(SourceListController *)list canRenameGroup:(RFTorrentGroup *)group toName:(NSString *)newName
+{
+    if (!group) {
+        return true;
+    }
+    
+    if ([newName length] == 0) {
+        return false;
+    }
+    
+    if ([[group name] isEqualToString:newName]) {
+        return true;
+    }
+    
+    if (!groupList) {
+        return true;
+    }
+    
+    RFTorrentGroup *existing = [groupList groupWithName:newName];
+    if (existing && ![existing isEqual:group]) {
+        return false;
+    }
+    
+    return true;
+}
+
+- (void)sourceList:(SourceListController *)list didRenameGroup:(RFTorrentGroup *)group toName:(NSString *)newName
+{
+    [group setName:newName];
+}
+
 - (IBAction)search:(id)sender
 {
     [self updateFilterPredicate];
