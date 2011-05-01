@@ -74,7 +74,7 @@
 - (void)createStandardNodes
 {
     BaseNode *allNode = [[BaseNode alloc] init];
-    [allNode setTitle:@"All"];
+    [allNode setTitle:@"Torrents"];
     [allNode setIsLeaf:true];
     [allNode setSortIndex:0];
     [treeController insertObject:allNode atArrangedObjectIndexPath:[NSIndexPath indexPathWithIndex:0]];
@@ -593,7 +593,7 @@
     } else if ([node isKindOfClass:[GroupNode class]]) {
         newFilter = [[RFTorrentFilter alloc] initwithGroup:[(GroupNode *)node group]];
     } else if (![node isKindOfClass:[CategoryNode class]]) {
-        if ([[node title] isEqualToString:@"All"]) {
+        if ([[node title] isEqualToString:@"Torrents"]) {
             newFilter = [[RFTorrentFilter alloc] initWithType:filtNone];
         }
     }
