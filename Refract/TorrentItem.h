@@ -13,9 +13,13 @@
 @private
     NSTextField IBOutlet *upperLabel;
     NSTextField IBOutlet *lowerLabel;
+    NSPopUpButton IBOutlet *actionButton;
 }
 
 @property (retain) IBOutlet NSTextField *upperLabel;
 @property (retain) IBOutlet NSTextField *lowerLabel;
+@property (retain) IBOutlet NSPopUpButton *actionButton;
+
+- (void)actionButton:(NSNotification *)notification;
 
 @end

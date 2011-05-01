@@ -16,12 +16,28 @@
 #import "NotificationController.h"
 
 @interface MainWindowDelegate ()
+
 - (void)updateFilterPredicate;
 - (void)updateStatsButton;
 - (void)updateRateText;
 - (void)updateDockBadge;
+
 - (void)alertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode
         contextInfo:(void *)contextInfo;
+
+- (void)startTorrentNotified:(NSNotification *)notification;
+- (void)stopTorrentNotified:(NSNotification *)notification;
+- (void)removeTorrentNotified:(NSNotification *)notification;
+- (void)deleteTorrentNotified:(NSNotification *)notification;
+
+- (void)tryRemoveTorrents:(NSArray *)torrents;
+- (void)tryDeleteTorrents:(NSArray *)torrents;
+
+- (void)startTorrents:(NSArray *)torrents;
+- (void)stopTorrents:(NSArray *)torrents;
+- (void)removeTorrents:(NSArray *)torrents;
+- (void)deleteTorrents:(NSArray *)torrents;
+
 @end
 
 @implementation MainWindowDelegate
@@ -91,7 +107,15 @@
     }
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsChanged:) name:NSUserDefaultsDidChangeNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startTorrentNotified:) name:REFRACT_NOTIFICATION_TORRENT_START object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stopTorrentNotified:) name:REFRACT_NOTIFICATION_TORRENT_STOP object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeTorrentNotified:) name:REFRACT_NOTIFICATION_TORRENT_REMOVE object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteTorrentNotified:) name:REFRACT_NOTIFICATION_TORRENT_DELETE object:nil];
 }
+
+
+#pragma mark engine functions
 
 - (bool)initEngine
 {
@@ -159,13 +183,25 @@
     
     [engine refresh];
 }
-     
+ 
+
+#pragma mark engine delegate
+
 - (void)engineDidRefreshTorrents:(RFEngine *)eng
 {    
     NSArray *allTorrents = [[eng torrents] allValues];
     
     [[self torrentList] loadTorrents:allTorrents];
 }
+
+- (void)engineDidRefreshStats:(RFEngine *)engine
+{
+    [self updateStatsButton];
+    [self updateRateText];
+}
+
+
+#pragma mark torrent list delegate
 
 - (void)torrentListDidFinishLoading:(RFTorrentList *)list
 {
@@ -229,62 +265,8 @@
     [NSTimer scheduledTimerWithTimeInterval:update target:self selector:@selector(refresh) userInfo:nil repeats:false];
 }
 
-- (void)engineDidRefreshStats:(RFEngine *)engine
-{
-    [self updateStatsButton];
-    [self updateRateText];
-}
 
-- (void)updateStatsButton
-{
-    NSString *label;
-    if (showTotalStats) {
-        label = [NSString stringWithFormat:@"Total D: %@ U: %@", [RFUtils readableBytesDecimal:[engine totalDownloadedBytes]], [RFUtils readableBytesDecimal:[engine totalUploadedBytes]]];
-    } else {
-        label = [NSString stringWithFormat:@"Session D: %@ U: %@", [RFUtils readableBytesDecimal:[engine sessionDownloadedBytes]], [RFUtils readableBytesDecimal:[engine sessionUploadedBytes]]];
-    }
-    [statsButton setTitle:label];
-    [statsButton sizeToFit];
-}
-
-- (void)updateRateText
-{
-    NSString *label = [NSString stringWithFormat:@"D: %@ U: %@", [RFUtils readableRateDecimal:[engine downloadSpeed]], [RFUtils readableRateDecimal:[engine uploadSpeed]]];
-    [rateText setStringValue:label];
-}
-
-- (void)updateDockBadge
-{
-    NSUInteger activeCount = [[[torrentList torrents] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"status == %d", stDownloading]] count];
-    
-    if (activeCount > 0) {
-        [[[NSApplication sharedApplication] dockTile] setBadgeLabel:[NSString stringWithFormat:@"%d", activeCount]];
-    } else {
-        [[[NSApplication sharedApplication] dockTile] setBadgeLabel:nil];
-    }
-}
-
-- (IBAction)statsButtonClick:(id)sender
-{
-    showTotalStats = !showTotalStats;
-    [[NSUserDefaults standardUserDefaults] setBool:showTotalStats forKey:REFRACT_USERDEFAULT_TOTAL_SIZE];
-    [self updateStatsButton];
-}
-
-- (void)settingsChanged:(NSNotification *)notification
-{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
-    RFEngineType type = [defaults integerForKey:REFRACT_USERDEFAULT_ENGINE];
-    if (type != [engine type]) {
-        [self destroyEngine];
-        [self initEngine];
-    }
-    
-    if (!started) {
-        [self startEngine];
-    }
-}
+#pragma mark source list delegate
 
 - (void)sourceList:(SourceListController *)list filterDidChange:(RFTorrentFilter *)newFilter
 {
@@ -389,9 +371,19 @@
     [groupList save];
 }
 
+
+#pragma mark ui actions
+
 - (IBAction)search:(id)sender
 {
     [self updateFilterPredicate];
+}
+
+- (IBAction)statsButtonClick:(id)sender
+{
+    showTotalStats = !showTotalStats;
+    [[NSUserDefaults standardUserDefaults] setBool:showTotalStats forKey:REFRACT_USERDEFAULT_TOTAL_SIZE];
+    [self updateStatsButton];
 }
 
 - (IBAction)startStopClicked:(id)sender
@@ -407,12 +399,12 @@
     if (clickedSegmentTag == 0) {
         // stop
         if (started) {
-            [engine stopTorrents:selected];
+            [self stopTorrents:selected];
         }
     } else if (clickedSegmentTag == 1) {
         // start
         if (started) {
-            [engine startTorrents:selected];
+            [self startTorrents:selected];
         }
     }
 }
@@ -424,24 +416,7 @@
         return;
     }
     
-    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-    [alert addButtonWithTitle:@"Cancel"];
-    [alert addButtonWithTitle:@"Remove"];
-    if ([selected count] > 1) {
-        [alert setMessageText:@"Are you sure you want to remove these torrents?"];
-    } else {
-        [alert setMessageText:@"Are you sure you want to remove this torrent?"];
-    }
-    NSMutableArray *names = [NSMutableArray array];
-    for (RFTorrent *t in selected) {
-        [names addObject:[t name]];
-    }
-    [alert setInformativeText:[names componentsJoinedByString:@"\n"]];
-    [alert setAlertStyle:NSWarningAlertStyle];
-    
-    NSDictionary *context = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSArray arrayWithArray:selected], @"remove", nil] forKeys:[NSArray arrayWithObjects:@"selected", @"type", nil]];
-    
-    [alert beginSheetModalForWindow:window modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:context];
+    [self tryRemoveTorrents:selected];
 }
 
 - (IBAction)removeAndDeleteClicked:(id)sender
@@ -451,24 +426,7 @@
         return;
     }
     
-    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-    [alert addButtonWithTitle:@"Cancel"];
-    [alert addButtonWithTitle:@"Remove and Delete"];
-    if ([selected count] > 1) {
-        [alert setMessageText:@"Are you sure you want to remove and delete these torrents?"];
-    } else {
-        [alert setMessageText:@"Are you sure you want to remove and delete this torrent?"];
-    }
-    NSMutableArray *names = [NSMutableArray array];
-    for (RFTorrent *t in selected) {
-        [names addObject:[t name]];
-    }
-    [alert setInformativeText:[names componentsJoinedByString:@"\n"]];
-    [alert setAlertStyle:NSWarningAlertStyle];
-    
-    NSDictionary *context = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSArray arrayWithArray:selected], @"removedelete", nil] forKeys:[NSArray arrayWithObjects:@"selected", @"type", nil]];
-    
-    [alert beginSheetModalForWindow:window modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:context];
+    [self tryDeleteTorrents:selected];
 }
 
 - (void)alertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode
@@ -481,15 +439,13 @@
     if ([type isEqualToString:@"remove"]) {
         
         if (returnCode == NSAlertSecondButtonReturn) {
-            NSArray *selected = [context objectForKey:@"selected"];
-            [engine removeTorrents:selected deleteData:false];
+            [self removeTorrents:[context objectForKey:@"selected"]];
         }
         
     } else if ([type isEqualToString:@"removedelete"]) {
         
         if (returnCode == NSAlertSecondButtonReturn) {
-            NSArray *selected = [context objectForKey:@"selected"];
-            [engine removeTorrents:selected deleteData:true];
+            [self deleteTorrents:[context objectForKey:@"selected"]];
         }
         
     } else if ([type isEqualToString:@"add"]) {
@@ -522,6 +478,88 @@
         }
     }
 }
+
+
+#pragma mark notifications
+
+- (void)settingsChanged:(NSNotification *)notification
+{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    RFEngineType type = [defaults integerForKey:REFRACT_USERDEFAULT_ENGINE];
+    if (type != [engine type]) {
+        [self destroyEngine];
+        [self initEngine];
+    }
+    
+    if (!started) {
+        [self startEngine];
+    }
+}
+
+- (void)startTorrentNotified:(NSNotification *)notification
+{
+    NSDictionary *data = [notification userInfo];
+    if (!data) {
+        return;
+    }
+    
+    RFTorrent *torrent = [data objectForKey:@"torrent"];
+    if (!torrent) {
+        return;
+    }
+    
+    [self startTorrents:[NSArray arrayWithObject:torrent]];
+}
+
+- (void)stopTorrentNotified:(NSNotification *)notification
+{
+    NSDictionary *data = [notification userInfo];
+    if (!data) {
+        return;
+    }
+    
+    RFTorrent *torrent = [data objectForKey:@"torrent"];
+    if (!torrent) {
+        return;
+    }
+    
+    [self stopTorrents:[NSArray arrayWithObject:torrent]];
+}
+
+- (void)removeTorrentNotified:(NSNotification *)notification
+{
+    NSDictionary *data = [notification userInfo];
+    if (!data) {
+        return;
+    }
+    
+    RFTorrent *torrent = [data objectForKey:@"torrent"];
+    if (!torrent) {
+        return;
+    }
+    
+    [self tryRemoveTorrents:[NSArray arrayWithObject:torrent]];
+}
+
+- (void)deleteTorrentNotified:(NSNotification *)notification
+{
+    NSDictionary *data = [notification userInfo];
+    if (!data) {
+        return;
+    }
+    
+    RFTorrent *torrent = [data objectForKey:@"torrent"];
+    if (!torrent) {
+        return;
+    }
+    
+    [self tryDeleteTorrents:[NSArray arrayWithObject:torrent]];
+}
+
+
+
+#pragma mark utility functions
 
 - (bool)addTorrentFile:(NSURL *)url
 {
@@ -578,6 +616,150 @@
     }
 }
 
+- (void)updateStatsButton
+{
+    NSString *label;
+    if (showTotalStats) {
+        label = [NSString stringWithFormat:@"Total D: %@ U: %@", [RFUtils readableBytesDecimal:[engine totalDownloadedBytes]], [RFUtils readableBytesDecimal:[engine totalUploadedBytes]]];
+    } else {
+        label = [NSString stringWithFormat:@"Session D: %@ U: %@", [RFUtils readableBytesDecimal:[engine sessionDownloadedBytes]], [RFUtils readableBytesDecimal:[engine sessionUploadedBytes]]];
+    }
+    [statsButton setTitle:label];
+    [statsButton sizeToFit];
+}
+
+- (void)updateRateText
+{
+    NSString *label = [NSString stringWithFormat:@"D: %@ U: %@", [RFUtils readableRateDecimal:[engine downloadSpeed]], [RFUtils readableRateDecimal:[engine uploadSpeed]]];
+    [rateText setStringValue:label];
+}
+
+- (void)updateDockBadge
+{
+    NSUInteger activeCount = [[[torrentList torrents] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"status == %d", stDownloading]] count];
+    
+    if (activeCount > 0) {
+        [[[NSApplication sharedApplication] dockTile] setBadgeLabel:[NSString stringWithFormat:@"%d", activeCount]];
+    } else {
+        [[[NSApplication sharedApplication] dockTile] setBadgeLabel:nil];
+    }
+}
+
+- (void)tryRemoveTorrents:(NSArray *)torrents
+{
+    if (!torrents) {
+        return;
+    }
+    
+    if ([torrents count] == 0) {
+        return;
+    }
+    
+    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+    [alert addButtonWithTitle:@"Cancel"];
+    [alert addButtonWithTitle:@"Remove"];
+    if ([torrents count] > 1) {
+        [alert setMessageText:@"Are you sure you want to remove these torrents?"];
+    } else {
+        [alert setMessageText:@"Are you sure you want to remove this torrent?"];
+    }
+    NSMutableArray *names = [NSMutableArray array];
+    for (RFTorrent *t in torrents) {
+        [names addObject:[t name]];
+    }
+    [alert setInformativeText:[names componentsJoinedByString:@"\n"]];
+    [alert setAlertStyle:NSWarningAlertStyle];
+    
+    NSDictionary *context = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSArray arrayWithArray:torrents], @"remove", nil] forKeys:[NSArray arrayWithObjects:@"selected", @"type", nil]];
+    
+    [alert beginSheetModalForWindow:window modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:context];
+}
+
+- (void)tryDeleteTorrents:(NSArray *)torrents
+{
+    if (!torrents) {
+        return;
+    }
+    
+    if ([torrents count] == 0) {
+        return;
+    }
+    
+    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+    [alert addButtonWithTitle:@"Cancel"];
+    [alert addButtonWithTitle:@"Remove and Delete"];
+    if ([torrents count] > 1) {
+        [alert setMessageText:@"Are you sure you want to remove and delete these torrents?"];
+    } else {
+        [alert setMessageText:@"Are you sure you want to remove and delete this torrent?"];
+    }
+    NSMutableArray *names = [NSMutableArray array];
+    for (RFTorrent *t in torrents) {
+        [names addObject:[t name]];
+    }
+    [alert setInformativeText:[names componentsJoinedByString:@"\n"]];
+    [alert setAlertStyle:NSWarningAlertStyle];
+    
+    NSDictionary *context = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSArray arrayWithArray:torrents], @"removedelete", nil] forKeys:[NSArray arrayWithObjects:@"selected", @"type", nil]];
+    
+    [alert beginSheetModalForWindow:window modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:context];
+}
+
+- (void)startTorrents:(NSArray *)torrents
+{
+    if (!torrents) {
+        return;
+    }
+    
+    if ([torrents count] == 0) {
+        return;
+    }
+    
+    [engine startTorrents:torrents];
+}
+
+- (void)stopTorrents:(NSArray *)torrents
+{
+    if (!torrents) {
+        return;
+    }
+    
+    if ([torrents count] == 0) {
+        return;
+    }
+    
+    [engine stopTorrents:torrents];
+}
+
+- (void)removeTorrents:(NSArray *)torrents
+{
+    if (!torrents) {
+        return;
+    }
+    
+    if ([torrents count] == 0) {
+        return;
+    }
+    
+    [engine removeTorrents:torrents deleteData:false];
+}
+
+- (void)deleteTorrents:(NSArray *)torrents
+{
+    if (!torrents) {
+        return;
+    }
+    
+    if ([torrents count] == 0) {
+        return;
+    }
+    
+    [engine removeTorrents:torrents deleteData:true];
+}
+
+
+#pragma mark splitview delegate
+
 - (BOOL)splitView:(NSSplitView *)splitView canCollapseSubview:(NSView *)subview
 {
     NSView *sourceList = [[splitView subviews] objectAtIndex:0];
@@ -589,6 +771,9 @@
     return NO;
 }
 
+
+
+#pragma mark drag and drop delegate
 
 - (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender
 {

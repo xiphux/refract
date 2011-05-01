@@ -9,11 +9,17 @@
 #import "TorrentItem.h"
 #import "RFTorrent.h"
 #import "RFUtils.h"
+#import "RFConstants.h"
 
 @interface TorrentItem ()
 - (void)updateUpperLabel;
 - (void)updateLowerLabel;
 - (void)torrentUpdated;
+- (void)stopTorrent:(id)sender;
+- (void)startTorrent:(id)sender;
+- (void)removeTorrent:(id)sender;
+- (void)deleteTorrent:(id)sender;
+- (NSDictionary *)notificationData;
 @end
 
 @implementation TorrentItem
@@ -35,9 +41,12 @@
 
 @synthesize upperLabel;
 @synthesize lowerLabel;
+@synthesize actionButton;
 
 - (void)awakeFromNib
 {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(actionButton:) name:NSPopUpButtonWillPopUpNotification object:actionButton];
+    
     [self updateUpperLabel];
     [self updateLowerLabel];
 }
@@ -105,6 +114,69 @@
     }
     
     [lowerLabel setStringValue:label];
+}
+
+- (void)actionButton:(NSNotification *)notification
+{
+    NSMenu *menu = [actionButton menu];
+    
+    NSMenuItem *title = [menu itemAtIndex:0];
+    
+    [menu removeAllItems];
+    
+    [menu addItem:title];
+    
+    RFTorrent *t = [self representedObject];
+    
+    if ([t status] != stStopped) {
+        NSMenuItem *stop = [[NSMenuItem alloc] initWithTitle:@"Stop" action:@selector(stopTorrent:) keyEquivalent:@""];
+        [stop setTarget:self];
+        [menu addItem:stop];
+    } else {
+        NSMenuItem *start = [[NSMenuItem alloc] initWithTitle:@"Start" action:@selector(startTorrent:) keyEquivalent:@""];
+        [start setTarget:self];
+        [menu addItem:start];
+    }
+    
+    NSMenuItem *remove = [[NSMenuItem alloc] initWithTitle:@"Remove" action:@selector(removeTorrent:) keyEquivalent:@""];
+    [remove setTarget:self];
+    [menu addItem:remove];
+        
+    NSMenuItem *delete = [[NSMenuItem alloc] initWithTitle:@"Remove and Delete" action:@selector(deleteTorrent:) keyEquivalent:@""];
+    [delete setTarget:self];
+    [delete setKeyEquivalentModifierMask:NSAlternateKeyMask];
+    [delete setAlternate:true];
+    [menu addItem:delete];
+    
+    NSMenuItem *groupMenu = [[NSMenuItem alloc] init];
+    [groupMenu setTitle:@"Group"];
+    
+    [menu addItem:groupMenu];
+}
+
+- (NSDictionary *)notificationData
+{
+    return [NSDictionary dictionaryWithObject:[self representedObject] forKey:@"torrent"];
+}
+
+- (void)startTorrent:(id)sender
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:REFRACT_NOTIFICATION_TORRENT_START object:self userInfo:[self notificationData]];
+}
+
+- (void)stopTorrent:(id)sender
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:REFRACT_NOTIFICATION_TORRENT_STOP object:self userInfo:[self notificationData]];   
+}
+
+- (void)removeTorrent:(id)sender
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:REFRACT_NOTIFICATION_TORRENT_REMOVE object:self userInfo:[self notificationData]];
+}
+
+- (void)deleteTorrent:(id)sender
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:REFRACT_NOTIFICATION_TORRENT_DELETE object:self userInfo:[self notificationData]];
 }
 
 @end
