@@ -18,6 +18,7 @@
     NSArray *allTorrents;
     NSMutableArray *torrents;
     bool initialized;
+    bool saveGroups;
     
     id <RFTorrentListDelegate> delegate;
 }
@@ -25,6 +26,7 @@
 @property (retain) NSMutableArray *torrents;
 @property (nonatomic, assign) id <RFTorrentListDelegate> delegate;
 @property bool initialized;
+@property bool saveGroups;
 
 - (NSUInteger)countOfTorrents;
 - (id)objectInTorrentsAtIndex:(NSUInteger)index;
@@ -33,6 +35,8 @@
 - (void)replaceObjectInTorrentsAtIndex:(NSUInteger)index withObject:(RFTorrent *)anObject;
 
 - (void)loadTorrents:(NSArray *)torrentList;
+
+- (void)clearGroup:(RFTorrentGroup *)group;
 
 @end
 

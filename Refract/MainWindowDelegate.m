@@ -102,7 +102,11 @@
     [groupList load];
     [sourceListController initGroups:[groupList groups]];
     
-    if ([self initEngine]) {
+    bool initialized = [self initEngine];
+    if ([engine type] == engTransmission) {
+        [torrentList setSaveGroups:true];
+    }
+    if (initialized) {
         [self startEngine];
     }
     
@@ -332,6 +336,8 @@
     if (!groupList) {
         return;
     }
+    
+    [torrentList clearGroup:group];
     
     [groupList removeGroup:group];
     
