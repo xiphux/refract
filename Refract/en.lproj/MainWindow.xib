@@ -655,6 +655,7 @@
 											<int key="NSvFlags">289</int>
 											<string key="NSFrame">{{326, 5}, {205, 14}}</string>
 											<reference key="NSSuperview" ref="533517072"/>
+											<reference key="NSNextKeyView"/>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSTextFieldCell" key="NSCell" id="456623023">
 												<int key="NSCellFlags">68288064</int>
@@ -711,7 +712,7 @@
 															<int key="NSvFlags">274</int>
 															<string key="NSFrameSize">{546, 427}</string>
 															<reference key="NSSuperview" ref="557667291"/>
-															<reference key="NSNextKeyView" ref="370174739"/>
+															<reference key="NSNextKeyView" ref="947010822"/>
 															<string key="NSMinGridSize">{0, 0}</string>
 															<string key="NSMaxGridSize">{0, 0}</string>
 															<int key="NSMaxNumberOfGridRows">0</int>
@@ -764,7 +765,7 @@
 											</object>
 											<string key="NSFrame">{{0, 28}, {548, 429}}</string>
 											<reference key="NSSuperview" ref="533517072"/>
-											<reference key="NSNextKeyView" ref="557667291"/>
+											<reference key="NSNextKeyView" ref="370174739"/>
 											<int key="NSsFlags">530</int>
 											<reference key="NSVScroller" ref="370174739"/>
 											<reference key="NSHScroller" ref="963357463"/>
@@ -1204,6 +1205,14 @@
 					</object>
 					<int key="connectionID">838</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">delegate</string>
+						<reference key="source" ref="78009966"/>
+						<reference key="destination" ref="976324537"/>
+					</object>
+					<int key="connectionID">845</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -1420,9 +1429,9 @@
 						<reference key="object" ref="533517072"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="186622321"/>
 							<reference ref="947010822"/>
 							<reference ref="25314792"/>
+							<reference ref="186622321"/>
 						</object>
 						<reference key="parent" ref="380538620"/>
 					</object>
@@ -1712,7 +1721,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">843</int>
+			<int key="maxID">845</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes"/>
 		<int key="IBDocument.localizationMode">0</int>

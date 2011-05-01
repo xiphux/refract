@@ -835,4 +835,16 @@
     return YES;
 }
 
+
+#pragma mark torrent item delegate
+
+- (NSArray *)torrentItemAvailableGroups:(TorrentItem *)item
+{
+    if (!groupList) {
+        return nil;
+    }
+    
+    return [groupList groups];
+}
+
 @end

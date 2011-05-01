@@ -30,3 +30,4 @@
 #define REFRACT_NOTIFICATION_TORRENT_STOP @"RefractTorrentStop"
 #define REFRACT_NOTIFICATION_TORRENT_REMOVE @"RefractTorrentRemove"
 #define REFRACT_NOTIFICATION_TORRENT_DELETE @"RefractTorrentDelete"
+#define REFRACT_NOTIFICATION_TORRENT_GROUP_CHANGED @"RefractTorrentGroupChanged"

@@ -10,6 +10,7 @@
 #import "RFTorrent.h"
 #import "RFUtils.h"
 #import "RFConstants.h"
+#import "RFTorrentGroup.h"
 
 @interface TorrentItem ()
 - (void)updateUpperLabel;
@@ -19,7 +20,8 @@
 - (void)startTorrent:(id)sender;
 - (void)removeTorrent:(id)sender;
 - (void)deleteTorrent:(id)sender;
-- (NSDictionary *)notificationData;
+- (NSMutableDictionary *)notificationData;
+- (void)changeGroup:(id)sender;
 @end
 
 @implementation TorrentItem
@@ -34,6 +36,14 @@
     return self;
 }
 
+- (id)copyWithZone:(NSZone *)zone
+{
+    id result = [super copyWithZone:zone];
+    
+    [result setDelegate:[self delegate]];
+    return result;
+}
+
 - (void)dealloc
 {
     [super dealloc];
@@ -42,6 +52,7 @@
 @synthesize upperLabel;
 @synthesize lowerLabel;
 @synthesize actionButton;
+@synthesize delegate;
 
 - (void)awakeFromNib
 {
@@ -148,15 +159,59 @@
     [delete setAlternate:true];
     [menu addItem:delete];
     
-    NSMenuItem *groupMenu = [[NSMenuItem alloc] init];
-    [groupMenu setTitle:@"Group"];
+    if ([self delegate] && [[self delegate] respondsToSelector:@selector(torrentItemAvailableGroups:)]) {
     
-    [menu addItem:groupMenu];
+        [menu addItem:[NSMenuItem separatorItem]];
+        
+        NSMenuItem *groupMenuItem = [[NSMenuItem alloc] initWithTitle:@"Group" action:nil keyEquivalent:@""];
+        [groupMenuItem setTitle:@"Group"];
+        
+        NSMenu *groupSubMenu = [[NSMenu alloc] initWithTitle:@"Group"];        
+        [groupMenuItem setSubmenu:groupSubMenu];
+        
+        NSMenuItem *noGroup = [[NSMenuItem alloc] initWithTitle:@"No Group" action:@selector(changeGroup:) keyEquivalent:@""];
+        [noGroup setTag:0];
+        [noGroup setTarget:self];
+        if ([[self representedObject] group] == 0) {
+            [noGroup setState:NSOnState];
+        }
+        [groupSubMenu addItem:noGroup];
+        
+        NSArray *groups = [[self delegate] torrentItemAvailableGroups:self];
+        if (groups && ([groups count] > 0)) {
+            [groupSubMenu addItem:[NSMenuItem separatorItem]];
+            NSArray *sortedGroups = [groups sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"name" ascending:true] autorelease]]];
+            for (NSUInteger i = 0; i < [sortedGroups count]; i++) {
+                RFTorrentGroup *group = [sortedGroups objectAtIndex:i];
+                NSMenuItem *groupItem = [[NSMenuItem alloc] initWithTitle:[group name] action:@selector(changeGroup:) keyEquivalent:@""];
+                [groupItem setTag:[group gid]];
+                [groupItem setTarget:self];
+                if ([group gid] == [[self representedObject] group]) {
+                    [groupItem setState:NSOnState];
+                }
+                [groupSubMenu addItem:groupItem];
+            }
+        }
+        [menu addItem:groupMenuItem];
+    }
 }
 
-- (NSDictionary *)notificationData
+- (void)changeGroup:(id)sender
 {
-    return [NSDictionary dictionaryWithObject:[self representedObject] forKey:@"torrent"];
+    NSUInteger gid = [sender tag];
+    
+    if ([[self representedObject] group] == gid) {
+        return;
+    }
+    
+    [[self representedObject] setGroup:gid];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:REFRACT_NOTIFICATION_TORRENT_GROUP_CHANGED object:self userInfo:[self notificationData]];
+}
+
+- (NSMutableDictionary *)notificationData
+{
+    return [NSMutableDictionary dictionaryWithObject:[self representedObject] forKey:@"torrent"];
 }
 
 - (void)startTorrent:(id)sender
