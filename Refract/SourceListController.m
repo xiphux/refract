@@ -493,6 +493,10 @@
             return false;
         }
         
+        if ([[fieldEditor string] isEqualToString:@"No Group"]) {
+            return false;
+        }
+        
         if (![self delegate]) {
             return true;
         }
