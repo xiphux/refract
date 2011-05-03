@@ -12,7 +12,7 @@
 
 @protocol SourceListDelegate;
 
-@interface SourceListController : NSObject <NSOutlineViewDelegate, NSMenuDelegate> {
+@interface SourceListController : NSObject <NSOutlineViewDelegate, NSMenuDelegate, NSOutlineViewDataSource> {
 @private
     IBOutlet NSTreeController *treeController;
     IBOutlet NSOutlineView *sourceList;

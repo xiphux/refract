@@ -69,6 +69,8 @@
         [self initGroups:initialGroups];
         [initialGroups release];
     }
+    
+    [sourceList setAutosaveExpandedItems:true];
 }
 
 - (void)createStandardNodes
@@ -665,6 +667,30 @@
             }
         }
     }
+}
+
+- (id)outlineView:(NSOutlineView *)outlineView itemForPersistentObject:(id)object
+{
+    if ([object isEqualToString:@"Status"]) {
+        return [self findCategoryTreeNode:catStatus];
+    } else if ([object isEqualToString:@"Group"]) {
+        return [self findCategoryTreeNode:catGroup];
+    }
+    
+    return nil;
+}
+
+- (id)outlineView:(NSOutlineView *)outlineView persistentObjectForItem:(id)item
+{
+    if ([[item representedObject] isKindOfClass:[CategoryNode class]]) {
+        if ([(CategoryNode *)[item representedObject] categoryType] == catStatus) {
+            return @"Status";
+        } else if ([(CategoryNode *)[item representedObject] categoryType] == catGroup) {
+            return @"Group";
+        }
+    }
+    
+    return nil;
 }
 
 @end
