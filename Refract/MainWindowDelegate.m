@@ -27,6 +27,8 @@
 - (void)alertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode
         contextInfo:(void *)contextInfo;
 
+- (void)changeGroup:(id)sender;
+
 - (void)startTorrentNotified:(NSNotification *)notification;
 - (void)stopTorrentNotified:(NSNotification *)notification;
 - (void)removeTorrentNotified:(NSNotification *)notification;
@@ -82,6 +84,8 @@
 @synthesize statsButton;
 @synthesize removeMenu;
 @synthesize removeButton;
+@synthesize actionMenu;
+@synthesize actionButton;
 
 @synthesize engine;
 @synthesize torrentList;
@@ -92,6 +96,8 @@
     [window registerForDraggedTypes:[NSArray arrayWithObject:NSFilenamesPboardType]];
     
     [removeButton setMenu:removeMenu forSegment:0];
+    
+    [actionButton setMenu:actionMenu forSegment:0];
     
     [torrentListController setSortDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:true]]];
     
@@ -484,6 +490,16 @@
             [updateQueue addOperation:op];
         }
     }
+}
+
+- (void)changeGroup:(id)sender
+{
+    if ([[torrentListController selectedObjects] count] == 0) {
+        return;
+    }
+    
+    NSUInteger gid = [sender tag];
+    [torrentList setGroup:gid forTorrents:[torrentListController selectedObjects]];
 }
 
 
@@ -882,6 +898,43 @@
     }
     
     return [groupList groups];
+}
+
+
+#pragma mark menu delegate
+
+- (void)menuNeedsUpdate:(NSMenu *)menu
+{
+    if ([menu isEqual:actionMenu]) {
+        NSMenuItem *groupMenuItem = [menu itemAtIndex:0];
+        
+        bool selected = ([[torrentListController selectedObjects] count] > 0);        
+        NSMenu *groupSubMenu = [[NSMenu alloc] initWithTitle:@"Group"];
+        
+        [menu setSubmenu:groupSubMenu forItem:groupMenuItem];
+        
+        NSMenuItem *noGroup = [[NSMenuItem alloc] initWithTitle:@"No Group" action:@selector(changeGroup:) keyEquivalent:@""];
+        [noGroup setTag:0];
+        [noGroup setTarget:self];
+        [groupSubMenu addItem:noGroup];
+        
+        if ([[groupList groups] count] > 0) {
+            [groupSubMenu addItem:[NSMenuItem separatorItem]];
+            NSArray *sortedGroups = [[groupList groups] sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"name" ascending:true] autorelease]]];
+            for (NSUInteger i = 0; i < [sortedGroups count]; i++) {
+                RFTorrentGroup *group = [sortedGroups objectAtIndex:i];
+                NSMenuItem *groupItem = [[NSMenuItem alloc] initWithTitle:[group name] action:@selector(changeGroup:) keyEquivalent:@""];
+                [groupItem setTag:[group gid]];
+                [groupItem setTarget:self];
+                [groupItem setEnabled:selected];
+                [groupSubMenu addItem:groupItem];
+            }
+            
+        }
+        
+        [groupMenuItem setEnabled:selected];
+
+    }
 }
 
 @end

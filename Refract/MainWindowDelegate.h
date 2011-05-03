@@ -14,7 +14,7 @@
 #import "PreferencesController.h"
 #import "TorrentItem.h"
 
-@interface MainWindowDelegate : NSObject <NSSplitViewDelegate, RFTorrentListDelegate, RFEngineDelegate, SourceListDelegate, TorrentItemDelegate> {
+@interface MainWindowDelegate : NSObject <NSSplitViewDelegate, RFTorrentListDelegate, RFEngineDelegate, SourceListDelegate, TorrentItemDelegate, NSMenuDelegate> {
 @private
     NSWindow IBOutlet *window;
     SourceListController IBOutlet *sourceListController;
@@ -24,6 +24,8 @@
     NSTextField IBOutlet *rateText;
     NSMenu IBOutlet *removeMenu;
     NSSegmentedControl IBOutlet *removeButton;
+    NSMenu IBOutlet *actionMenu;
+    NSSegmentedControl IBOutlet *actionButton;
     
     RFEngine *engine;
     RFTorrentList *torrentList;
@@ -44,6 +46,8 @@
 @property (retain) IBOutlet NSButton *statsButton;
 @property (retain) IBOutlet NSMenu *removeMenu;
 @property (retain) IBOutlet NSSegmentedControl *removeButton;
+@property (retain) IBOutlet NSMenu *actionMenu;
+@property (retain) IBOutlet NSSegmentedControl *actionButton;
 
 @property (retain) RFEngine *engine;
 @property (retain) RFTorrentList *torrentList;

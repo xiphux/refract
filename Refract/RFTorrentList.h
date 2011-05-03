@@ -38,6 +38,8 @@
 
 - (void)clearGroup:(RFTorrentGroup *)group;
 
+- (void)setGroup:(NSUInteger)gid forTorrents:(NSArray *)list;
+
 @end
 
 
