@@ -87,7 +87,11 @@
 
 - (void)save
 {
-    [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:groups] forKey:REFRACT_USERDEFAULT_GROUPS];
+    if ([groups count] > 0) {
+        [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:groups] forKey:REFRACT_USERDEFAULT_GROUPS];
+    } else {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:REFRACT_USERDEFAULT_GROUPS];
+    }
 }
 
 
