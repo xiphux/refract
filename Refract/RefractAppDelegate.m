@@ -57,14 +57,34 @@
     return TRUE;
 }
 
-- (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename
+- (void)application:(NSApplication *)sender openFiles:(NSArray *)filenames
 {
-    if ([[filename pathExtension] isEqualToString:@"torrent"]) {
-        NSURL *fileUrl = [NSURL fileURLWithPath:filename];
-        [(MainWindowDelegate *)[[mainWindowController window] delegate] addTorrentFile:fileUrl];
-        return YES;
+    if (!filenames) {
+        [sender replyToOpenOrPrint:NSApplicationDelegateReplyFailure];
+        return;
     }
-    return NO;
+    
+    if ([filenames count] == 0) {
+        [sender replyToOpenOrPrint:NSApplicationDelegateReplyFailure];
+        return;
+    }
+    
+    NSMutableArray *torrents = [NSMutableArray array];
+    for (NSString *path in filenames) {
+        if ([[path pathExtension] isEqualToString:@"torrent"]) {
+            [torrents addObject:path];
+        }
+    }
+    
+    if ([torrents count] == 0) {
+        [sender replyToOpenOrPrint:NSApplicationDelegateReplyFailure];
+        return;
+    }
+    
+    [(MainWindowDelegate *)[[mainWindowController window] delegate] tryAddTorrents:torrents];
+    
+    [sender replyToOpenOrPrint:NSApplicationDelegateReplySuccess];
+    return;
 }
 
 - (IBAction)openPreferences:(id)sender

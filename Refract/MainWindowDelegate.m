@@ -22,6 +22,8 @@
 - (void)updateRateText;
 - (void)updateDockBadge;
 
+- (void)settingsChanged:(NSNotification *)notification;
+
 - (void)alertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode
         contextInfo:(void *)contextInfo;
 
@@ -37,6 +39,9 @@
 - (void)stopTorrents:(NSArray *)torrents;
 - (void)removeTorrents:(NSArray *)torrents;
 - (void)deleteTorrents:(NSArray *)torrents;
+- (void)addTorrents:(NSArray *)files;
+
+- (bool)addTorrentFile:(NSURL *)url;
 
 @end
 
@@ -457,11 +462,7 @@
     } else if ([type isEqualToString:@"add"]) {
         if (returnCode == NSAlertSecondButtonReturn) {
             NSArray *paths = [context objectForKey:@"paths"];
-            for (NSString *path in paths) {
-                NSURL *pathUrl = [NSURL fileURLWithPath:path];
-                NSInvocationOperation *op = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(addTorrentFile:) object:pathUrl] autorelease];
-                [updateQueue addOperation:op];
-            }
+            [self addTorrents:paths];
         }
     }
 }
@@ -711,6 +712,36 @@
     [alert beginSheetModalForWindow:window modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:context];
 }
 
+- (void)tryAddTorrents:(NSArray *)files
+{
+    if (!files) {
+        return;
+    }
+    
+    if ([files count] == 0) {
+        return;
+    }
+    
+    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+    [alert addButtonWithTitle:@"Cancel"];
+    [alert addButtonWithTitle:@"Add"];
+    if ([files count] > 1) {
+        [alert setMessageText:@"Are you sure you want to add these torrents?"];
+    } else {
+        [alert setMessageText:@"Are you sure you want to add this torrent?"];
+    }
+    NSMutableArray *displayNames = [NSMutableArray array];
+    for (NSString *path in files) {
+        [displayNames addObject:[[NSFileManager defaultManager] displayNameAtPath:path]];
+    }
+    [alert setInformativeText:[displayNames componentsJoinedByString:@"\n"]];
+    [alert setAlertStyle:NSWarningAlertStyle];
+    
+    NSDictionary *context = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSArray arrayWithArray:files], @"add", nil] forKeys:[NSArray arrayWithObjects:@"paths", @"type", nil]];
+    
+    [alert beginSheetModalForWindow:window modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:context];
+}
+
 - (void)startTorrents:(NSArray *)torrents
 {
     if (!torrents) {
@@ -761,6 +792,23 @@
     }
     
     [engine removeTorrents:torrents deleteData:true];
+}
+
+- (void)addTorrents:(NSArray *)files
+{
+    if (!files) {
+        return;
+    }
+    
+    if ([files count] == 0) {
+        return;
+    }
+    
+    for (NSString *path in files) {
+        NSURL *pathUrl = [NSURL fileURLWithPath:path];
+        NSInvocationOperation *op = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(addTorrentFile:) object:pathUrl] autorelease];
+        [updateQueue addOperation:op];
+    }
 }
 
 
@@ -818,25 +866,8 @@
     if ([torrentFiles count] < 1) {
         return NO;
     }
-    
-    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-    [alert addButtonWithTitle:@"Cancel"];
-    [alert addButtonWithTitle:@"Add"];
-    if ([torrentFiles count] > 1) {
-        [alert setMessageText:@"Are you sure you want to add these torrents?"];
-    } else {
-        [alert setMessageText:@"Are you sure you want to add this torrent?"];
-    }
-    NSMutableArray *displayNames = [NSMutableArray array];
-    for (NSString *path in torrentFiles) {
-        [displayNames addObject:[[NSFileManager defaultManager] displayNameAtPath:path]];
-    }
-    [alert setInformativeText:[displayNames componentsJoinedByString:@"\n"]];
-    [alert setAlertStyle:NSWarningAlertStyle];
-    
-    NSDictionary *context = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSArray arrayWithArray:torrentFiles], @"add", nil] forKeys:[NSArray arrayWithObjects:@"paths", @"type", nil]];
-    
-    [alert beginSheetModalForWindow:window modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:context];
+
+    [self tryAddTorrents:torrentFiles];
     
     return YES;
 }
