@@ -121,6 +121,7 @@
         
         // prune torrents no longer matching
         NSMutableArray *prune = [NSMutableArray array];
+        NSMutableArray *pruneGroups = [NSMutableArray array];
         for (RFTorrent *t in torrents) {
             if (![allTorrents containsObject:t]) {
                 [prune addObject:t];
@@ -128,6 +129,9 @@
         }
         for (RFTorrent *t in prune) {
             [self removeTorrentsObject:t];
+            if ([t group] > 0) {
+                [pruneGroups addObject:t];
+            }
             if (initialized) {
                 [[NotificationController sharedNotificationController] notifyDownloadRemoved:t];
             }
@@ -153,8 +157,8 @@
             }
         }
         
-        if (saveGroups) {
-            [self removeSavedGroupsForTorrents:prune];
+        if (saveGroups && ([pruneGroups count] > 0)) {
+            [self removeSavedGroupsForTorrents:pruneGroups];
         }
     }
     
