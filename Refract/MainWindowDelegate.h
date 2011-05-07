@@ -26,6 +26,9 @@
     NSSegmentedControl IBOutlet *removeButton;
     NSMenu IBOutlet *actionMenu;
     NSSegmentedControl IBOutlet *actionButton;
+    NSMenu IBOutlet *stopMenu;
+    NSMenu IBOutlet *startMenu;
+    NSSegmentedControl IBOutlet *startStopButton;
     
     RFEngine *engine;
     RFTorrentList *torrentList;
@@ -48,6 +51,9 @@
 @property (retain) IBOutlet NSSegmentedControl *removeButton;
 @property (retain) IBOutlet NSMenu *actionMenu;
 @property (retain) IBOutlet NSSegmentedControl *actionButton;
+@property (retain) IBOutlet NSMenu *stopMenu;
+@property (retain) IBOutlet NSMenu *startMenu;
+@property (retain) IBOutlet NSSegmentedControl *startStopButton;
 
 @property (retain) RFEngine *engine;
 @property (retain) RFTorrentList *torrentList;
@@ -56,6 +62,10 @@
 - (IBAction)search:(id)sender;
 - (IBAction)statsButtonClick:(id)sender;
 - (IBAction)startStopClicked:(id)sender;
+- (IBAction)startClicked:(id)sender;
+- (IBAction)startAllClicked:(id)sender;
+- (IBAction)stopClicked:(id)sender;
+- (IBAction)stopAllClicked:(id)sender;
 - (IBAction)removeClicked:(id)sender;
 - (IBAction)removeAndDeleteClicked:(id)sender;
 - (IBAction)addClicked:(id)sender;

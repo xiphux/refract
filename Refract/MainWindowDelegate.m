@@ -39,6 +39,8 @@
 
 - (void)startTorrents:(NSArray *)torrents;
 - (void)stopTorrents:(NSArray *)torrents;
+- (void)startAllTorrents;
+- (void)stopAllTorrents;
 - (void)removeTorrents:(NSArray *)torrents;
 - (void)deleteTorrents:(NSArray *)torrents;
 - (void)addTorrents:(NSArray *)files;
@@ -86,6 +88,9 @@
 @synthesize removeButton;
 @synthesize actionMenu;
 @synthesize actionButton;
+@synthesize startMenu;
+@synthesize stopMenu;
+@synthesize startStopButton;
 
 @synthesize engine;
 @synthesize torrentList;
@@ -98,6 +103,9 @@
     [removeButton setMenu:removeMenu forSegment:0];
     
     [actionButton setMenu:actionMenu forSegment:0];
+    
+    [startStopButton setMenu:stopMenu forSegment:0];
+    [startStopButton setMenu:startMenu forSegment:1];
     
     [torrentListController setSortDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:true]]];
     
@@ -424,6 +432,40 @@
             [self startTorrents:selected];
         }
     }
+}
+
+- (IBAction)startClicked:(id)sender
+{    
+    NSArray *selected = [torrentListController selectedObjects];
+    if ([selected count] < 1) {
+        return;
+    }
+    
+    if (started) {
+        [self startTorrents:selected];
+    }
+}
+
+- (IBAction)startAllClicked:(id)sender
+{
+    [self startAllTorrents];
+}
+
+- (IBAction)stopClicked:(id)sender
+{    
+    NSArray *selected = [torrentListController selectedObjects];
+    if ([selected count] < 1) {
+        return;
+    }
+    
+    if (started) {
+        [self stopTorrents:selected];
+    }
+}
+
+- (IBAction)stopAllClicked:(id)sender
+{
+    [self stopAllTorrents];
 }
 
 - (IBAction)removeClicked:(id)sender
@@ -784,6 +826,16 @@
     [engine stopTorrents:torrents];
 }
 
+- (void)startAllTorrents
+{
+    [engine startAllTorrents];
+}
+
+- (void)stopAllTorrents
+{
+    [engine stopAllTorrents];
+}
+
 - (void)removeTorrents:(NSArray *)torrents
 {
     if (!torrents) {
@@ -934,6 +986,30 @@
         
         [groupMenuItem setEnabled:selected];
 
+    }
+    
+    if ([menu isEqual:removeMenu]) {
+        bool selected = ([[torrentListController selectedObjects] count] > 0);
+        NSMenuItem *removeItem = [menu itemAtIndex:0];
+        [removeItem setEnabled:selected];
+        NSMenuItem *removeDeleteItem = [menu itemAtIndex:1];
+        [removeDeleteItem setEnabled:selected];
+    }
+    
+    if ([menu isEqual:startMenu]) {
+        bool selected = ([[torrentListController selectedObjects] count] > 0);
+        NSMenuItem *startItem = [menu itemAtIndex:0];
+        [startItem setEnabled:selected];
+        NSMenuItem *startAllItem = [menu itemAtIndex:1];
+        [startAllItem setEnabled:[[torrentListController arrangedObjects] count] > 0];
+    }
+    
+    if ([menu isEqual:stopMenu]) {
+        bool selected = ([[torrentListController selectedObjects] count] > 0);
+        NSMenuItem *stopItem = [menu itemAtIndex:0];
+        [stopItem setEnabled:selected];
+        NSMenuItem *stopAllItem = [menu itemAtIndex:1];
+        [stopAllItem setEnabled:[[torrentListController arrangedObjects] count] > 0];
     }
 }
 
