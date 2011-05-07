@@ -15,6 +15,7 @@
 - (void)listButton:(NSNotification *)notification;
 - (void)changeSort:(id)sender;
 - (NSSortDescriptor *)descriptorForSort:(TorrentListSort)sort;
+- (NSArray *)sortDescriptorArray;
 - (void)setDefaults;
 @end
 
@@ -47,10 +48,10 @@
     
     [self setDefaults];
     
-    listSort = [[NSUserDefaults standardUserDefaults] integerForKey:REFRACT_USERDEFAULT_SORT];
-    NSSortDescriptor *desc = [self descriptorForSort:listSort];
-    if (desc) {
-        [controller setSortDescriptors:[NSArray arrayWithObject:desc]];
+    [controller setSortDescriptors:[self sortDescriptorArray]];
+    NSArray *sorts = [[NSUserDefaults standardUserDefaults] arrayForKey:REFRACT_USERDEFAULT_SORT];
+    if (sorts && ([sorts count] > 0)) {
+        listSort = [[sorts objectAtIndex:0] intValue];
     }
 }
 
@@ -58,7 +59,7 @@
 {
     NSMutableDictionary *def = [NSMutableDictionary dictionary];
     
-    [def setObject:[NSNumber numberWithInt:(int)sortName] forKey:REFRACT_USERDEFAULT_SORT];
+    [def setObject:[NSArray arrayWithObject:[NSNumber numberWithInt:(int)sortName]] forKey:REFRACT_USERDEFAULT_SORT];
     
     [[NSUserDefaults standardUserDefaults] registerDefaults:def];
 }
@@ -220,6 +221,29 @@
     return nil;
 }
 
+- (NSArray *)sortDescriptorArray
+{
+    NSArray *sorts = [[NSUserDefaults standardUserDefaults] arrayForKey:REFRACT_USERDEFAULT_SORT];
+    if (!sorts) {
+        return nil;
+    }
+    
+    if ([sorts count] == 0) {
+        return nil;
+    }
+    
+    NSMutableArray *descriptors = [NSMutableArray array];
+    
+    for (NSNumber *sort in sorts) {
+        NSSortDescriptor *desc = [self descriptorForSort:[sort intValue]];
+        if (desc) {
+            [descriptors addObject:desc];
+        }
+    }
+    
+    return descriptors;  
+}
+
 - (void)changeSort:(id)sender
 {
     NSUInteger newSort = [sender tag];
@@ -228,13 +252,14 @@
         return;
     }
     
-    NSSortDescriptor *desc = [self descriptorForSort:newSort];
-    
-    if (desc) {
-        [controller setSortDescriptors:[NSArray arrayWithObject:desc]];
-        listSort = newSort;
-        [[NSUserDefaults standardUserDefaults] setInteger:newSort forKey:REFRACT_USERDEFAULT_SORT];
+    NSMutableArray *sorts = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] arrayForKey:REFRACT_USERDEFAULT_SORT]];
+    if ([sorts count] == 3) {
+        [sorts removeLastObject];
     }
+    [sorts insertObject:[NSNumber numberWithInt:(int)newSort] atIndex:0];
+    [[NSUserDefaults standardUserDefaults] setObject:sorts forKey:REFRACT_USERDEFAULT_SORT];
+    [controller setSortDescriptors:[self sortDescriptorArray]];
+    listSort = newSort;
 }
 
 @end
