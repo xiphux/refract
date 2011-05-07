@@ -14,11 +14,19 @@
 #import "PreferencesController.h"
 #import "TorrentItem.h"
 
+typedef enum {
+    statCount = 1,
+    statRate = 2,
+    statSession = 3,
+    statTotal = 4
+} StatType;
+
 @interface MainWindowDelegate : NSObject <NSSplitViewDelegate, RFTorrentListDelegate, RFEngineDelegate, SourceListDelegate, TorrentItemDelegate, NSMenuDelegate> {
 @private
     NSWindow IBOutlet *window;
     SourceListController IBOutlet *sourceListController;
     NSArrayController IBOutlet *torrentListController;
+    NSCollectionView IBOutlet *torrentListView;
     NSSearchField IBOutlet *searchField;
     NSButton IBOutlet *statsButton;
     NSMenu IBOutlet *removeMenu;
@@ -34,7 +42,7 @@
     RFGroupList *groupList;
     NSPredicate *searchPredicate;
     
-    bool showTotalStats;
+    StatType statusButtonType;
     bool started;
     
     NSOperationQueue *updateQueue;
@@ -43,6 +51,7 @@
 @property (assign) IBOutlet NSWindow *window;
 @property (retain) IBOutlet NSArrayController *torrentListController;
 @property (retain) IBOutlet SourceListController *sourceListController;
+@property (retain) IBOutlet NSCollectionView *torrentListView;
 @property (retain) IBOutlet NSSearchField *searchField;
 @property (retain) IBOutlet NSButton *statsButton;
 @property (retain) IBOutlet NSMenu *removeMenu;

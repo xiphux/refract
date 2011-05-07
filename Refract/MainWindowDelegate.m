@@ -17,6 +17,8 @@
 
 @interface MainWindowDelegate ()
 
+- (void)setDefaults;
+
 - (void)updateFilterPredicate;
 - (void)updateStatsButton;
 - (void)updateDockBadge;
@@ -78,6 +80,7 @@
 
 @synthesize window;
 @synthesize sourceListController;
+@synthesize torrentListView;
 @synthesize torrentListController;
 @synthesize searchField;
 @synthesize statsButton;
@@ -95,6 +98,8 @@
 
 - (void)awakeFromNib
 {
+    [self setDefaults];
+    
     [window registerForDraggedTypes:[NSArray arrayWithObject:NSFilenamesPboardType]];
     
     [removeButton setMenu:removeMenu forSegment:0];
@@ -108,7 +113,7 @@
     
     [sourceListController setDelegate:self];
     
-    showTotalStats = [[NSUserDefaults standardUserDefaults] boolForKey:REFRACT_USERDEFAULT_TOTAL_SIZE];
+    statusButtonType = [[NSUserDefaults standardUserDefaults] integerForKey:REFRACT_USERDEFAULT_STAT_TYPE];
     
     RFTorrentList *tList = [[RFTorrentList alloc] init];
     [tList setDelegate:self];
@@ -132,6 +137,15 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stopTorrentNotified:) name:REFRACT_NOTIFICATION_TORRENT_STOP object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeTorrentNotified:) name:REFRACT_NOTIFICATION_TORRENT_REMOVE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteTorrentNotified:) name:REFRACT_NOTIFICATION_TORRENT_DELETE object:nil];
+}
+
+- (void)setDefaults
+{
+    NSMutableDictionary *def = [NSMutableDictionary dictionary];
+    
+    [def setObject:[NSNumber numberWithInt:(int)statRate] forKey:REFRACT_USERDEFAULT_STAT_TYPE];
+    
+    [[NSUserDefaults standardUserDefaults] registerDefaults:def];
 }
 
 
@@ -278,6 +292,7 @@
     }
     
     [self updateDockBadge];
+    [self updateStatsButton];
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSTimeInterval update = [defaults doubleForKey:REFRACT_USERDEFAULT_UPDATE_FREQUENCY];
@@ -402,8 +417,11 @@
 
 - (IBAction)statsButtonClick:(id)sender
 {
-    showTotalStats = !showTotalStats;
-    [[NSUserDefaults standardUserDefaults] setBool:showTotalStats forKey:REFRACT_USERDEFAULT_TOTAL_SIZE];
+    statusButtonType = statusButtonType + 1;
+    if (statusButtonType > statTotal) {
+        statusButtonType = 1;
+    }
+    [[NSUserDefaults standardUserDefaults] setInteger:statusButtonType forKey:REFRACT_USERDEFAULT_STAT_TYPE];
     [self updateStatsButton];
 }
 
@@ -675,18 +693,36 @@
     } else {
         [torrentListController setFilterPredicate:nil];
     }
+    
+    [self updateStatsButton];
 }
 
 - (void)updateStatsButton
 {
     NSString *label;
-    if (showTotalStats) {
-        label = [NSString stringWithFormat:@"D: %@ U: %@  Total D: %@ U: %@", [RFUtils readableRateDecimal:[engine downloadSpeed]], [RFUtils readableRateDecimal:[engine uploadSpeed]], [RFUtils readableBytesDecimal:[engine totalDownloadedBytes]], [RFUtils readableBytesDecimal:[engine totalUploadedBytes]]];
-    } else {
-        label = [NSString stringWithFormat:@"D: %@ U: %@  Session D: %@ U: %@", [RFUtils readableRateDecimal:[engine downloadSpeed]], [RFUtils readableRateDecimal:[engine uploadSpeed]], [RFUtils readableBytesDecimal:[engine sessionDownloadedBytes]], [RFUtils readableBytesDecimal:[engine sessionUploadedBytes]]];
+    switch (statusButtonType) {
+        case statCount:
+            label = [NSString stringWithFormat:@"%d torrents", [[torrentListController arrangedObjects] count]];
+            break;
+        case statRate:
+            label = [NSString stringWithFormat:@"D: %@ U: %@", [RFUtils readableRateDecimal:[engine downloadSpeed]], [RFUtils readableRateDecimal:[engine uploadSpeed]]];
+            break;
+        case statSession:
+            label = [NSString stringWithFormat:@"Session D: %@ U: %@", [RFUtils readableBytesDecimal:[engine sessionDownloadedBytes]], [RFUtils readableBytesDecimal:[engine sessionUploadedBytes]]];
+            break;
+        case statTotal:
+            label = [NSString stringWithFormat:@"Total D: %@ U: %@", [RFUtils readableBytesDecimal:[engine totalDownloadedBytes]], [RFUtils readableBytesDecimal:[engine totalUploadedBytes]]];
+            break;
     }
     [statsButton setTitle:label];
     [statsButton sizeToFit];
+    
+    NSRect torrentListRect = [torrentListView frame];
+    NSRect statButtonRect = [statsButton frame];
+    CGFloat center = torrentListRect.origin.x + (torrentListRect.size.width / 2);
+    CGFloat newx = center - (statButtonRect.size.width / 2);
+    statButtonRect.origin.x = newx;
+    [statsButton setFrame:statButtonRect];
 }
 
 - (void)updateDockBadge
