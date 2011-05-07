@@ -133,7 +133,7 @@
 {
     SBJsonWriter *writer = [[SBJsonWriter alloc] init];
     
-    NSArray *fields = [NSArray arrayWithObjects:@"id", @"name", @"totalSize", @"sizeWhenDone", @"leftUntilDone", @"rateDownload", @"rateUpload", @"status", @"percentDone", @"eta", @"peersConnected", @"peersGettingFromUs", @"peersSendingToUs", @"recheckPercent", @"uploadedEver", @"uploadRatio", @"doneDate", @"hashString", nil];
+    NSArray *fields = [NSArray arrayWithObjects:@"id", @"name", @"totalSize", @"sizeWhenDone", @"leftUntilDone", @"rateDownload", @"rateUpload", @"status", @"percentDone", @"eta", @"peersConnected", @"peersGettingFromUs", @"peersSendingToUs", @"recheckPercent", @"uploadedEver", @"uploadRatio", @"doneDate", @"addedDate", @"hashString", nil];
     NSDictionary *args = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObject:fields] forKeys:[NSArray arrayWithObject:@"fields"]];
     NSDictionary *requestData = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:args, @"torrent-get", nil] forKeys:[NSArray arrayWithObjects:@"arguments", @"method", nil]];
     NSString *requestStr = [writer stringWithObject:requestData];
@@ -438,6 +438,11 @@
             NSNumber *doneDate = [torrentDict objectForKey:@"doneDate"];
             if (doneDate) {
                 torrent.doneDate = (time_t)[doneDate unsignedLongValue];
+            }
+            
+            NSNumber *addedDate = [torrentDict objectForKey:@"addedDate"];
+            if (addedDate) {
+                torrent.addedDate = (time_t)[addedDate unsignedLongValue];
             }
             
             [torrent signalUpdated];

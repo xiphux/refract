@@ -314,6 +314,22 @@
     updated = true;
 }
 
+- (time_t)addedDate
+{
+    return addedDate;
+}
+
+- (void)setAddedDate:(time_t)newAddedDate
+{
+    if (addedDate == newAddedDate) {
+        return;
+    }
+    
+    addedDate = newAddedDate;
+    
+    updated = true;
+}
+
 - (NSUInteger)group
 {
     return group;

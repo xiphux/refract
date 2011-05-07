@@ -106,11 +106,9 @@
 								<string key="NSToolbarItemPaletteLabel">Add</string>
 								<nil key="NSToolbarItemToolTip"/>
 								<object class="NSSegmentedControl" key="NSToolbarItemView" id="129788802">
-									<reference key="NSNextResponder"/>
+									<nil key="NSNextResponder"/>
 									<int key="NSvFlags">268</int>
 									<string key="NSFrame">{{0, 14}, {38, 23}}</string>
-									<reference key="NSSuperview"/>
-									<reference key="NSNextKeyView"/>
 									<bool key="NSEnabled">YES</bool>
 									<object class="NSSegmentedCell" key="NSCell" id="833023722">
 										<int key="NSCellFlags">67239424</int>
@@ -157,11 +155,9 @@
 								<string key="NSToolbarItemPaletteLabel">Stop / Start</string>
 								<nil key="NSToolbarItemToolTip"/>
 								<object class="NSSegmentedControl" key="NSToolbarItemView" id="84296510">
-									<reference key="NSNextResponder"/>
+									<nil key="NSNextResponder"/>
 									<int key="NSvFlags">268</int>
 									<string key="NSFrame">{{0, 14}, {71, 23}}</string>
-									<reference key="NSSuperview"/>
-									<reference key="NSNextKeyView"/>
 									<bool key="NSEnabled">YES</bool>
 									<object class="NSSegmentedCell" key="NSCell" id="71272623">
 										<int key="NSCellFlags">67239424</int>
@@ -212,11 +208,9 @@
 								<string key="NSToolbarItemPaletteLabel">Action</string>
 								<nil key="NSToolbarItemToolTip"/>
 								<object class="NSSegmentedControl" key="NSToolbarItemView" id="718854094">
-									<reference key="NSNextResponder"/>
+									<nil key="NSNextResponder"/>
 									<int key="NSvFlags">268</int>
 									<string key="NSFrame">{{2, 14}, {38, 23}}</string>
-									<reference key="NSSuperview"/>
-									<reference key="NSNextKeyView"/>
 									<bool key="NSEnabled">YES</bool>
 									<object class="NSSegmentedCell" key="NSCell" id="868937919">
 										<int key="NSCellFlags">67239424</int>
@@ -258,11 +252,9 @@
 								<string key="NSToolbarItemPaletteLabel">Search</string>
 								<nil key="NSToolbarItemToolTip"/>
 								<object class="NSSearchField" key="NSToolbarItemView" id="975738421">
-									<reference key="NSNextResponder"/>
+									<nil key="NSNextResponder"/>
 									<int key="NSvFlags">268</int>
 									<string key="NSFrame">{{0, 14}, {96, 22}}</string>
-									<reference key="NSSuperview"/>
-									<reference key="NSNextKeyView"/>
 									<bool key="NSEnabled">YES</bool>
 									<object class="NSSearchFieldCell" key="NSCell" id="541821065">
 										<int key="NSCellFlags">343014976</int>
@@ -360,11 +352,9 @@
 								<string key="NSToolbarItemPaletteLabel">Remove</string>
 								<nil key="NSToolbarItemToolTip"/>
 								<object class="NSSegmentedControl" key="NSToolbarItemView" id="130063162">
-									<reference key="NSNextResponder"/>
+									<nil key="NSNextResponder"/>
 									<int key="NSvFlags">268</int>
 									<string key="NSFrame">{{6, 14}, {38, 23}}</string>
-									<reference key="NSSuperview"/>
-									<reference key="NSNextKeyView"/>
 									<bool key="NSEnabled">YES</bool>
 									<object class="NSSegmentedCell" key="NSCell" id="974932925">
 										<int key="NSCellFlags">67239424</int>
@@ -746,31 +736,10 @@
 													<object class="NSMutableArray" key="NSMenuItems">
 														<bool key="EncodedWithXMLCoder">YES</bool>
 														<reference ref="854389406"/>
-														<object class="NSMenuItem" id="1004193068">
-															<reference key="NSMenu" ref="469670054"/>
-															<string key="NSTitle">Item 2</string>
-															<string key="NSKeyEquiv"/>
-															<int key="NSKeyEquivModMask">1048576</int>
-															<int key="NSMnemonicLoc">2147483647</int>
-															<reference key="NSOnImage" ref="659986999"/>
-															<reference key="NSMixedImage" ref="842893554"/>
-															<string key="NSAction">_popUpItemAction:</string>
-															<reference key="NSTarget" ref="864240441"/>
-														</object>
-														<object class="NSMenuItem" id="968085412">
-															<reference key="NSMenu" ref="469670054"/>
-															<string key="NSTitle">Item 3</string>
-															<string key="NSKeyEquiv"/>
-															<int key="NSKeyEquivModMask">1048576</int>
-															<int key="NSMnemonicLoc">2147483647</int>
-															<reference key="NSOnImage" ref="659986999"/>
-															<reference key="NSMixedImage" ref="842893554"/>
-															<string key="NSAction">_popUpItemAction:</string>
-															<reference key="NSTarget" ref="864240441"/>
-														</object>
 													</object>
 													<reference key="NSMenuFont" ref="463036290"/>
 												</object>
+												<int key="NSSelectedIndex">-1</int>
 												<bool key="NSPullDown">YES</bool>
 												<int key="NSPreferredEdge">1</int>
 												<bool key="NSUsesItemFromMenu">YES</bool>
@@ -1499,6 +1468,14 @@
 					</object>
 					<int key="connectionID">890</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">listButton</string>
+						<reference key="source" ref="1056471169"/>
+						<reference key="destination" ref="275890806"/>
+					</object>
+					<int key="connectionID">893</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -1962,24 +1939,12 @@
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="854389406"/>
-							<reference ref="1004193068"/>
-							<reference ref="968085412"/>
 						</object>
 						<reference key="parent" ref="864240441"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">881</int>
 						<reference key="object" ref="854389406"/>
-						<reference key="parent" ref="469670054"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">882</int>
-						<reference key="object" ref="1004193068"/>
-						<reference key="parent" ref="469670054"/>
-					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">883</int>
-						<reference key="object" ref="968085412"/>
 						<reference key="parent" ref="469670054"/>
 					</object>
 					<object class="IBObjectRecord">
@@ -2144,7 +2109,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">892</int>
+			<int key="maxID">893</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes"/>
 		<int key="IBDocument.localizationMode">0</int>

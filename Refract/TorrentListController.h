@@ -9,18 +9,31 @@
 #import <Foundation/Foundation.h>
 #import "RFTorrent.h"
 
+typedef enum {
+    sortName = 1,
+    sortDateAdded = 2,
+    sortDateDone = 3,
+    sortProgress = 4,
+    sortDownloadRate = 5,
+    sortUploadRate = 6
+} TorrentListSort;
+
 @interface TorrentListController : NSObject {
 @private
-    NSArrayController IBOutlet *torrentListController;
-    NSCollectionView IBOutlet *torrentListView;
+    NSArrayController IBOutlet *controller;
+    NSCollectionView IBOutlet *listView;
     NSSearchField IBOutlet *searchField;
     
+    NSPopUpButton IBOutlet *listButton;
+    
     NSPredicate *listPredicate;
+    TorrentListSort listSort;
 }
 
 @property (retain) IBOutlet NSArrayController *controller;
 @property (retain) IBOutlet NSCollectionView *listView;
 @property (retain) IBOutlet NSSearchField *searchField;
+@property (retain) IBOutlet NSPopUpButton *listButton;
 @property (readonly) NSArray *selectedObjects;
 @property (readonly) NSArray *arrangedObjects;
 

@@ -48,6 +48,7 @@ typedef enum {
     RFTorrentStatus status;
     
     time_t doneDate;
+    time_t addedDate;
     
     NSUInteger group;
 }
@@ -70,6 +71,7 @@ typedef enum {
 @property double percent;
 @property unsigned long uploadedSize;
 @property time_t doneDate;
+@property time_t addedDate;
 @property NSUInteger group;
 
 - (id)initWithTid:(NSString *)initTid;
