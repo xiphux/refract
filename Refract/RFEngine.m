@@ -63,6 +63,18 @@
     return nil;
 }
 
+- (bool)startAllTorrents
+{
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
+
+- (bool)stopAllTorrents
+{
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
+
 - (bool)removeTorrents:(NSArray *)list deleteData:(bool)del
 {
     [self doesNotRecognizeSelector:_cmd];

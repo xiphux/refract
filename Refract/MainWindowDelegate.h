@@ -21,7 +21,6 @@
     NSArrayController IBOutlet *torrentListController;
     NSSearchField IBOutlet *searchField;
     NSButton IBOutlet *statsButton;
-    NSTextField IBOutlet *rateText;
     NSMenu IBOutlet *removeMenu;
     NSSegmentedControl IBOutlet *removeButton;
     NSMenu IBOutlet *actionMenu;
@@ -45,7 +44,6 @@
 @property (retain) IBOutlet NSArrayController *torrentListController;
 @property (retain) IBOutlet SourceListController *sourceListController;
 @property (retain) IBOutlet NSSearchField *searchField;
-@property (retain) IBOutlet NSTextField *rateText;
 @property (retain) IBOutlet NSButton *statsButton;
 @property (retain) IBOutlet NSMenu *removeMenu;
 @property (retain) IBOutlet NSSegmentedControl *removeButton;

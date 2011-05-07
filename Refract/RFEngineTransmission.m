@@ -207,6 +207,34 @@
     return true;
 }
 
+- (bool)startAllTorrents
+{
+    SBJsonWriter *writer = [[SBJsonWriter alloc] init];
+    NSDictionary *args = [NSDictionary dictionary];
+    NSDictionary *requestData = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:args, @"torrent-start", nil] forKeys:[NSArray arrayWithObjects:@"arguments", @"method", nil]];
+    NSString *requestStr = [writer stringWithObject:requestData];
+    NSData *requestJson = [requestStr dataUsingEncoding:NSUTF8StringEncoding];
+    [writer release];
+    
+    [self rpcRequest:@"startall" data:requestJson];
+    
+    return true;
+}
+
+- (bool)stopAllTorrents
+{
+    SBJsonWriter *writer = [[SBJsonWriter alloc] init];
+    NSDictionary *args = [NSDictionary dictionary];
+    NSDictionary *requestData = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:args, @"torrent-stop", nil] forKeys:[NSArray arrayWithObjects:@"arguments", @"method", nil]];
+    NSString *requestStr = [writer stringWithObject:requestData];
+    NSData *requestJson = [requestStr dataUsingEncoding:NSUTF8StringEncoding];
+    [writer release];
+    
+    [self rpcRequest:@"stopall" data:requestJson];
+    
+    return true;
+}
+
 - (bool)removeTorrents:(NSArray *)list deleteData:(bool)del
 {   
     if (!list) {

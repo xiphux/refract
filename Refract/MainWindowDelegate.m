@@ -19,7 +19,6 @@
 
 - (void)updateFilterPredicate;
 - (void)updateStatsButton;
-- (void)updateRateText;
 - (void)updateDockBadge;
 
 - (void)settingsChanged:(NSNotification *)notification;
@@ -68,7 +67,6 @@
     [torrentListController release]; 
     [searchField release];
     [statsButton release];
-    [rateText release];
     [self destroyEngine];
     [torrentList release];
     [groupList release];
@@ -82,7 +80,6 @@
 @synthesize sourceListController;
 @synthesize torrentListController;
 @synthesize searchField;
-@synthesize rateText;
 @synthesize statsButton;
 @synthesize removeMenu;
 @synthesize removeButton;
@@ -220,7 +217,6 @@
 - (void)engineDidRefreshStats:(RFEngine *)engine
 {
     [self updateStatsButton];
-    [self updateRateText];
 }
 
 
@@ -685,18 +681,12 @@
 {
     NSString *label;
     if (showTotalStats) {
-        label = [NSString stringWithFormat:@"Total D: %@ U: %@", [RFUtils readableBytesDecimal:[engine totalDownloadedBytes]], [RFUtils readableBytesDecimal:[engine totalUploadedBytes]]];
+        label = [NSString stringWithFormat:@"D: %@ U: %@  Total D: %@ U: %@", [RFUtils readableRateDecimal:[engine downloadSpeed]], [RFUtils readableRateDecimal:[engine uploadSpeed]], [RFUtils readableBytesDecimal:[engine totalDownloadedBytes]], [RFUtils readableBytesDecimal:[engine totalUploadedBytes]]];
     } else {
-        label = [NSString stringWithFormat:@"Session D: %@ U: %@", [RFUtils readableBytesDecimal:[engine sessionDownloadedBytes]], [RFUtils readableBytesDecimal:[engine sessionUploadedBytes]]];
+        label = [NSString stringWithFormat:@"D: %@ U: %@  Session D: %@ U: %@", [RFUtils readableRateDecimal:[engine downloadSpeed]], [RFUtils readableRateDecimal:[engine uploadSpeed]], [RFUtils readableBytesDecimal:[engine sessionDownloadedBytes]], [RFUtils readableBytesDecimal:[engine sessionUploadedBytes]]];
     }
     [statsButton setTitle:label];
     [statsButton sizeToFit];
-}
-
-- (void)updateRateText
-{
-    NSString *label = [NSString stringWithFormat:@"D: %@ U: %@", [RFUtils readableRateDecimal:[engine downloadSpeed]], [RFUtils readableRateDecimal:[engine uploadSpeed]]];
-    [rateText setStringValue:label];
 }
 
 - (void)updateDockBadge

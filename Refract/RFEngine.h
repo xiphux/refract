@@ -27,6 +27,8 @@ typedef enum {
 - (bool)refresh;
 - (bool)startTorrents:(NSArray *)list;
 - (bool)stopTorrents:(NSArray *)list;
+- (bool)startAllTorrents;
+- (bool)stopAllTorrents;
 - (bool)removeTorrents:(NSArray *)list deleteData:(bool)del;
 - (bool)addTorrent:(NSData *)data;
 
