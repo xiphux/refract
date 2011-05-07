@@ -7,12 +7,15 @@
 //
 
 #import "TorrentListController.h"
+#import "RFConstants.h"
 
 @interface TorrentListController ()
 - (NSPredicate *)searchPredicate;
 - (void)updateFilter;
 - (void)listButton:(NSNotification *)notification;
 - (void)changeSort:(id)sender;
+- (NSSortDescriptor *)descriptorForSort:(TorrentListSort)sort;
+- (void)setDefaults;
 @end
 
 
@@ -42,8 +45,22 @@
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(listButton:) name:NSPopUpButtonWillPopUpNotification object:listButton];
     
-    [controller setSortDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:true]]];
-    listSort = sortName;
+    [self setDefaults];
+    
+    listSort = [[NSUserDefaults standardUserDefaults] integerForKey:REFRACT_USERDEFAULT_SORT];
+    NSSortDescriptor *desc = [self descriptorForSort:listSort];
+    if (desc) {
+        [controller setSortDescriptors:[NSArray arrayWithObject:desc]];
+    }
+}
+
+- (void)setDefaults
+{
+    NSMutableDictionary *def = [NSMutableDictionary dictionary];
+    
+    [def setObject:[NSNumber numberWithInt:(int)sortName] forKey:REFRACT_USERDEFAULT_SORT];
+    
+    [[NSUserDefaults standardUserDefaults] registerDefaults:def];
 }
 
 - (NSArray *)selectedObjects
@@ -178,36 +195,45 @@
     [menu addItem:sortMenuItem];
 }
 
+- (NSSortDescriptor *)descriptorForSort:(TorrentListSort)sort
+{
+    switch (sort) {
+        case sortName:
+            return [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:true];
+            break;
+        case sortDateAdded:
+            return [NSSortDescriptor sortDescriptorWithKey:@"addedDate" ascending:false];
+            break;
+        case sortDateDone:
+            return [NSSortDescriptor sortDescriptorWithKey:@"doneDate" ascending:false];
+            break;
+        case sortProgress:
+            return [NSSortDescriptor sortDescriptorWithKey:@"percent" ascending:false];
+            break;
+        case sortDownloadRate:
+            return [NSSortDescriptor sortDescriptorWithKey:@"downloadRate" ascending:false];
+            break;
+        case sortUploadRate:
+            return [NSSortDescriptor sortDescriptorWithKey:@"uploadRate" ascending:false];
+            break;
+    }
+    return nil;
+}
+
 - (void)changeSort:(id)sender
 {
     NSUInteger newSort = [sender tag];
     
-    NSSortDescriptor *desc = nil;
-    
-    switch (newSort) {
-        case sortName:
-            desc = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:true];
-            break;
-        case sortDateAdded:
-            desc = [NSSortDescriptor sortDescriptorWithKey:@"addedDate" ascending:false];
-            break;
-        case sortDateDone:
-            desc = [NSSortDescriptor sortDescriptorWithKey:@"doneDate" ascending:false];
-            break;
-        case sortProgress:
-            desc = [NSSortDescriptor sortDescriptorWithKey:@"percent" ascending:false];
-            break;
-        case sortDownloadRate:
-            desc = [NSSortDescriptor sortDescriptorWithKey:@"downloadRate" ascending:false];
-            break;
-        case sortUploadRate:
-            desc = [NSSortDescriptor sortDescriptorWithKey:@"uploadRate" ascending:false];
-            break;
+    if (newSort == listSort) {
+        return;
     }
+    
+    NSSortDescriptor *desc = [self descriptorForSort:newSort];
     
     if (desc) {
         [controller setSortDescriptors:[NSArray arrayWithObject:desc]];
         listSort = newSort;
+        [[NSUserDefaults standardUserDefaults] setInteger:newSort forKey:REFRACT_USERDEFAULT_SORT];
     }
 }
 
