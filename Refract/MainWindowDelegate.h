@@ -11,7 +11,7 @@
 #import "RFTorrentList.h"
 #import "RFGroupList.h"
 #import "SourceListController.h"
-#import "PreferencesController.h"
+#import "TorrentListController.h"
 #import "TorrentItem.h"
 
 typedef enum {
@@ -24,10 +24,9 @@ typedef enum {
 @interface MainWindowDelegate : NSObject <NSSplitViewDelegate, RFTorrentListDelegate, RFEngineDelegate, SourceListDelegate, TorrentItemDelegate, NSMenuDelegate> {
 @private
     NSWindow IBOutlet *window;
+    TorrentListController IBOutlet *torrentListController;
     SourceListController IBOutlet *sourceListController;
-    NSArrayController IBOutlet *torrentListController;
-    NSCollectionView IBOutlet *torrentListView;
-    NSSearchField IBOutlet *searchField;
+    
     NSButton IBOutlet *statsButton;
     NSMenu IBOutlet *removeMenu;
     NSSegmentedControl IBOutlet *removeButton;
@@ -40,7 +39,6 @@ typedef enum {
     RFEngine *engine;
     RFTorrentList *torrentList;
     RFGroupList *groupList;
-    NSPredicate *searchPredicate;
     
     StatType statusButtonType;
     bool started;
@@ -49,10 +47,8 @@ typedef enum {
 }
 
 @property (assign) IBOutlet NSWindow *window;
-@property (retain) IBOutlet NSArrayController *torrentListController;
+@property (retain) IBOutlet TorrentListController *torrentListController;
 @property (retain) IBOutlet SourceListController *sourceListController;
-@property (retain) IBOutlet NSCollectionView *torrentListView;
-@property (retain) IBOutlet NSSearchField *searchField;
 @property (retain) IBOutlet NSButton *statsButton;
 @property (retain) IBOutlet NSMenu *removeMenu;
 @property (retain) IBOutlet NSSegmentedControl *removeButton;
@@ -66,7 +62,6 @@ typedef enum {
 @property (retain) RFTorrentList *torrentList;
 @property (retain) RFGroupList *groupList;
 
-- (IBAction)search:(id)sender;
 - (IBAction)statsButtonClick:(id)sender;
 - (IBAction)startStopClicked:(id)sender;
 - (IBAction)startClicked:(id)sender;

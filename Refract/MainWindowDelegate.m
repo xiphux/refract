@@ -19,7 +19,6 @@
 
 - (void)setDefaults;
 
-- (void)updateFilterPredicate;
 - (void)updateStatsButton;
 - (void)updateDockBadge;
 
@@ -67,12 +66,10 @@
     [window release];
     [sourceListController release];
     [torrentListController release]; 
-    [searchField release];
     [statsButton release];
     [self destroyEngine];
     [torrentList release];
     [groupList release];
-    [searchPredicate release];
     [updateQueue release];
 
     [super dealloc];
@@ -80,9 +77,7 @@
 
 @synthesize window;
 @synthesize sourceListController;
-@synthesize torrentListView;
 @synthesize torrentListController;
-@synthesize searchField;
 @synthesize statsButton;
 @synthesize removeMenu;
 @synthesize removeButton;
@@ -109,8 +104,6 @@
     [startStopButton setMenu:stopMenu forSegment:0];
     [startStopButton setMenu:startMenu forSegment:1];
     
-    [torrentListController setSortDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:true]]];
-    
     [sourceListController setDelegate:self];
     
     statusButtonType = [[NSUserDefaults standardUserDefaults] integerForKey:REFRACT_USERDEFAULT_STAT_TYPE];
@@ -124,9 +117,8 @@
     [sourceListController initGroups:[groupList groups]];
     
     bool initialized = [self initEngine];
-    if ([engine type] == engTransmission) {
-        [torrentList setSaveGroups:true];
-    }
+    [torrentList setSaveGroups:true];
+    
     if (initialized) {
         [self startEngine];
     }
@@ -305,8 +297,21 @@
 - (void)sourceList:(SourceListController *)list filterDidChange:(RFTorrentFilter *)newFilter
 {
     if ([list isEqual:sourceListController]) {
-        [searchField setStringValue:@""];
-        [self updateFilterPredicate];
+        RFTorrentFilterType filtType = [[sourceListController filter] filterType];
+        if (filtType == filtStatus) {
+            [torrentListController setStatusFilter:[[sourceListController filter] torrentStatus]];
+        } else if (filtType == filtGroup) {
+            if ([[sourceListController filter] torrentGroup] != nil) {
+                [torrentListController setGroupFilter:[[[sourceListController filter] torrentGroup] gid]];
+            } else {
+                // no group
+                [torrentListController setGroupFilter:0];
+            }
+        } else {
+            [torrentListController clearFilter];
+        }
+        
+        [self updateStatsButton];
     }
 }
 
@@ -409,11 +414,6 @@
 
 
 #pragma mark ui actions
-
-- (IBAction)search:(id)sender
-{
-    [self updateFilterPredicate];
-}
 
 - (IBAction)statsButtonClick:(id)sender
 {
@@ -656,47 +656,6 @@
     return true;
 }
 
-- (void)updateFilterPredicate
-{
-    NSMutableArray *allPredicates = [NSMutableArray array];
-    
-    NSString *searchText = [searchField stringValue];
-    if ([searchText length] > 0) {
-        NSArray *keywords = [searchText componentsSeparatedByString:@" "];
-        if ([keywords count] > 0) {
-            for (NSString *word in keywords) {
-                if ([word length] > 0) {
-                    [allPredicates addObject:[NSPredicate predicateWithFormat:@"name contains[cd] %@", word]];
-                }
-            }
-        }
-    }
-    
-    RFTorrentFilterType filtType = [[sourceListController filter] filterType];
-    if (filtType == filtStatus) {
-        NSPredicate *statusPredicate = [NSPredicate predicateWithFormat:@"status == %d", [[sourceListController filter] torrentStatus]];
-        [allPredicates addObject:statusPredicate];
-    } else if (filtType == filtGroup) {
-        NSPredicate *groupPredicate;
-        if ([[sourceListController filter] torrentGroup] != nil) {
-            groupPredicate = [NSPredicate predicateWithFormat:@"group == %d", [[[sourceListController filter] torrentGroup] gid]];
-        } else {
-            // no group
-            groupPredicate = [NSPredicate predicateWithFormat:@"group == 0"];
-        }
-        [allPredicates addObject:groupPredicate];
-    }
-    
-    if ([allPredicates count] > 0) {
-        NSPredicate *filterPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:allPredicates];
-        [torrentListController setFilterPredicate:filterPredicate];
-    } else {
-        [torrentListController setFilterPredicate:nil];
-    }
-    
-    [self updateStatsButton];
-}
-
 - (void)updateStatsButton
 {
     NSString *label;
@@ -717,11 +676,9 @@
     [statsButton setTitle:label];
     [statsButton sizeToFit];
     
-    NSRect torrentListRect = [torrentListView frame];
+    NSRect torrentListRect = [[statsButton superview] frame];
     NSRect statButtonRect = [statsButton frame];
-    CGFloat center = torrentListRect.origin.x + (torrentListRect.size.width / 2);
-    CGFloat newx = center - (statButtonRect.size.width / 2);
-    statButtonRect.origin.x = newx;
+    statButtonRect.origin.x = (torrentListRect.size.width / 2) - (statButtonRect.size.width / 2);
     [statsButton setFrame:statButtonRect];
 }
 
@@ -1031,7 +988,7 @@
     }
     
     if ([menu isEqual:stopMenu]) {
-        bool selected = ([[torrentListController selectedObjects] count] > 0);
+        bool selected = ([[torrentListController  selectedObjects] count] > 0);
         NSMenuItem *stopItem = [menu itemAtIndex:0];
         [stopItem setEnabled:selected];
         NSMenuItem *stopAllItem = [menu itemAtIndex:1];

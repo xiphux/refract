@@ -12,6 +12,7 @@
 		C60C325E1357E6AF00CB14CD /* EMKeychainItem.m in Sources */ = {isa = PBXBuildFile; fileRef = C60C325D1357E6AF00CB14CD /* EMKeychainItem.m */; };
 		C60C32601357E6E200CB14CD /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C60C325F1357E6E100CB14CD /* Carbon.framework */; };
 		C60C32621357E6EC00CB14CD /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C60C32611357E6EC00CB14CD /* Security.framework */; };
+		C6297270137511CD00977F79 /* TorrentListController.m in Sources */ = {isa = PBXBuildFile; fileRef = C629726F137511CD00977F79 /* TorrentListController.m */; };
 		C6414DCF13514B33000F248C /* SourceListController.m in Sources */ = {isa = PBXBuildFile; fileRef = C6414DCE13514B33000F248C /* SourceListController.m */; };
 		C6414DD3135156D9000F248C /* BaseNode.m in Sources */ = {isa = PBXBuildFile; fileRef = C6414DD2135156D9000F248C /* BaseNode.m */; };
 		C6414DD61351588C000F248C /* StatusNode.m in Sources */ = {isa = PBXBuildFile; fileRef = C6414DD51351588B000F248C /* StatusNode.m */; };
@@ -111,6 +112,8 @@
 		C60C325F1357E6E100CB14CD /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 		C60C32611357E6EC00CB14CD /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		C60C32631357FFBC00CB14CD /* RFConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFConstants.h; sourceTree = "<group>"; };
+		C629726E137511CD00977F79 /* TorrentListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TorrentListController.h; sourceTree = "<group>"; };
+		C629726F137511CD00977F79 /* TorrentListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TorrentListController.m; sourceTree = "<group>"; };
 		C6414DCD13514B33000F248C /* SourceListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SourceListController.h; sourceTree = "<group>"; };
 		C6414DCE13514B33000F248C /* SourceListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SourceListController.m; sourceTree = "<group>"; };
 		C6414DD1135156D9000F248C /* BaseNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseNode.h; sourceTree = "<group>"; };
@@ -201,6 +204,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C629726D137511B200977F79 /* TorrentList */ = {
+			isa = PBXGroup;
+			children = (
+				C64DF9AA1348E48300CB08EF /* Torrent */,
+				C629726E137511CD00977F79 /* TorrentListController.h */,
+				C629726F137511CD00977F79 /* TorrentListController.m */,
+			);
+			name = TorrentList;
+			sourceTree = "<group>";
+		};
 		C637EFF01349229100860228 /* Preferences */ = {
 			isa = PBXGroup;
 			children = (
@@ -234,7 +247,6 @@
 			isa = PBXGroup;
 			children = (
 				C637EFF01349229100860228 /* Preferences */,
-				C64DF9AA1348E48300CB08EF /* Torrent */,
 				C64DF9A81348E46A00CB08EF /* Main */,
 				C6B914DB135BBDA50008B707 /* NotificationController.h */,
 				C6B914DC135BBDA60008B707 /* NotificationController.m */,
@@ -417,6 +429,7 @@
 		C6A8E45713651A81006CE0DC /* Main Window */ = {
 			isa = PBXGroup;
 			children = (
+				C629726D137511B200977F79 /* TorrentList */,
 				C6A8E45413651874006CE0DC /* MainWindowController.h */,
 				C6A8E45513651874006CE0DC /* MainWindowController.m */,
 				C67861A81346E41100892BC2 /* MainWindowDelegate.h */,
@@ -598,6 +611,7 @@
 				C6A8E45613651874006CE0DC /* MainWindowController.m in Sources */,
 				C6A8E45D136A56E7006CE0DC /* GroupNode.m in Sources */,
 				C6A8E463136BD729006CE0DC /* RFGroupList.m in Sources */,
+				C6297270137511CD00977F79 /* TorrentListController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
