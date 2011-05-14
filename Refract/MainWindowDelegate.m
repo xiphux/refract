@@ -33,6 +33,8 @@
 - (void)stopTorrentNotified:(NSNotification *)notification;
 - (void)removeTorrentNotified:(NSNotification *)notification;
 - (void)deleteTorrentNotified:(NSNotification *)notification;
+- (void)sleepNotified:(NSNotification *)notification;
+- (void)wakeNotified:(NSNotification *)notification;
 
 - (void)tryRemoveTorrents:(NSArray *)torrents;
 - (void)tryDeleteTorrents:(NSArray *)torrents;
@@ -124,6 +126,11 @@
     }
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsChanged:) name:NSUserDefaultsDidChangeNotification object:nil];
+    
+    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver: self selector: @selector(sleepNotified:) name: NSWorkspaceWillSleepNotification object: nil];
+    
+    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver: self selector: @selector(wakeNotified:) name: NSWorkspaceDidWakeNotification object: nil];
+
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startTorrentNotified:) name:REFRACT_NOTIFICATION_TORRENT_START object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stopTorrentNotified:) name:REFRACT_NOTIFICATION_TORRENT_STOP object:nil];
@@ -230,6 +237,8 @@
 
 - (void)torrentListDidFinishLoading:(RFTorrentList *)list
 {
+    [updateTimer release];
+    
     [torrentListController rearrangeObjects];
     
     bool downloading = false;
@@ -286,9 +295,13 @@
     [self updateDockBadge];
     [self updateStatsButton];
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSTimeInterval update = [defaults doubleForKey:REFRACT_USERDEFAULT_UPDATE_FREQUENCY];
-    [NSTimer scheduledTimerWithTimeInterval:update target:self selector:@selector(refresh) userInfo:nil repeats:false];
+    if (!sleeping) {
+    
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSTimeInterval update = [defaults doubleForKey:REFRACT_USERDEFAULT_UPDATE_FREQUENCY];
+        updateTimer = [NSTimer scheduledTimerWithTimeInterval:update target:self selector:@selector(refresh) userInfo:nil repeats:false];
+        
+    }
 }
 
 
@@ -573,6 +586,25 @@
     
     if (!started) {
         [self startEngine];
+    }
+}
+
+- (void)sleepNotified:(NSNotification *)notification
+{
+    sleeping = true;
+    
+    if (updateTimer) {
+        [updateTimer invalidate];
+        [updateTimer release];
+    }
+}
+
+- (void)wakeNotified:(NSNotification *)notification
+{
+    sleeping = false;
+    
+    if (started) {
+        [self refresh];
     }
 }
 

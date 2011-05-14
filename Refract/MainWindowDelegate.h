@@ -43,6 +43,9 @@ typedef enum {
     StatType statusButtonType;
     bool started;
     
+    NSTimer *updateTimer;
+    bool sleeping;
+    
     NSOperationQueue *updateQueue;
 }
 
