@@ -75,6 +75,18 @@
     return nil;
 }
 
+- (bool)verifyTorrents:(NSArray *)list
+{
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
+
+- (bool)reannounceTorrents:(NSArray *)list
+{
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
+
 - (bool)removeTorrents:(NSArray *)list deleteData:(bool)del
 {
     [self doesNotRecognizeSelector:_cmd];
@@ -96,37 +108,37 @@
 - (unsigned long)uploadSpeed
 {
     [self doesNotRecognizeSelector:_cmd];
-    return nil;
+    return 0;
 }
 
 - (unsigned long)downloadSpeed
 {
     [self doesNotRecognizeSelector:_cmd];
-    return nil;
+    return 0;
 }
 
 - (unsigned long)sessionUploadedBytes
 {
     [self doesNotRecognizeSelector:_cmd];
-    return nil;
+    return 0;
 }
 
 - (unsigned long)sessionDownloadedBytes
 {
     [self doesNotRecognizeSelector:_cmd];
-    return nil;
+    return 0;
 }
 
 - (unsigned long)totalUploadedBytes
 {
     [self doesNotRecognizeSelector:_cmd];
-    return nil;
+    return 0;
 }
 
 - (unsigned long)totalDownloadedBytes
 {
     [self doesNotRecognizeSelector:_cmd];
-    return nil;
+    return 0;
 }
 
 - (RFEngineType)type

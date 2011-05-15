@@ -33,6 +33,8 @@
 - (void)stopTorrentNotified:(NSNotification *)notification;
 - (void)removeTorrentNotified:(NSNotification *)notification;
 - (void)deleteTorrentNotified:(NSNotification *)notification;
+- (void)verifyTorrentNotified:(NSNotification *)notification;
+- (void)reannounceTorrentNotified:(NSNotification *)notification;
 - (void)sleepNotified:(NSNotification *)notification;
 - (void)wakeNotified:(NSNotification *)notification;
 
@@ -46,6 +48,8 @@
 - (void)removeTorrents:(NSArray *)torrents;
 - (void)deleteTorrents:(NSArray *)torrents;
 - (void)addTorrents:(NSArray *)files;
+- (void)verifyTorrents:(NSArray *)torrents;
+- (void)reannounceTorrents:(NSArray *)torrents;
 
 - (bool)addTorrentFile:(NSURL *)url;
 
@@ -136,6 +140,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stopTorrentNotified:) name:REFRACT_NOTIFICATION_TORRENT_STOP object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeTorrentNotified:) name:REFRACT_NOTIFICATION_TORRENT_REMOVE object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteTorrentNotified:) name:REFRACT_NOTIFICATION_TORRENT_DELETE object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(verifyTorrentNotified:) name:REFRACT_NOTIFICATION_TORRENT_VERIFY object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reannounceTorrentNotified:) name:REFRACT_NOTIFICATION_TORRENT_REANNOUNCE object:nil];
 }
 
 - (void)setDefaults
@@ -574,6 +580,26 @@
     [torrentList setGroup:gid forTorrents:[torrentListController selectedObjects]];
 }
 
+- (IBAction)verifyClicked:(id)sender
+{
+    NSArray *selected = [torrentListController selectedObjects];
+    if ([selected count] < 1) {
+        return;
+    }
+    
+    [self verifyTorrents:selected];
+}
+
+- (IBAction)reannounceClicked:(id)sender
+{
+    NSArray *selected = [torrentListController selectedObjects];
+    if ([selected count] < 1) {
+        return;
+    }
+    
+    [self reannounceTorrents:selected];
+}
+
 
 #pragma mark notifications
 
@@ -669,6 +695,36 @@
     }
     
     [self tryDeleteTorrents:[NSArray arrayWithObject:torrent]];
+}
+
+- (void)verifyTorrentNotified:(NSNotification *)notification
+{
+    NSDictionary *data = [notification userInfo];
+    if (!data) {
+        return;
+    }
+    
+    RFTorrent *torrent = [data objectForKey:@"torrent"];
+    if (!torrent) {
+        return;
+    }
+    
+    [self verifyTorrents:[NSArray arrayWithObject:torrent]];
+}
+
+- (void)reannounceTorrentNotified:(NSNotification *)notification
+{
+    NSDictionary *data = [notification userInfo];
+    if (!data) {
+        return;
+    }
+    
+    RFTorrent *torrent = [data objectForKey:@"torrent"];
+    if (!torrent) {
+        return;
+    }
+    
+    [self reannounceTorrents:[NSArray arrayWithObject:torrent]];
 }
 
 
@@ -897,6 +953,32 @@
     }
 }
 
+- (void)verifyTorrents:(NSArray *)torrents
+{
+    if (!torrents) {
+        return;
+    }
+    
+    if ([torrents count] == 0) {
+        return;
+    }
+    
+    [engine verifyTorrents:torrents];
+}
+
+- (void)reannounceTorrents:(NSArray *)torrents
+{
+    if (!torrents) {
+        return;
+    }
+    
+    if ([torrents count] == 0) {
+        return;
+    }
+    
+    [engine reannounceTorrents:torrents];
+}
+
 
 #pragma mark splitview delegate
 
@@ -976,9 +1058,16 @@
 - (void)menuNeedsUpdate:(NSMenu *)menu
 {
     if ([menu isEqual:actionMenu]) {
-        NSMenuItem *groupMenuItem = [menu itemAtIndex:0];
         
-        bool selected = ([[torrentListController selectedObjects] count] > 0);        
+        bool selected = ([[torrentListController selectedObjects] count] > 0);      
+        
+        NSMenuItem *verifyMenuItem = [menu itemAtIndex:0];
+        [verifyMenuItem setEnabled:selected];
+        
+        NSMenuItem *reannounceMenuItem = [menu itemAtIndex:1];
+        [reannounceMenuItem setEnabled:selected];
+        
+        NSMenuItem *groupMenuItem = [menu itemAtIndex:3];  
         NSMenu *groupSubMenu = [[NSMenu alloc] initWithTitle:@"Group"];
         
         [menu setSubmenu:groupSubMenu forItem:groupMenuItem];

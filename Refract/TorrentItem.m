@@ -20,6 +20,8 @@
 - (void)startTorrent:(id)sender;
 - (void)removeTorrent:(id)sender;
 - (void)deleteTorrent:(id)sender;
+- (void)verifyTorrent:(id)sender;
+- (void)reannounceTorrent:(id)sender;
 - (NSMutableDictionary *)notificationData;
 - (void)changeGroup:(id)sender;
 @end
@@ -159,6 +161,16 @@
     [delete setAlternate:true];
     [menu addItem:delete];
     
+    [menu addItem:[NSMenuItem separatorItem]];
+    
+    NSMenuItem *verifyItem = [[NSMenuItem alloc] initWithTitle:@"Verify" action:@selector(verifyTorrent:) keyEquivalent:@""];
+    [verifyItem setTarget:self];
+    [menu addItem:verifyItem];
+    
+    NSMenuItem *reannounce = [[NSMenuItem alloc] initWithTitle:@"Reannounce" action:@selector(reannounceTorrent:) keyEquivalent:@""];
+    [reannounce setTarget:self];
+    [menu addItem:reannounce];
+    
     if ([self delegate] && [[self delegate] respondsToSelector:@selector(torrentItemAvailableGroups:)]) {
     
         [menu addItem:[NSMenuItem separatorItem]];
@@ -232,6 +244,16 @@
 - (void)deleteTorrent:(id)sender
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:REFRACT_NOTIFICATION_TORRENT_DELETE object:self userInfo:[self notificationData]];
+}
+
+- (void)verifyTorrent:(id)sender
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:REFRACT_NOTIFICATION_TORRENT_VERIFY object:self userInfo:[self notificationData]];
+}
+
+- (void)reannounceTorrent:(id)sender
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:REFRACT_NOTIFICATION_TORRENT_REANNOUNCE object:self userInfo:[self notificationData]];
 }
 
 @end

@@ -17,6 +17,8 @@
 
 @interface RFEngineTransmission ()
 @property (readwrite, retain) NSMutableDictionary *torrents;
+- (NSArray *)torrentListToIds:(NSArray *)list;
+- (bool)request:(NSString *)type method:(NSString *)method arguments:(NSDictionary *)args;
 - (bool)rpcRequest:(NSString *)type data:(NSData *)requestBody;
 - (void)parseTorrentList:(NSArray *)torrentList;
 - (NSMutableURLRequest *)createRequest;
@@ -131,132 +133,81 @@
 
 - (bool)refresh
 {
-    SBJsonWriter *writer = [[SBJsonWriter alloc] init];
-    
     NSArray *fields = [NSArray arrayWithObjects:@"id", @"name", @"totalSize", @"sizeWhenDone", @"leftUntilDone", @"rateDownload", @"rateUpload", @"status", @"percentDone", @"eta", @"peersConnected", @"peersGettingFromUs", @"peersSendingToUs", @"recheckPercent", @"uploadedEver", @"uploadRatio", @"doneDate", @"addedDate", @"hashString", nil];
     NSDictionary *args = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObject:fields] forKeys:[NSArray arrayWithObject:@"fields"]];
-    NSDictionary *requestData = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:args, @"torrent-get", nil] forKeys:[NSArray arrayWithObjects:@"arguments", @"method", nil]];
-    NSString *requestStr = [writer stringWithObject:requestData];
-    NSData *requestJson = [requestStr dataUsingEncoding:NSUTF8StringEncoding];
     
-    NSDictionary *statsRequestData = [NSDictionary dictionaryWithObject:@"session-stats" forKey:@"method"];
-    NSString *statsRequestStr = [writer stringWithObject:statsRequestData];
-    NSData *statsRequestJson = [statsRequestStr dataUsingEncoding:NSUTF8StringEncoding];
-    
-    [writer release];
-    
-    [self rpcRequest:@"refresh" data:requestJson];
-    [self rpcRequest:@"stats" data:statsRequestJson];
+    [self request:@"refresh" method:@"torrent-get" arguments:args];
+    [self request:@"stats" method:@"session-stats" arguments:nil];
     
     return true;
 }
 
 - (bool)startTorrents:(NSArray *)list
 {
-    if (!list) {
+    NSArray *ids = [self torrentListToIds:list];
+    if ((!ids) || ([ids count] < 1)) {
         return false;
     }
     
-    if ([list count] < 1) {
-        return false;
-    }
-    
-    SBJsonWriter *writer = [[SBJsonWriter alloc] init];
-    NSMutableArray *ids = [NSMutableArray array];
-    for (RFTorrent *t in list) {
-        if ([[t tid] length] > 0) {
-            [ids addObject:[NSNumber numberWithInt:[[t tid] intValue]]];
-        }
-    }
     NSDictionary *args = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObject:ids] forKeys:[NSArray arrayWithObject:@"ids"]];
-    NSDictionary *requestData = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:args, @"torrent-start", nil] forKeys:[NSArray arrayWithObjects:@"arguments", @"method", nil]];
-    NSString *requestStr = [writer stringWithObject:requestData];
-    NSData *requestJson = [requestStr dataUsingEncoding:NSUTF8StringEncoding];
-    [writer release];
     
-    [self rpcRequest:@"start" data:requestJson];
-    
-    return true;
+    return [self request:@"start" method:@"torrent-start" arguments:args];
 }
 
 - (bool)stopTorrents:(NSArray *)list
 {
-    if (!list) {
+    NSArray *ids = [self torrentListToIds:list];
+    if ((!ids) || ([ids count] < 1)) {
         return false;
     }
     
-    if ([list count] < 1) {
-        return false;
-    }
-    
-    SBJsonWriter *writer = [[SBJsonWriter alloc] init];
-    NSMutableArray *ids = [NSMutableArray array];
-    for (RFTorrent *t in list) {
-        if ([[t tid] length] > 0) {
-            [ids addObject:[NSNumber numberWithInt:[[t tid] intValue]]];
-        }
-    }
     NSDictionary *args = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObject:ids] forKeys:[NSArray arrayWithObject:@"ids"]];
-    NSDictionary *requestData = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:args, @"torrent-stop", nil] forKeys:[NSArray arrayWithObjects:@"arguments", @"method", nil]];
-    NSString *requestStr = [writer stringWithObject:requestData];
-    NSData *requestJson = [requestStr dataUsingEncoding:NSUTF8StringEncoding];
-    [writer release];
     
-    [self rpcRequest:@"stop" data:requestJson];
-    
-    return true;
+    return [self request:@"stop" method:@"torrent-stop" arguments:args];
 }
 
 - (bool)startAllTorrents
 {
-    SBJsonWriter *writer = [[SBJsonWriter alloc] init];
-    NSDictionary *args = [NSDictionary dictionary];
-    NSDictionary *requestData = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:args, @"torrent-start", nil] forKeys:[NSArray arrayWithObjects:@"arguments", @"method", nil]];
-    NSString *requestStr = [writer stringWithObject:requestData];
-    NSData *requestJson = [requestStr dataUsingEncoding:NSUTF8StringEncoding];
-    [writer release];
-    
-    [self rpcRequest:@"startall" data:requestJson];
-    
-    return true;
+    return [self request:@"startall" method:@"torrent-start" arguments:nil];
 }
 
 - (bool)stopAllTorrents
 {
-    SBJsonWriter *writer = [[SBJsonWriter alloc] init];
-    NSDictionary *args = [NSDictionary dictionary];
-    NSDictionary *requestData = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:args, @"torrent-stop", nil] forKeys:[NSArray arrayWithObjects:@"arguments", @"method", nil]];
-    NSString *requestStr = [writer stringWithObject:requestData];
-    NSData *requestJson = [requestStr dataUsingEncoding:NSUTF8StringEncoding];
-    [writer release];
+    return [self request:@"stopall" method:@"torrent-stop" arguments:nil];
+}
+
+- (bool)verifyTorrents:(NSArray *)list
+{
+    NSArray *ids = [self torrentListToIds:list];
+    if ((!ids) || ([ids count] < 1)) {
+        return false;
+    }
     
-    [self rpcRequest:@"stopall" data:requestJson];
+    NSDictionary *args = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObject:ids] forKeys:[NSArray arrayWithObject:@"ids"]];
     
-    return true;
+    return [self request:@"verify" method:@"torrent-verify" arguments:args];
+}
+
+- (bool)reannounceTorrents:(NSArray *)list
+{
+    NSArray *ids = [self torrentListToIds:list];
+    if ((!ids) || ([ids count] < 1)) {
+        return false;
+    }
+    
+    NSDictionary *args = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObject:ids] forKeys:[NSArray arrayWithObject:@"ids"]];
+    
+    return [self request:@"reannounce" method:@"torrent-reannounce" arguments:args];
 }
 
 - (bool)removeTorrents:(NSArray *)list deleteData:(bool)del
-{   
-    if (!list) {
+{
+    NSArray *ids = [self torrentListToIds:list];
+    if ((!ids) || ([ids count] < 1)) {
         return false;
     }
     
-    if ([list count] < 1) {
-        return false;
-    }
-    
-    SBJsonWriter *writer = [[SBJsonWriter alloc] init];
-    NSMutableArray *ids = [NSMutableArray array];
-    for (RFTorrent *t in list) {
-        if ([[t tid] length] > 0) {
-            [ids addObject:[NSNumber numberWithInt:[[t tid] intValue]]];
-        }
-    }
     NSDictionary *args = [NSMutableDictionary dictionaryWithObjects:[NSArray arrayWithObjects:ids, [NSNumber numberWithBool:del], nil] forKeys:[NSArray arrayWithObjects:@"ids", @"delete-local-data", nil]];
-    NSDictionary *requestData = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:args, @"torrent-remove", nil] forKeys:[NSArray arrayWithObjects:@"arguments", @"method", nil]];
-    NSString *requestStr = [writer stringWithObject:requestData];
-    NSData *requestJson = [requestStr dataUsingEncoding:NSUTF8StringEncoding];
-    [writer release];
     
     NSString *type;
     if (del) {
@@ -265,9 +216,7 @@
         type = @"remove";
     }
     
-    [self rpcRequest:type data:requestJson];
-    
-    return true;
+    return [self request:type method:@"torrent-remove" arguments:args];
 }
 
 - (bool)addTorrent:(NSData *)data
@@ -280,14 +229,56 @@
         return false;
     }
     
-    SBJsonWriter *writer = [[SBJsonWriter alloc] init];
     NSDictionary *args = [NSMutableDictionary dictionaryWithObjects:[NSArray arrayWithObject:[RFBase64 encodeBase64WithData:data]] forKeys:[NSArray arrayWithObject:@"metainfo"]];
-    NSDictionary *requestData = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:args, @"torrent-add", nil] forKeys:[NSArray arrayWithObjects:@"arguments", @"method", nil]];
+    
+    return [self request:@"add" method:@"torrent-add" arguments:args];
+}
+
+- (NSArray *)torrentListToIds:(NSArray *)list
+{
+    if (!list) {
+        return nil;
+    }
+    
+    if ([list count] == 0) {
+        return nil;
+    }
+    
+    NSMutableArray *ids = [NSMutableArray array];
+    for (RFTorrent *t in list) {
+        if ([[t tid] length] > 0) {
+            [ids addObject:[NSNumber numberWithInt:[[t tid] intValue]]];
+        }
+    }
+    
+    if ([ids count] == 0) {
+        return nil;
+    }
+    
+    return ids;
+}
+
+- (bool)request:(NSString *)type method:(NSString *)method arguments:(NSDictionary *)args
+{
+    if ([type length] == 0) {
+        return false;
+    }
+    
+    if ([method length] == 0) {
+        return false;
+    }
+    
+    if (!args) {
+        args = [NSDictionary dictionary];
+    }
+    
+    SBJsonWriter *writer = [[SBJsonWriter alloc] init];
+    NSDictionary *requestData = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:args, method, nil] forKeys:[NSArray arrayWithObjects:@"arguments", @"method", nil]];
     NSString *requestStr = [writer stringWithObject:requestData];
     NSData *requestJson = [requestStr dataUsingEncoding:NSUTF8StringEncoding];
     [writer release];
     
-    [self rpcRequest:@"add" data:requestJson];
+    [self rpcRequest:type data:requestJson];
     
     return true;
 }

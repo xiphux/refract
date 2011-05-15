@@ -74,6 +74,8 @@ typedef enum {
 - (IBAction)removeClicked:(id)sender;
 - (IBAction)removeAndDeleteClicked:(id)sender;
 - (IBAction)addClicked:(id)sender;
+- (IBAction)verifyClicked:(id)sender;
+- (IBAction)reannounceClicked:(id)sender;
 - (bool)initEngine;
 - (bool)startEngine;
 - (void)stopEngine;
