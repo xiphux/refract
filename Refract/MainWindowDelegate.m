@@ -210,6 +210,11 @@
 
 - (void)refresh
 {
+    if (updateTimer) {
+        [updateTimer invalidate];
+        [updateTimer release];
+    }
+    
     if (!started) {
         return;
     }
@@ -237,8 +242,6 @@
 
 - (void)torrentListDidFinishLoading:(RFTorrentList *)list
 {
-    [updateTimer release];
-    
     [torrentListController rearrangeObjects];
     
     bool downloading = false;
