@@ -15,6 +15,9 @@
 		C6297270137511CD00977F79 /* TorrentListController.m in Sources */ = {isa = PBXBuildFile; fileRef = C629726F137511CD00977F79 /* TorrentListController.m */; };
 		C62D8EED13836D9700B6B8AD /* JSON.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C62D8EEC13836D9700B6B8AD /* JSON.framework */; };
 		C62D8EEE13836E1300B6B8AD /* JSON.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = C62D8EEC13836D9700B6B8AD /* JSON.framework */; };
+		C62D8EF01384A58300B6B8AD /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C62D8EEF1384A58300B6B8AD /* Sparkle.framework */; };
+		C62D8EF11384A5B100B6B8AD /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = C62D8EEF1384A58300B6B8AD /* Sparkle.framework */; };
+		C62D8EF31384A6FD00B6B8AD /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = C62D8EF21384A6FD00B6B8AD /* dsa_pub.pem */; };
 		C6414DCF13514B33000F248C /* SourceListController.m in Sources */ = {isa = PBXBuildFile; fileRef = C6414DCE13514B33000F248C /* SourceListController.m */; };
 		C6414DD3135156D9000F248C /* BaseNode.m in Sources */ = {isa = PBXBuildFile; fileRef = C6414DD2135156D9000F248C /* BaseNode.m */; };
 		C6414DD61351588C000F248C /* StatusNode.m in Sources */ = {isa = PBXBuildFile; fileRef = C6414DD51351588B000F248C /* StatusNode.m */; };
@@ -106,6 +109,7 @@
 			files = (
 				C6B914E4135BC78F0008B707 /* Growl.framework in CopyFiles */,
 				C62D8EEE13836E1300B6B8AD /* JSON.framework in CopyFiles */,
+				C62D8EF11384A5B100B6B8AD /* Sparkle.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -124,6 +128,8 @@
 		C629726E137511CD00977F79 /* TorrentListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TorrentListController.h; sourceTree = "<group>"; };
 		C629726F137511CD00977F79 /* TorrentListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TorrentListController.m; sourceTree = "<group>"; };
 		C62D8EEC13836D9700B6B8AD /* JSON.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = JSON.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C62D8EEF1384A58300B6B8AD /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
+		C62D8EF21384A6FD00B6B8AD /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
 		C6414DCD13514B33000F248C /* SourceListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SourceListController.h; sourceTree = "<group>"; };
 		C6414DCE13514B33000F248C /* SourceListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SourceListController.m; sourceTree = "<group>"; };
 		C6414DD1135156D9000F248C /* BaseNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseNode.h; sourceTree = "<group>"; };
@@ -199,6 +205,7 @@
 				C60C32601357E6E200CB14CD /* Carbon.framework in Frameworks */,
 				C67861971346E41100892BC2 /* Cocoa.framework in Frameworks */,
 				C6B914E3135BC77C0008B707 /* Growl.framework in Frameworks */,
+				C62D8EF01384A58300B6B8AD /* Sparkle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -316,6 +323,7 @@
 		C67861981346E41100892BC2 /* Other Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C62D8EEF1384A58300B6B8AD /* Sparkle.framework */,
 				C62D8EEC13836D9700B6B8AD /* JSON.framework */,
 				C6B914E2135BC77C0008B707 /* Growl.framework */,
 				C60C32611357E6EC00CB14CD /* Security.framework */,
@@ -342,6 +350,7 @@
 		C678619D1346E41100892BC2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				C62D8EF21384A6FD00B6B8AD /* dsa_pub.pem */,
 				C678619E1346E41100892BC2 /* Refract-Info.plist */,
 				C678619F1346E41100892BC2 /* InfoPlist.strings */,
 				C67861A21346E41100892BC2 /* Refract-Prefix.pch */,
@@ -562,6 +571,7 @@
 				C683C39013492A330039B953 /* Preferences.xib in Resources */,
 				C6B914DA135BBD070008B707 /* Growl Registration Ticket.growlRegDict in Resources */,
 				C6A8E45013651627006CE0DC /* MainMenu.xib in Resources */,
+				C62D8EF31384A6FD00B6B8AD /* dsa_pub.pem in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
