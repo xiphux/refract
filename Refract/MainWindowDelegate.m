@@ -633,7 +633,7 @@
     sleeping = false;
     
     if (started) {
-        [self refresh];
+        [self performSelector:@selector(refresh) withObject:self afterDelay:0];
     }
 }
 
