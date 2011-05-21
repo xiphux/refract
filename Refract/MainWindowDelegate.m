@@ -231,6 +231,16 @@
 
 #pragma mark engine delegate
 
+- (void)engine:(RFEngine *)engine requestDidFail:(NSString *)requestType
+{
+    if ([requestType isEqualToString:@"refresh"]) {
+        [[self torrentList] clearTorrents];
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSTimeInterval update = [defaults doubleForKey:REFRACT_USERDEFAULT_UPDATE_FREQUENCY];
+        updateTimer = [NSTimer scheduledTimerWithTimeInterval:update target:self selector:@selector(refresh) userInfo:nil repeats:false];
+    }
+}
+
 - (void)engineDidRefreshTorrents:(RFEngine *)eng
 {    
     NSArray *allTorrents = [[eng torrents] allValues];

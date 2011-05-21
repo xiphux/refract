@@ -173,6 +173,13 @@
     }
 }
 
+- (void)clearTorrents
+{
+    allTorrents = [NSArray array];
+    [self setTorrents:[NSMutableArray array]];
+    initialized = false;
+}
+
 - (void)torrentGroupChanged:(NSNotification *)notification
 {    
     NSDictionary *data = [notification userInfo];

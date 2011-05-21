@@ -35,6 +35,7 @@
 - (void)replaceObjectInTorrentsAtIndex:(NSUInteger)index withObject:(RFTorrent *)anObject;
 
 - (void)loadTorrents:(NSArray *)torrentList;
+- (void)clearTorrents;
 
 - (void)clearGroup:(RFTorrentGroup *)group;
 

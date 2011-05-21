@@ -516,7 +516,12 @@
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
-    
+    if ([self delegate]) {
+        if ([[self delegate] respondsToSelector:@selector(engine:requestDidFail:)]) {
+            RFURLConnection *rfConn = (RFURLConnection *)connection;
+            [[self delegate] engine:self requestDidFail:[[rfConn userInfo] objectForKey:@"type"]];
+        }
+    }
 }
 
 - (void)handleResponse:(NSData *)responseData userInfo:(NSDictionary *)userInfo

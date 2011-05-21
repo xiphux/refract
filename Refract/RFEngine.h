@@ -50,6 +50,7 @@ typedef enum {
 
 @protocol RFEngineDelegate <NSObject>
 @optional
+- (void)engine:(RFEngine *)engine requestDidFail:(NSString *)requestType;
 - (void)engineDidRefreshTorrents:(RFEngine *)engine;
 - (void)engineDidRefreshStats:(RFEngine *)engine;
 @end
