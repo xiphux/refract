@@ -1151,22 +1151,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">contentArray: torrentList.torrents</string>
-						<reference key="source" ref="667524"/>
-						<reference key="destination" ref="976324537"/>
-						<object class="NSNibBindingConnector" key="connector">
-							<reference key="NSSource" ref="667524"/>
-							<reference key="NSDestination" ref="976324537"/>
-							<string key="NSLabel">contentArray: torrentList.torrents</string>
-							<string key="NSBinding">contentArray</string>
-							<string key="NSKeyPath">torrentList.torrents</string>
-							<int key="NSNibBindingConnectorVersion">2</int>
-						</object>
-					</object>
-					<int key="connectionID">770</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBBindingConnection" key="connection">
 						<string key="label">sortDescriptors: sortDescriptors</string>
 						<reference key="source" ref="730765074"/>
 						<reference key="destination" ref="713668804"/>
@@ -1534,6 +1518,22 @@
 						<reference key="destination" ref="226009195"/>
 					</object>
 					<int key="connectionID">898</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">contentArray: server.torrentList.torrents</string>
+						<reference key="source" ref="667524"/>
+						<reference key="destination" ref="976324537"/>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="667524"/>
+							<reference key="NSDestination" ref="976324537"/>
+							<string key="NSLabel">contentArray: server.torrentList.torrents</string>
+							<string key="NSBinding">contentArray</string>
+							<string key="NSKeyPath">server.torrentList.torrents</string>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">899</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -2192,7 +2192,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">898</int>
+			<int key="maxID">899</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">

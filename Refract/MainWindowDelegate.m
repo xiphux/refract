@@ -12,7 +12,6 @@
 #import "RFTorrent.h"
 #import "RFTorrentGroup.h"
 #import "RFConstants.h"
-#import "RFEngineTransmission.h"
 #import "NotificationController.h"
 
 @interface MainWindowDelegate ()
@@ -41,18 +40,6 @@
 - (void)tryRemoveTorrents:(NSArray *)torrents;
 - (void)tryDeleteTorrents:(NSArray *)torrents;
 
-- (void)startTorrents:(NSArray *)torrents;
-- (void)stopTorrents:(NSArray *)torrents;
-- (void)startAllTorrents;
-- (void)stopAllTorrents;
-- (void)removeTorrents:(NSArray *)torrents;
-- (void)deleteTorrents:(NSArray *)torrents;
-- (void)addTorrents:(NSArray *)files;
-- (void)verifyTorrents:(NSArray *)torrents;
-- (void)reannounceTorrents:(NSArray *)torrents;
-
-- (bool)addTorrentFile:(NSURL *)url;
-
 @end
 
 @implementation MainWindowDelegate
@@ -61,7 +48,6 @@
 {
     self = [super init];
     if (self) {
-        updateQueue = [[NSOperationQueue alloc] init];
     }
     return self;
 }
@@ -73,10 +59,9 @@
     [sourceListController release];
     [torrentListController release]; 
     [statsButton release];
-    [self destroyEngine];
-    [torrentList release];
     [groupList release];
-    [updateQueue release];
+    
+    [server release];
 
     [super dealloc];
 }
@@ -93,9 +78,9 @@
 @synthesize stopMenu;
 @synthesize startStopButton;
 
-@synthesize engine;
-@synthesize torrentList;
 @synthesize groupList;
+
+@synthesize server;
 
 - (void)awakeFromNib
 {
@@ -114,20 +99,14 @@
     
     statusButtonType = [[NSUserDefaults standardUserDefaults] integerForKey:REFRACT_USERDEFAULT_STAT_TYPE];
     
-    RFTorrentList *tList = [[RFTorrentList alloc] init];
-    [tList setDelegate:self];
-    [self setTorrentList:tList];
-    
     [self setGroupList:[[RFGroupList alloc] init]];
     [groupList load];
     [sourceListController initGroups:[groupList groups]];
     
-    bool initialized = [self initEngine];
-    [torrentList setSaveGroups:true];
-    
-    if (initialized) {
-        [self startEngine];
-    }
+    RFServer *srv = [[RFServer alloc] init];
+    [srv setDelegate:self];
+    [self setServer:srv];
+    [srv start];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsChanged:) name:NSUserDefaultsDidChangeNotification object:nil];
     
@@ -154,109 +133,9 @@
 }
 
 
-#pragma mark engine functions
+#pragma mark server delegate
 
-- (bool)initEngine
-{
-    [self destroyEngine];
-    
-    engine = [RFEngine engine];
-    
-    if (!engine) {
-        return false;
-    }
-    
-    [engine setDelegate:self];
-    
-    return [engine connect];
-}
-
-- (bool)startEngine
-{
-    if (started) {
-        return true;
-    }
-    
-    if (!engine) {
-        return false;
-    }
-    
-    started = true;
-    
-    [self refresh];
-    
-    return true;
-}
-
-- (void)stopEngine
-{
-    if (!engine) {
-        return;
-    }
-    
-    started = false;
-}
-
-- (void)destroyEngine
-{
-    if (!engine) {
-        return;
-    }
-    
-    if (started) {
-        [self stopEngine];
-    }
-    
-    if ([engine connected]) {
-        [engine disconnect];
-    }
-    
-    [engine release];
-}
-
-- (void)refresh
-{
-    if (updateTimer) {
-        [updateTimer invalidate];
-        [updateTimer release];
-    }
-    
-    if (!started) {
-        return;
-    }
-    
-    [engine refresh];
-}
- 
-
-#pragma mark engine delegate
-
-- (void)engine:(RFEngine *)engine requestDidFail:(NSString *)requestType
-{
-    if ([requestType isEqualToString:@"refresh"]) {
-        [[self torrentList] clearTorrents];
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSTimeInterval update = [defaults doubleForKey:REFRACT_USERDEFAULT_UPDATE_FREQUENCY];
-        updateTimer = [NSTimer scheduledTimerWithTimeInterval:update target:self selector:@selector(refresh) userInfo:nil repeats:false];
-    }
-}
-
-- (void)engineDidRefreshTorrents:(RFEngine *)eng
-{    
-    NSArray *allTorrents = [[eng torrents] allValues];
-    
-    [[self torrentList] loadTorrents:allTorrents];
-}
-
-- (void)engineDidRefreshStats:(RFEngine *)engine
-{
-    [self updateStatsButton];
-}
-
-
-#pragma mark torrent list delegate
-
-- (void)torrentListDidFinishLoading:(RFTorrentList *)list
+- (void)serverDidRefreshTorrents:(RFServer *)srv
 {
     [torrentListController rearrangeObjects];
     
@@ -265,7 +144,7 @@
     bool waiting = false;
     bool checking = false;
     bool seeding = false;
-    for (RFTorrent *t in [list torrents]) {
+    for (RFTorrent *t in [[srv torrentList] torrents]) {
         switch ([t status]) {
             case stDownloading:
                 downloading = true;
@@ -313,14 +192,11 @@
     
     [self updateDockBadge];
     [self updateStatsButton];
-    
-    if (!sleeping) {
-    
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSTimeInterval update = [defaults doubleForKey:REFRACT_USERDEFAULT_UPDATE_FREQUENCY];
-        updateTimer = [NSTimer scheduledTimerWithTimeInterval:update target:self selector:@selector(refresh) userInfo:nil repeats:false];
-        
-    }
+}
+
+- (void)serverDidRefreshStats:(RFServer *)server
+{
+    [self updateStatsButton];
 }
 
 
@@ -357,11 +233,7 @@
         return 0;
     }
     
-    if (!torrentList) {
-        return 0;
-    }
-    
-    NSArray *torrents = [[torrentList torrents] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"group == %d", [group gid]]];
+    NSArray *torrents = [[[server torrentList] torrents] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"group == %d", [group gid]]];
     return [torrents count];
 }
 
@@ -404,7 +276,7 @@
         return;
     }
     
-    [torrentList clearGroup:group];
+    [[server torrentList] clearGroup:group];
     
     [groupList removeGroup:group];
     
@@ -469,14 +341,10 @@
     
     if (clickedSegmentTag == 0) {
         // stop
-        if (started) {
-            [self stopTorrents:selected];
-        }
+        [server stopTorrents:selected];
     } else if (clickedSegmentTag == 1) {
         // start
-        if (started) {
-            [self startTorrents:selected];
-        }
+        [server startTorrents:selected];
     }
 }
 
@@ -487,14 +355,12 @@
         return;
     }
     
-    if (started) {
-        [self startTorrents:selected];
-    }
+    [server startTorrents:selected];
 }
 
 - (IBAction)startAllClicked:(id)sender
 {
-    [self startAllTorrents];
+    [server startAllTorrents];
 }
 
 - (IBAction)stopClicked:(id)sender
@@ -504,14 +370,12 @@
         return;
     }
     
-    if (started) {
-        [self stopTorrents:selected];
-    }
+    [server stopTorrents:selected];
 }
 
 - (IBAction)stopAllClicked:(id)sender
 {
-    [self stopAllTorrents];
+    [server stopAllTorrents];
 }
 
 - (IBAction)removeClicked:(id)sender
@@ -544,19 +408,19 @@
     if ([type isEqualToString:@"remove"]) {
         
         if (returnCode == NSAlertSecondButtonReturn) {
-            [self removeTorrents:[context objectForKey:@"selected"]];
+            [server removeTorrents:[context objectForKey:@"selected"] deleteData:false];
         }
         
     } else if ([type isEqualToString:@"removedelete"]) {
         
         if (returnCode == NSAlertSecondButtonReturn) {
-            [self deleteTorrents:[context objectForKey:@"selected"]];
+            [server removeTorrents:[context objectForKey:@"selected"] deleteData:true];
         }
         
     } else if ([type isEqualToString:@"add"]) {
         if (returnCode == NSAlertSecondButtonReturn) {
             NSArray *paths = [context objectForKey:@"paths"];
-            [self addTorrents:paths];
+            [server addTorrents:paths];
         }
     }
 }
@@ -574,8 +438,7 @@
         NSUInteger i, count = [urlsToOpen count];
         for (i=0; i<count; i++) {
             NSURL *url = [urlsToOpen objectAtIndex:i];
-            NSInvocationOperation *op = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(addTorrentFile:) object:url] autorelease];
-            [updateQueue addOperation:op];
+            [server addTorrentFile:url];
         }
     }
 }
@@ -587,7 +450,7 @@
     }
     
     NSUInteger gid = [sender tag];
-    [torrentList setGroup:gid forTorrents:[torrentListController selectedObjects]];
+    [[server torrentList] setGroup:gid forTorrents:[torrentListController selectedObjects]];
 }
 
 - (IBAction)verifyClicked:(id)sender
@@ -597,7 +460,7 @@
         return;
     }
     
-    [self verifyTorrents:selected];
+    [server verifyTorrents:selected];
 }
 
 - (IBAction)reannounceClicked:(id)sender
@@ -607,7 +470,7 @@
         return;
     }
     
-    [self reannounceTorrents:selected];
+    [server reannounceTorrents:selected];
 }
 
 
@@ -615,36 +478,15 @@
 
 - (void)settingsChanged:(NSNotification *)notification
 {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
-    RFEngineType type = [defaults integerForKey:REFRACT_USERDEFAULT_ENGINE];
-    if (type != [engine type]) {
-        [self destroyEngine];
-        [self initEngine];
-    }
-    
-    if (!started) {
-        [self startEngine];
-    }
+
 }
 
 - (void)sleepNotified:(NSNotification *)notification
 {
-    sleeping = true;
-    
-    if (updateTimer) {
-        [updateTimer invalidate];
-        [updateTimer release];
-    }
 }
 
 - (void)wakeNotified:(NSNotification *)notification
 {
-    sleeping = false;
-    
-    if (started) {
-        [self performSelector:@selector(refresh) withObject:self afterDelay:0];
-    }
 }
 
 - (void)startTorrentNotified:(NSNotification *)notification
@@ -659,7 +501,7 @@
         return;
     }
     
-    [self startTorrents:[NSArray arrayWithObject:torrent]];
+    [server startTorrents:[NSArray arrayWithObject:torrent]];
 }
 
 - (void)stopTorrentNotified:(NSNotification *)notification
@@ -674,7 +516,7 @@
         return;
     }
     
-    [self stopTorrents:[NSArray arrayWithObject:torrent]];
+    [server stopTorrents:[NSArray arrayWithObject:torrent]];
 }
 
 - (void)removeTorrentNotified:(NSNotification *)notification
@@ -719,7 +561,7 @@
         return;
     }
     
-    [self verifyTorrents:[NSArray arrayWithObject:torrent]];
+    [server verifyTorrents:[NSArray arrayWithObject:torrent]];
 }
 
 - (void)reannounceTorrentNotified:(NSNotification *)notification
@@ -734,28 +576,12 @@
         return;
     }
     
-    [self reannounceTorrents:[NSArray arrayWithObject:torrent]];
+    [server reannounceTorrents:[NSArray arrayWithObject:torrent]];
 }
 
 
 
 #pragma mark utility functions
-
-- (bool)addTorrentFile:(NSURL *)url
-{
-    NSFileWrapper *file = [[NSFileWrapper alloc] initWithURL:url options:0 error:nil];
-    
-    if (!file) {
-        return false;
-    }
-    
-    NSData *fileContent = [file regularFileContents];
-    [engine addTorrent:fileContent];
-    
-    [file release];
-    
-    return true;
-}
 
 - (void)updateStatsButton
 {
@@ -765,13 +591,13 @@
             label = [NSString stringWithFormat:@"%d torrents", [[torrentListController arrangedObjects] count]];
             break;
         case statRate:
-            label = [NSString stringWithFormat:@"D: %@ U: %@", [RFUtils readableRateDecimal:[engine downloadSpeed]], [RFUtils readableRateDecimal:[engine uploadSpeed]]];
+            label = [NSString stringWithFormat:@"D: %@ U: %@", [RFUtils readableRateDecimal:[[server engine] downloadSpeed]], [RFUtils readableRateDecimal:[[server engine] uploadSpeed]]];
             break;
         case statSession:
-            label = [NSString stringWithFormat:@"Session D: %@ U: %@", [RFUtils readableBytesDecimal:[engine sessionDownloadedBytes]], [RFUtils readableBytesDecimal:[engine sessionUploadedBytes]]];
+            label = [NSString stringWithFormat:@"Session D: %@ U: %@", [RFUtils readableBytesDecimal:[[server engine] sessionDownloadedBytes]], [RFUtils readableBytesDecimal:[[server engine] sessionUploadedBytes]]];
             break;
         case statTotal:
-            label = [NSString stringWithFormat:@"Total D: %@ U: %@", [RFUtils readableBytesDecimal:[engine totalDownloadedBytes]], [RFUtils readableBytesDecimal:[engine totalUploadedBytes]]];
+            label = [NSString stringWithFormat:@"Total D: %@ U: %@", [RFUtils readableBytesDecimal:[[server engine] totalDownloadedBytes]], [RFUtils readableBytesDecimal:[[server engine] totalUploadedBytes]]];
             break;
     }
     [statsButton setTitle:label];
@@ -785,7 +611,7 @@
 
 - (void)updateDockBadge
 {
-    NSUInteger activeCount = [[[torrentList torrents] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"status == %d", stDownloading]] count];
+    NSUInteger activeCount = [[[[server torrentList] torrents] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"status == %d", stDownloading]] count];
     
     if (activeCount > 0) {
         [[[NSApplication sharedApplication] dockTile] setBadgeLabel:[NSString stringWithFormat:@"%d", activeCount]];
@@ -884,111 +710,6 @@
     [alert beginSheetModalForWindow:window modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:context];
 }
 
-- (void)startTorrents:(NSArray *)torrents
-{
-    if (!torrents) {
-        return;
-    }
-    
-    if ([torrents count] == 0) {
-        return;
-    }
-    
-    [engine startTorrents:torrents];
-}
-
-- (void)stopTorrents:(NSArray *)torrents
-{
-    if (!torrents) {
-        return;
-    }
-    
-    if ([torrents count] == 0) {
-        return;
-    }
-    
-    [engine stopTorrents:torrents];
-}
-
-- (void)startAllTorrents
-{
-    [engine startAllTorrents];
-}
-
-- (void)stopAllTorrents
-{
-    [engine stopAllTorrents];
-}
-
-- (void)removeTorrents:(NSArray *)torrents
-{
-    if (!torrents) {
-        return;
-    }
-    
-    if ([torrents count] == 0) {
-        return;
-    }
-    
-    [engine removeTorrents:torrents deleteData:false];
-}
-
-- (void)deleteTorrents:(NSArray *)torrents
-{
-    if (!torrents) {
-        return;
-    }
-    
-    if ([torrents count] == 0) {
-        return;
-    }
-    
-    [engine removeTorrents:torrents deleteData:true];
-}
-
-- (void)addTorrents:(NSArray *)files
-{
-    if (!files) {
-        return;
-    }
-    
-    if ([files count] == 0) {
-        return;
-    }
-    
-    for (NSString *path in files) {
-        NSURL *pathUrl = [NSURL fileURLWithPath:path];
-        NSInvocationOperation *op = [[[NSInvocationOperation alloc] initWithTarget:self selector:@selector(addTorrentFile:) object:pathUrl] autorelease];
-        [updateQueue addOperation:op];
-    }
-}
-
-- (void)verifyTorrents:(NSArray *)torrents
-{
-    if (!torrents) {
-        return;
-    }
-    
-    if ([torrents count] == 0) {
-        return;
-    }
-    
-    [engine verifyTorrents:torrents];
-}
-
-- (void)reannounceTorrents:(NSArray *)torrents
-{
-    if (!torrents) {
-        return;
-    }
-    
-    if ([torrents count] == 0) {
-        return;
-    }
-    
-    [engine reannounceTorrents:torrents];
-}
-
 
 #pragma mark splitview delegate
 
@@ -1018,7 +739,7 @@
 
 - (BOOL)prepareForDragOperation:(id<NSDraggingInfo>)sender
 {
-    if (engine && [engine connected] && started) {
+    if (server && [server started]) {
         return YES;
     }
     
