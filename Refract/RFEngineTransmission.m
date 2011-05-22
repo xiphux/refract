@@ -15,6 +15,9 @@
 #import "NotificationController.h"
 #import <JSON/JSON.h>
 
+#define REFRACT_RFENGINETRANSMISSION_KEY_URL @"url"
+#define REFRACT_RFENGINETRANSMISSION_KEY_USERNAME @"username"
+
 @interface RFEngineTransmission ()
 @property (readwrite, retain) NSMutableDictionary *torrents;
 - (NSArray *)torrentListToIds:(NSArray *)list;
@@ -22,7 +25,6 @@
 - (bool)rpcRequest:(NSString *)type data:(NSData *)requestBody;
 - (void)parseTorrentList:(NSArray *)torrentList;
 - (NSMutableURLRequest *)createRequest;
-- (void)settingsChanged:(NSNotification *)notification;
 - (void)handleResponse:(NSData *)responseData userInfo:(NSDictionary *)userInfo;
 @end
 
@@ -30,46 +32,44 @@
 
 - (id)init
 {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSDictionary *appDefaults = [NSDictionary dictionaryWithObject:@"http://127.0.0.1:9091/transmission/rpc" forKey:REFRACT_USERDEFAULT_TRANSMISSION_URL];
-    [defaults registerDefaults:appDefaults];
-    
-    return [self initWithUrl:[defaults objectForKey:@"Transmission.URL"]];
+    //return [self initWithUrl:@"http://127.0.0.1:9091/transmission/rpc"];
+    return [self initWithUrl:@"http://10.0.1.200:9091/transmission/rpc"];
 }
 
 - (id)initWithUrl:(NSString *) initUrl
 {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
-    NSString *user = [defaults stringForKey:REFRACT_USERDEFAULT_TRANSMISSION_USERNAME];
-    NSString *pass = nil;
-    if ([user length] > 0) {
-        EMGenericKeychainItem *keychain = [EMGenericKeychainItem genericKeychainItemForService:REFRACT_KEYCHAIN_TRANSMISSION withUsername:user];
-        if (keychain) {
-            pass = [keychain password];
-        }
-    }
-    
-    return [self initWithUrlAndLogin:initUrl username:user password:pass];
+    //return [self initWithUrlAndLogin:initUrl username:@""];
+    return [self initWithUrlAndLogin:initUrl username:@"xiphux"];
 }
 
-- (id)initWithUrlAndLogin:(NSString *)initUrl username:(NSString *)initUser password:(NSString *)initPass
+- (id)initWithUrlAndLogin:(NSString *)initUrl username:(NSString *)initUser
 {
     self = [super init];
     if (self) {
-        // Initialization code here.
-        torrents = [[NSMutableDictionary alloc] init];
-        
         url = [NSString stringWithString:initUrl];
         username = [NSString stringWithString:initUser];
-        password = [NSString stringWithString:initPass];
+        
+        if ([username length] > 0) {
+            EMGenericKeychainItem *keychain = [EMGenericKeychainItem genericKeychainItemForService:REFRACT_KEYCHAIN_TRANSMISSION withUsername:username];
+            if (keychain) {
+                password = [keychain password];
+            }
+        }
+        
+        torrents = [[NSMutableDictionary alloc] init];
         
         updateQueue = [[NSOperationQueue alloc] init];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsChanged:) name:NSUserDefaultsDidChangeNotification object:nil];
     }
     
     return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    NSString *coderURL = [aDecoder decodeObjectForKey:REFRACT_RFENGINETRANSMISSION_KEY_URL];
+    NSString *coderUsername = [aDecoder decodeObjectForKey:REFRACT_RFENGINETRANSMISSION_KEY_USERNAME];
+    
+    return [self initWithUrlAndLogin:coderURL username:coderUsername];
 }
 
 - (void)dealloc
@@ -80,6 +80,18 @@
     [torrents release];
     [updateQueue release];
     [super dealloc];
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeInt:engTransmission forKey:REFRACT_RFENGINE_KEY_TYPE];
+    
+    if ([url length] > 0) {
+        [aCoder encodeObject:url forKey:REFRACT_RFENGINETRANSMISSION_KEY_URL];
+    }
+    if ([username length] > 0) {
+        [aCoder encodeObject:username forKey:REFRACT_RFENGINETRANSMISSION_KEY_USERNAME];
+    }
 }
 
 @synthesize torrents;
@@ -447,32 +459,6 @@
     }
     
     [[NotificationController sharedNotificationController] flushQueue];
-}
-
-- (void)settingsChanged:(NSNotification *)notification
-{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
-    if ([defaults integerForKey:REFRACT_USERDEFAULT_ENGINE] != engTransmission) {
-        return;
-    }
-    
-    NSString *settingsUrl = [defaults stringForKey:REFRACT_USERDEFAULT_TRANSMISSION_URL];
-    if (![url isEqualToString:settingsUrl]) {
-        url = settingsUrl;
-    }
-    NSString *settingsUser = [defaults stringForKey:REFRACT_USERDEFAULT_TRANSMISSION_USERNAME];
-    if (![username isEqualToString:settingsUser]) {
-        username = settingsUrl;
-    }
-    NSString *pass = nil;
-    if ([username length] > 0) {
-        EMGenericKeychainItem *keychain = [EMGenericKeychainItem genericKeychainItemForService: REFRACT_KEYCHAIN_TRANSMISSION withUsername:username];
-        if (keychain) {
-            pass = [keychain password];
-        }
-    }
-    password = pass;
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSHTTPURLResponse *)response

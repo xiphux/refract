@@ -9,6 +9,10 @@
 #import "RFServer.h"
 #import "RFConstants.h"
 
+#define REFRACT_RFSERVER_KEY_SID @"sid"
+#define REFRACT_RFSERVER_KEY_NAME @"name"
+#define REFRACT_RFSERVER_KEY_ENGINE @"engine"
+#define REFRACT_RFSERVER_KEY_TORRENTLIST @"torrentList"
 
 @implementation RFServer
 
@@ -39,6 +43,32 @@
     return self;
 }
 
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    NSUInteger serverId = [aDecoder decodeIntForKey:REFRACT_RFSERVER_KEY_SID];
+    if (serverId < 1) {
+        return nil;
+    }
+    
+    self = [super init];
+    if (self) {
+        sid = serverId;
+        
+        name = [aDecoder decodeObjectForKey:REFRACT_RFSERVER_KEY_NAME];
+        
+        engine = [aDecoder decodeObjectForKey:REFRACT_RFSERVER_KEY_ENGINE];
+        [engine setDelegate:self];
+        
+        torrentList = [aDecoder decodeObjectForKey:REFRACT_RFSERVER_KEY_TORRENTLIST];
+        [torrentList setDelegate:self];
+        if ([engine type] == engTransmission) {
+            [torrentList setSaveGroups:true];
+        }
+    }
+    
+    return self;
+}
+
 - (void)dealloc
 {
     [engine release];
@@ -46,6 +76,14 @@
     [name release];
     
     [super dealloc];
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeObject:name forKey:REFRACT_RFSERVER_KEY_NAME];
+    [aCoder encodeInt:sid forKey:REFRACT_RFSERVER_KEY_SID];
+    [aCoder encodeObject:engine forKey:REFRACT_RFSERVER_KEY_ENGINE];
+    [aCoder encodeObject:torrentList forKey:REFRACT_RFSERVER_KEY_TORRENTLIST];
 }
 
 @synthesize name;

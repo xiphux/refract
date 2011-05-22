@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "RFEngine.h"
 
-@interface RFEngineTransmission : RFEngine {
+@interface RFEngineTransmission : RFEngine <NSCoding> {
 @private
     NSString *url;
     NSString *username;
@@ -41,6 +41,6 @@
 @property (readonly) unsigned long totalDownloadedBytes;
 
 - (id)initWithUrl:(NSString *)initUrl;
-- (id)initWithUrlAndLogin:(NSString *)initUrl username:(NSString *)initUser password:(NSString *)initPass;
+- (id)initWithUrlAndLogin:(NSString *)initUrl username:(NSString *)initUser;
 
 @end

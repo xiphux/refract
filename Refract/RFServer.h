@@ -13,7 +13,7 @@
 
 @protocol RFServerDelegate;
 
-@interface RFServer : NSObject <RFEngineDelegate, RFTorrentListDelegate> {
+@interface RFServer : NSObject <RFEngineDelegate, RFTorrentListDelegate, NSCoding> {
 @private
     
     NSString *name;
@@ -45,7 +45,6 @@
 - (void)startAllTorrents;
 - (void)stopAllTorrents;
 - (void)removeTorrents:(NSArray *)torrents deleteData:(bool)del;
-- (void)deleteTorrents:(NSArray *)torrents;
 - (void)addTorrents:(NSArray *)files;
 - (void)verifyTorrents:(NSArray *)torrents;
 - (void)reannounceTorrents:(NSArray *)torrents;

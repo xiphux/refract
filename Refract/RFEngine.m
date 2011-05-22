@@ -20,9 +20,26 @@
     return self;
 }
 
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    RFEngineType codedType = [aDecoder decodeIntForKey:REFRACT_RFENGINE_KEY_TYPE];
+    
+    switch (codedType) {
+        case engTransmission:
+            return [[RFEngineTransmission alloc] initWithCoder:aDecoder];
+    }
+    
+    return nil;
+}
+
 - (void)dealloc
 {
     [super dealloc];
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    
 }
 
 @synthesize delegate;

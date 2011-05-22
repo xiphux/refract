@@ -13,11 +13,13 @@
 
 @protocol RFTorrentListDelegate;
 
-@interface RFTorrentList : NSObject {
+@interface RFTorrentList : NSObject <NSCoding> {
 @private
     NSArray *allTorrents;
     NSMutableArray *torrents;
     bool initialized;
+    
+    NSMutableDictionary *torrentGroups;
     bool saveGroups;
     
     id <RFTorrentListDelegate> delegate;
