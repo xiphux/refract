@@ -59,7 +59,6 @@
     [sourceListController release];
     [torrentListController release]; 
     [statsButton release];
-    [groupList release];
     
     [server release];
 
@@ -77,8 +76,6 @@
 @synthesize startMenu;
 @synthesize stopMenu;
 @synthesize startStopButton;
-
-@synthesize groupList;
 
 @synthesize server;
 
@@ -99,14 +96,12 @@
     
     statusButtonType = [[NSUserDefaults standardUserDefaults] integerForKey:REFRACT_USERDEFAULT_STAT_TYPE];
     
-    [self setGroupList:[[RFGroupList alloc] init]];
-    [groupList load];
-    [sourceListController initGroups:[groupList groups]];
-    
     RFServer *srv = [[RFServer alloc] init];
     [srv setDelegate:self];
     [self setServer:srv];
     [srv start];
+
+    [sourceListController initGroups:[[server groupList] groups]];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsChanged:) name:NSUserDefaultsDidChangeNotification object:nil];
     
@@ -239,7 +234,7 @@
 
 - (BOOL)sourceList:(SourceListController *)list canAddGroup:(NSString *)name
 {
-    if (!groupList) {
+    if (![server groupList]) {
         return true;
     }
     
@@ -247,20 +242,16 @@
         return false;
     }
     
-    return ![groupList groupWithNameExists:name];
+    return ![[server groupList] groupWithNameExists:name];
 }
 
 - (RFTorrentGroup *)sourceList:(SourceListController *)list didAddGroup:(NSString *)name
 {
-    if (!groupList) {
+    if (![server groupList]) {
         return nil;
     }
     
-    RFTorrentGroup *newGroup = [groupList addGroup:name];
-    
-    if (newGroup) {
-        [groupList save];
-    }
+    RFTorrentGroup *newGroup = [[server groupList] addGroup:name];
     
     return newGroup;
 }
@@ -272,15 +263,13 @@
 
 - (void)sourceList:(SourceListController *)list didRemoveGroup:(RFTorrentGroup *)group
 {
-    if (!groupList) {
+    if (![server groupList]) {
         return;
     }
     
     [[server torrentList] clearGroup:group];
     
-    [groupList removeGroup:group];
-    
-    [groupList save];
+    [[server groupList] removeGroup:group];
 }
 
 - (BOOL)sourceList:(SourceListController *)list canRenameGroup:(RFTorrentGroup *)group toName:(NSString *)newName
@@ -297,11 +286,11 @@
         return true;
     }
     
-    if (!groupList) {
+    if (![server groupList]) {
         return true;
     }
     
-    RFTorrentGroup *existing = [groupList groupWithName:newName];
+    RFTorrentGroup *existing = [[server groupList] groupWithName:newName];
     if (existing && ![existing isEqual:group]) {
         return false;
     }
@@ -312,8 +301,6 @@
 - (void)sourceList:(SourceListController *)list didRenameGroup:(RFTorrentGroup *)group toName:(NSString *)newName
 {
     [group setName:newName];
-    
-    [groupList save];
 }
 
 
@@ -776,11 +763,11 @@
 
 - (NSArray *)torrentItemAvailableGroups:(TorrentItem *)item
 {
-    if (!groupList) {
+    if (![server groupList]) {
         return nil;
     }
     
-    return [groupList groups];
+    return [[server groupList] groups];
 }
 
 
@@ -799,21 +786,21 @@
         [reannounceMenuItem setEnabled:selected];
         
         NSMenuItem *groupMenuItem = [menu itemAtIndex:3];  
-        NSMenu *groupSubMenu = [[NSMenu alloc] initWithTitle:@"Group"];
+        NSMenu *groupSubMenu = [[[NSMenu alloc] initWithTitle:@"Group"] autorelease];
         
         [menu setSubmenu:groupSubMenu forItem:groupMenuItem];
         
-        NSMenuItem *noGroup = [[NSMenuItem alloc] initWithTitle:@"No Group" action:@selector(changeGroup:) keyEquivalent:@""];
+        NSMenuItem *noGroup = [[[NSMenuItem alloc] initWithTitle:@"No Group" action:@selector(changeGroup:) keyEquivalent:@""] autorelease];
         [noGroup setTag:0];
         [noGroup setTarget:self];
         [groupSubMenu addItem:noGroup];
         
-        if ([[groupList groups] count] > 0) {
+        if ([[[server groupList] groups] count] > 0) {
             [groupSubMenu addItem:[NSMenuItem separatorItem]];
-            NSArray *sortedGroups = [[groupList groups] sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"name" ascending:true] autorelease]]];
+            NSArray *sortedGroups = [[[server groupList] groups] sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"name" ascending:true] autorelease]]];
             for (NSUInteger i = 0; i < [sortedGroups count]; i++) {
                 RFTorrentGroup *group = [sortedGroups objectAtIndex:i];
-                NSMenuItem *groupItem = [[NSMenuItem alloc] initWithTitle:[group name] action:@selector(changeGroup:) keyEquivalent:@""];
+                NSMenuItem *groupItem = [[[NSMenuItem alloc] initWithTitle:[group name] action:@selector(changeGroup:) keyEquivalent:@""] autorelease];
                 [groupItem setTag:[group gid]];
                 [groupItem setTarget:self];
                 [groupItem setEnabled:selected];

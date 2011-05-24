@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "RFEngine.h"
 
-@interface RFEngineTransmission : RFEngine <NSCoding> {
+@interface RFEngineTransmission : RFEngine {
 @private
     NSString *url;
     NSString *username;
@@ -31,7 +31,6 @@
 @property (readonly) bool connected;
 @property (copy) NSString *url;
 @property (copy) NSString *username;
-@property (copy) NSString *password;
 
 @property (readonly) unsigned long uploadSpeed;
 @property (readonly) unsigned long downloadSpeed;

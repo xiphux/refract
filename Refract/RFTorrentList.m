@@ -28,7 +28,7 @@
 {
     self = [super init];
     if (self) {
-        torrentGroups = [NSMutableDictionary dictionary];
+        torrentGroups = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -37,13 +37,16 @@
 {
     self = [super init];
     if (self) {
-        torrentGroups = [aDecoder decodeObjectForKey:REFRACT_RFTORRENTLIST_KEY_TORRENTGROUPS];
+        torrentGroups = [[aDecoder decodeObjectForKey:REFRACT_RFTORRENTLIST_KEY_TORRENTGROUPS] retain];
     }
     return self;
 }
 
 - (void)dealloc
 {
+    [allTorrents release];
+    [torrents release];
+    [torrentGroups release];
     [super dealloc];
 }
 
@@ -114,7 +117,8 @@
 
 - (void)loadTorrents:(NSArray *)torrentList
 {
-    allTorrents = torrentList;
+    [allTorrents release];
+    allTorrents = [[NSArray alloc] initWithArray:torrentList];
     [self updateList];
     if (!initialized) {
         if (saveGroups) {
@@ -192,7 +196,7 @@
 
 - (void)clearTorrents
 {
-    allTorrents = [NSArray array];
+    [allTorrents release];
     [self setTorrents:[NSMutableArray array]];
     initialized = false;
 }

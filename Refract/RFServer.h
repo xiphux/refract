@@ -10,6 +10,7 @@
 
 #import "RFEngine.h"
 #import "RFTorrentList.h"
+#import "RFGroupList.h"
 
 @protocol RFServerDelegate;
 
@@ -21,6 +22,7 @@
     
     RFEngine *engine;
     RFTorrentList *torrentList;
+    RFGroupList *groupList;
     
     bool started;
     NSTimer *refreshTimer;
@@ -33,6 +35,7 @@
 
 @property (readonly) RFEngine *engine;
 @property (readonly) RFTorrentList *torrentList;
+@property (readonly) RFGroupList *groupList;
 
 @property (readonly) bool started;
 

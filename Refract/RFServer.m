@@ -13,6 +13,7 @@
 #define REFRACT_RFSERVER_KEY_NAME @"name"
 #define REFRACT_RFSERVER_KEY_ENGINE @"engine"
 #define REFRACT_RFSERVER_KEY_TORRENTLIST @"torrentList"
+#define REFRACT_RFSERVER_KEY_GROUPLIST @"groupList"
 
 @implementation RFServer
 
@@ -27,7 +28,7 @@
     if (self) {
         sid = initId;
         
-        engine = [RFEngine engine];
+        engine = [[RFEngine engine] retain];
         [engine setDelegate:self];
         
         [self willChangeValueForKey:@"torrentList"];
@@ -38,6 +39,8 @@
         if ([engine type] == engTransmission) {
             [torrentList setSaveGroups:true];
         }
+        
+        groupList = [[RFGroupList alloc] init];
     }
     
     return self;
@@ -54,16 +57,18 @@
     if (self) {
         sid = serverId;
         
-        name = [aDecoder decodeObjectForKey:REFRACT_RFSERVER_KEY_NAME];
+        name = [[aDecoder decodeObjectForKey:REFRACT_RFSERVER_KEY_NAME] retain];
         
-        engine = [aDecoder decodeObjectForKey:REFRACT_RFSERVER_KEY_ENGINE];
+        engine = [[aDecoder decodeObjectForKey:REFRACT_RFSERVER_KEY_ENGINE] retain];
         [engine setDelegate:self];
         
-        torrentList = [aDecoder decodeObjectForKey:REFRACT_RFSERVER_KEY_TORRENTLIST];
+        torrentList = [[aDecoder decodeObjectForKey:REFRACT_RFSERVER_KEY_TORRENTLIST] retain];
         [torrentList setDelegate:self];
         if ([engine type] == engTransmission) {
             [torrentList setSaveGroups:true];
         }
+        
+        groupList = [[aDecoder decodeObjectForKey:REFRACT_RFSERVER_KEY_GROUPLIST] retain];
     }
     
     return self;
@@ -73,7 +78,10 @@
 {
     [engine release];
     [torrentList release];
+    [groupList release];
     [name release];
+    [refreshTimer invalidate];
+    [refreshTimer release];
     
     [super dealloc];
 }
@@ -84,6 +92,7 @@
     [aCoder encodeInt:sid forKey:REFRACT_RFSERVER_KEY_SID];
     [aCoder encodeObject:engine forKey:REFRACT_RFSERVER_KEY_ENGINE];
     [aCoder encodeObject:torrentList forKey:REFRACT_RFSERVER_KEY_TORRENTLIST];
+    [aCoder encodeObject:groupList forKey:REFRACT_RFSERVER_KEY_GROUPLIST];
 }
 
 @synthesize name;
@@ -91,6 +100,7 @@
 
 @synthesize engine;
 @synthesize torrentList;
+@synthesize groupList;
 
 @synthesize started;
 
@@ -319,7 +329,7 @@
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSTimeInterval update = [defaults doubleForKey:REFRACT_USERDEFAULT_UPDATE_FREQUENCY];
-    refreshTimer = [NSTimer scheduledTimerWithTimeInterval:update target:self selector:@selector(refresh) userInfo:nil repeats:false];
+    refreshTimer = [[NSTimer scheduledTimerWithTimeInterval:update target:self selector:@selector(refresh) userInfo:nil repeats:false] retain];
     
     if ([self delegate]) {
         if ([[self delegate] respondsToSelector:@selector(serverDidRefreshTorrents:)]) {

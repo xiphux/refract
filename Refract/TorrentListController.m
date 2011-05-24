@@ -34,6 +34,10 @@
 
 - (void)dealloc
 {
+    [controller release];
+    [listView release];
+    [searchField release];
+    [listButton release];
     [super dealloc];
 }
 
@@ -157,8 +161,8 @@
     
     [menu addItem:title];
     
-    NSMenuItem *sortMenuItem = [[NSMenuItem alloc] initWithTitle:@"Sort" action:nil keyEquivalent:@""];
-    NSMenu *sortSubMenu = [[NSMenu alloc] initWithTitle:@"Sort"];
+    NSMenuItem *sortMenuItem = [[[NSMenuItem alloc] initWithTitle:@"Sort" action:nil keyEquivalent:@""] autorelease];
+    NSMenu *sortSubMenu = [[[NSMenu alloc] initWithTitle:@"Sort"] autorelease];
     [sortMenuItem setSubmenu:sortSubMenu];
     
     for (NSUInteger i = sortName; i <= sortUploadRate; i++) {
@@ -185,7 +189,7 @@
             default:
                 continue;
         }
-        NSMenuItem *sortItem = [[NSMenuItem alloc] initWithTitle:name action:@selector(changeSort:) keyEquivalent:@""];
+        NSMenuItem *sortItem = [[[NSMenuItem alloc] initWithTitle:name action:@selector(changeSort:) keyEquivalent:@""] autorelease];
         [sortItem setTag:i];
         [sortItem setTarget:self];
         if (listSort == i) {

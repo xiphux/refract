@@ -46,15 +46,9 @@
 {
     self = [super init];
     if (self) {
-        url = [NSString stringWithString:initUrl];
-        username = [NSString stringWithString:initUser];
+        [self setUrl:initUrl];
         
-        if ([username length] > 0) {
-            EMGenericKeychainItem *keychain = [EMGenericKeychainItem genericKeychainItemForService:REFRACT_KEYCHAIN_TRANSMISSION withUsername:username];
-            if (keychain) {
-                password = [keychain password];
-            }
-        }
+        [self setUsername:initUser];
         
         torrents = [[NSMutableDictionary alloc] init];
         
@@ -74,11 +68,12 @@
 
 - (void)dealloc
 {
+    [torrents release];
+    [updateQueue release];
     [url release];
     [username release];
     [password release];
-    [torrents release];
-    [updateQueue release];
+    [sessionId release];
     [super dealloc];
 }
 
@@ -95,9 +90,6 @@
 }
 
 @synthesize torrents;
-@synthesize url;
-@synthesize username;
-@synthesize password;
 @synthesize connected;
 @synthesize uploadSpeed;
 @synthesize downloadSpeed;
@@ -105,6 +97,52 @@
 @synthesize sessionDownloadedBytes;
 @synthesize totalUploadedBytes;
 @synthesize totalDownloadedBytes;
+
+- (NSString *)url
+{
+    return url;
+}
+
+- (void)setUrl:(NSString *)newUrl
+{
+    if ([url isEqualToString:newUrl]) {
+        return;
+    }
+    
+    [url release];
+    
+    url = [[NSString alloc] initWithString:newUrl];
+    
+    connected = false;
+}
+
+- (NSString *)username
+{
+    return username;
+}
+
+- (void)setUsername:(NSString *)newUsername
+{
+    if ([username isEqualToString:newUsername]) {
+        return;
+    }
+    
+    [username release];
+    
+    username = [[NSString alloc] initWithString:newUsername];
+    
+    [self willChangeValueForKey:@"password"];
+    [password release];
+    if ([username length] > 0) {
+        EMGenericKeychainItem *keychain = [EMGenericKeychainItem genericKeychainItemForService:REFRACT_KEYCHAIN_TRANSMISSION withUsername:username];
+        if (keychain) {
+            password = [[keychain password] retain];
+        }
+    }
+    [self didChangeValueForKey:@"password"];
+    
+    connected = false;
+}
 
 - (RFEngineType)type
 {
@@ -335,7 +373,7 @@
             RFTorrent *torrent = [torrents objectForKey:tid];
             
             if (!torrent) {
-                torrent = [[RFTorrent alloc] initWithTid:tid];
+                torrent = [[[RFTorrent alloc] initWithTid:tid] autorelease];
                 [torrents setValue:torrent forKey:tid];
             }
             
@@ -482,7 +520,9 @@
         // requires session token - get token and resubmit request
         NSDictionary *responseHeaders = [[rfConn response] allHeaderFields];
         
+        [sessionId release];
         sessionId = [responseHeaders valueForKey:@"X-Transmission-Session-Id"];
+        [sessionId retain];
         if ([sessionId length] > 0) {
             [self rpcRequest:[[rfConn userInfo] objectForKey:@"type"] data:[rfConn requestData]]; 
         }
@@ -604,8 +644,6 @@
             }
         }];
         [updateQueue addOperation:statsOp];
-        [statsOp release];
-        
     }
 }
 

@@ -15,7 +15,7 @@
 {
     self = [super init];
     if (self) {
-        children = [NSMutableArray array];
+        children = [[NSMutableArray alloc] init];
     }
     
     return self;
@@ -23,6 +23,7 @@
 
 - (void)dealloc
 {
+    [title release];
     [children release];
     [super dealloc];
 }

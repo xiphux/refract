@@ -25,7 +25,7 @@
     id <RFTorrentListDelegate> delegate;
 }
 
-@property (retain) NSMutableArray *torrents;
+@property (retain) NSArray *torrents;
 @property (nonatomic, assign) id <RFTorrentListDelegate> delegate;
 @property bool initialized;
 @property bool saveGroups;

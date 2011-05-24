@@ -25,7 +25,8 @@
 
 - (void)dealloc
 {
-    [preferencesController release];  
+    [preferencesController release];
+    [mainWindowController release];
     [super dealloc];
 }
 

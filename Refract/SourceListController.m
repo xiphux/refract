@@ -75,20 +75,20 @@
 
 - (void)createStandardNodes
 {
-    BaseNode *allNode = [[BaseNode alloc] init];
+    BaseNode *allNode = [[[BaseNode alloc] init] autorelease];
     [allNode setTitle:@"Torrents"];
     [allNode setIsLeaf:true];
     [allNode setSortIndex:0];
     [treeController insertObject:allNode atArrangedObjectIndexPath:[NSIndexPath indexPathWithIndex:0]];
     
-    CategoryNode *statusCat = [[CategoryNode alloc] init];
+    CategoryNode *statusCat = [[[CategoryNode alloc] init] autorelease];
     [statusCat setTitle:@"Status"];
     [statusCat setSortIndex:1];
     [statusCat setIsLeaf:false];
     [statusCat setCategoryType:catStatus];
     [treeController insertObject:statusCat atArrangedObjectIndexPath:[NSIndexPath indexPathWithIndex:1]];
     
-    CategoryNode *groupCat = [[CategoryNode alloc] init];
+    CategoryNode *groupCat = [[[CategoryNode alloc] init] autorelease];
     [groupCat setTitle:@"Groups"];
     [groupCat setSortIndex:2];
     [groupCat setIsLeaf:false];
@@ -96,7 +96,7 @@
     NSIndexPath *groupsPath = [NSIndexPath indexPathWithIndex:2];
     [treeController insertObject:groupCat atArrangedObjectIndexPath:groupsPath];
     
-    GroupNode *noGroup = [[GroupNode alloc] init];
+    GroupNode *noGroup = [[[GroupNode alloc] init] autorelease];
     [noGroup setTitle:@"No Group"];
     [noGroup setIsLeaf:true];
     [noGroup setSortIndex:0];
@@ -190,7 +190,7 @@
     }
     
     NSIndexPath *itemPath = [[statusTreeNode indexPath] indexPathByAddingIndex:[[statusTreeNode childNodes] count]];
-    StatusNode *sNode = [[StatusNode alloc] init];
+    StatusNode *sNode = [[[StatusNode alloc] init] autorelease];
     switch (newStatus) {
         case stDownloading:
             [sNode setTitle:@"Downloading"];
@@ -316,7 +316,7 @@
     }
     
     NSIndexPath *itemPath = [[groupTreeNode indexPath] indexPathByAddingIndex:[[groupCat children] count]];
-    GroupNode *newNode = [[GroupNode alloc] init];
+    GroupNode *newNode = [[[GroupNode alloc] init] autorelease];
     [newNode setTitle:name];
     [newNode setIsLeaf:true];
     [newNode setSortIndex:1];
@@ -473,7 +473,7 @@
     for (NSUInteger i = 0; i < [groupList count]; i++) {
         RFTorrentGroup *group = [groupList objectAtIndex:i];
         NSIndexPath *itemPath = [[groupTreeNode indexPath] indexPathByAddingIndex:[[groupCat children] count]];
-        GroupNode *newNode = [[GroupNode alloc] init];
+        GroupNode *newNode = [[[GroupNode alloc] init] autorelease];
         [newNode setTitle:[group name]];
         [newNode setIsLeaf:true];
         [newNode setSortIndex:1];
@@ -615,9 +615,9 @@
                 [[self delegate] sourceList:self filterDidChange:filter];
             }
         }
+    } else {
+        [newFilter release];
     }
-    
-    [newFilter release];
         
     if (removeStatus > 0) {
         [self performSelector:@selector(tryRemoveStatusGroup) withObject:nil afterDelay:1.0];

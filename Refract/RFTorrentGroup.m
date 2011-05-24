@@ -27,7 +27,7 @@
 {
     self = [[RFTorrentGroup alloc] init];
     if (self) {
-        name = [aDecoder decodeObjectForKey:@"name"];
+        name = [[aDecoder decodeObjectForKey:@"name"] retain];
         gid = [aDecoder decodeIntForKey:@"gid"];
     }
     return self;

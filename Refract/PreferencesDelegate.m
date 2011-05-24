@@ -35,6 +35,19 @@
 
 - (void)dealloc
 {
+    [window release];
+    [general release];
+    [engine release];
+    [notifications release];
+    [toolbar release];
+    [generalButton release];
+    [engineButton release];
+    [notificationsButton release];
+    [transmissionUsernameField release];
+    [transmissionPasswordField release];
+    [transmissionUsername release];
+    [transmissionPassword release];
+    [downloadLocation release];
     [super dealloc];
 }
 
@@ -62,14 +75,14 @@
     
     if ([tmUser length] > 0) {
         [self willChangeValueForKey:@"transmissionUsername"];
-        transmissionUsername = tmUser;
+        transmissionUsername = [tmUser retain];
         [self didChangeValueForKey:@"transmissionUsername"];
         EMGenericKeychainItem *tmPass = [EMGenericKeychainItem genericKeychainItemForService:REFRACT_KEYCHAIN_TRANSMISSION withUsername:transmissionUsername];
         if (tmPass) {
             NSString *passStr = [tmPass password];
             if ([passStr length] > 0) {
                 [self willChangeValueForKey:@"transmissionPassword"];
-                transmissionPassword = [tmPass password];   
+                transmissionPassword = [[tmPass password] retain];   
                 [self didChangeValueForKey:@"transmissionPassword"];
             }
         }
@@ -78,7 +91,7 @@
     NSString *downloadLocationSetting = [defaults stringForKey:REFRACT_USERDEFAULT_DOWNLOAD_LOCATION];
     if ([downloadLocationSetting length] > 0) {
         [self willChangeValueForKey:@"downloadLocation"];
-        downloadLocation = [NSURL fileURLWithPath:downloadLocationSetting];
+        downloadLocation = [[NSURL fileURLWithPath:downloadLocationSetting] retain];
         [self didChangeValueForKey:@"downloadLocation"];
     }
     
@@ -150,12 +163,14 @@
         [oldPass removeFromKeychain];
     }
     
+    [transmissionUsername release];
+    
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if ([newTransmissionUsername length] > 0) {
         EMGenericKeychainItem *existingPass = [EMGenericKeychainItem genericKeychainItemForService:REFRACT_KEYCHAIN_TRANSMISSION withUsername:newTransmissionUsername];
         if (existingPass) {
             [self willChangeValueForKey:@"transmissionPassword"];
-            transmissionPassword = [existingPass password];
+            transmissionPassword = [[existingPass password] retain];
             [self didChangeValueForKey:@"transmissionPassword"];
         } else {
             [EMGenericKeychainItem addGenericKeychainItemForService:REFRACT_KEYCHAIN_TRANSMISSION withUsername:newTransmissionUsername password:transmissionPassword];
@@ -163,12 +178,12 @@
         [defaults setObject:newTransmissionUsername forKey:REFRACT_USERDEFAULT_TRANSMISSION_USERNAME];
     } else {
         [self willChangeValueForKey:@"transmissionPassword"];
-        transmissionPassword = nil;
+        [transmissionPassword release];
         [self didChangeValueForKey:@"transmissionPassword"];
         [defaults removeObjectForKey:REFRACT_USERDEFAULT_TRANSMISSION_USERNAME];
     }
     
-    transmissionUsername = newTransmissionUsername;
+    transmissionUsername = [newTransmissionUsername copy];
 }
 
 - (NSString *)transmissionPassword
@@ -184,7 +199,7 @@
     
     if ([transmissionUsername length] == 0) {
         [transmissionPasswordField setStringValue:@""];
-        transmissionPassword = nil;
+        [transmissionPassword release];
         return;
     }
     
@@ -195,7 +210,7 @@
         [EMGenericKeychainItem addGenericKeychainItemForService:REFRACT_KEYCHAIN_TRANSMISSION withUsername:transmissionUsername password:newTransmissionPassword];
     }
     
-    transmissionPassword = newTransmissionPassword;
+    transmissionPassword = [newTransmissionPassword copy];
 }
 
 - (NSURL *)downloadLocation

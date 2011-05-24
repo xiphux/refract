@@ -35,8 +35,6 @@ typedef enum {
     NSMenu IBOutlet *startMenu;
     NSSegmentedControl IBOutlet *startStopButton;
     
-    RFGroupList *groupList;
-    
     StatType statusButtonType;
     
     bool sleeping;
@@ -55,8 +53,6 @@ typedef enum {
 @property (retain) IBOutlet NSMenu *stopMenu;
 @property (retain) IBOutlet NSMenu *startMenu;
 @property (retain) IBOutlet NSSegmentedControl *startStopButton;
-
-@property (retain) RFGroupList *groupList;
 
 @property (retain) RFServer *server;
 

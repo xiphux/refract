@@ -26,7 +26,7 @@
     
     switch (codedType) {
         case engTransmission:
-            return [[RFEngineTransmission alloc] initWithCoder:aDecoder];
+            return [[[RFEngineTransmission alloc] initWithCoder:aDecoder] autorelease];
     }
     
     return nil;
@@ -39,7 +39,7 @@
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
-    
+    [NSException raise:NSInvalidArchiveOperationException format:@"Cannot encode an abstract engine"];
 }
 
 @synthesize delegate;
@@ -167,7 +167,7 @@
 {
     switch (type) {
         case engTransmission:
-            return [[RFEngineTransmission alloc] init];
+            return [[[RFEngineTransmission alloc] init] autorelease];
             break;
     }
 }
