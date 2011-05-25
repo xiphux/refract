@@ -22,7 +22,6 @@
 - (void)deleteTorrent:(id)sender;
 - (void)verifyTorrent:(id)sender;
 - (void)reannounceTorrent:(id)sender;
-- (NSMutableDictionary *)notificationData;
 - (void)changeGroup:(id)sender;
 @end
 
@@ -219,44 +218,65 @@
         return;
     }
     
-    [[self representedObject] setGroup:gid];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:REFRACT_NOTIFICATION_TORRENT_GROUP_CHANGED object:self userInfo:[self notificationData]];
-}
-
-- (NSMutableDictionary *)notificationData
-{
-    return [NSMutableDictionary dictionaryWithObject:[self representedObject] forKey:@"torrent"];
+    if ([self delegate]) {
+        if ([[self delegate] respondsToSelector:@selector(torrentItem:torrent:changeGroup:)]) {
+            [[self delegate] torrentItem:self torrent:[self representedObject] changeGroup:gid];
+        }
+    }
 }
 
 - (void)startTorrent:(id)sender
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:REFRACT_NOTIFICATION_TORRENT_START object:self userInfo:[self notificationData]];
+    if ([self delegate]) {
+        if ([[self delegate] respondsToSelector:@selector(torrentItem:startTorrent:)]) {
+            [[self delegate] torrentItem:self startTorrent:[self representedObject]];
+        }
+    }
 }
 
 - (void)stopTorrent:(id)sender
-{
-    [[NSNotificationCenter defaultCenter] postNotificationName:REFRACT_NOTIFICATION_TORRENT_STOP object:self userInfo:[self notificationData]];   
+{  
+    if ([self delegate]) {
+        if ([[self delegate] respondsToSelector:@selector(torrentItem:stopTorrent:)]) {
+            [[self delegate] torrentItem:self stopTorrent:[self representedObject]];
+        }
+    }
 }
 
 - (void)removeTorrent:(id)sender
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:REFRACT_NOTIFICATION_TORRENT_REMOVE object:self userInfo:[self notificationData]];
+    if ([self delegate]) {
+        if ([[self delegate] respondsToSelector:@selector(torrentItem:removeTorrent:deleteData:)]) {
+            [[self delegate] torrentItem:self removeTorrent:[self representedObject] deleteData:false];
+        }
+    }
 }
 
 - (void)deleteTorrent:(id)sender
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:REFRACT_NOTIFICATION_TORRENT_DELETE object:self userInfo:[self notificationData]];
+    if ([self delegate]) {
+        if ([[self delegate] respondsToSelector:@selector(torrentItem:removeTorrent:deleteData:)]) {
+            [[self delegate] torrentItem:self removeTorrent:[self representedObject] deleteData:true];
+        }
+    }
 }
 
 - (void)verifyTorrent:(id)sender
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:REFRACT_NOTIFICATION_TORRENT_VERIFY object:self userInfo:[self notificationData]];
+    if ([self delegate]) {
+        if ([[self delegate] respondsToSelector:@selector(torrentItem:verifyTorrent:)]) {
+            [[self delegate] torrentItem:self verifyTorrent:[self representedObject]];
+        }
+    }
 }
 
 - (void)reannounceTorrent:(id)sender
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:REFRACT_NOTIFICATION_TORRENT_REANNOUNCE object:self userInfo:[self notificationData]];
+    if ([self delegate]) {
+        if ([[self delegate] respondsToSelector:@selector(torrentItem:reannounceTorrent:)]) {
+            [[self delegate] torrentItem:self reannounceTorrent:[self representedObject]];;
+        }
+    }
 }
 
 @end

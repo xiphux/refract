@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "RFTorrent.h"
 
 @protocol TorrentItemDelegate;
 
@@ -32,4 +33,11 @@
 @protocol TorrentItemDelegate <NSObject>
 @optional
 - (NSArray *)torrentItemAvailableGroups:(TorrentItem *)item;
+
+- (void)torrentItem:(TorrentItem *)item startTorrent:(RFTorrent *)torrent;
+- (void)torrentItem:(TorrentItem *)item stopTorrent:(RFTorrent *)torrent;
+- (void)torrentItem:(TorrentItem *)item removeTorrent:(RFTorrent *)torrent deleteData:(bool)del;
+- (void)torrentItem:(TorrentItem *)item verifyTorrent:(RFTorrent *)torrent;
+- (void)torrentItem:(TorrentItem *)item reannounceTorrent:(RFTorrent *)torrent;
+- (void)torrentItem:(TorrentItem *)item torrent:(RFTorrent *)torrent changeGroup:(NSUInteger)gid;
 @end

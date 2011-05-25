@@ -17,7 +17,6 @@
 - (void)cleanStaleGroups;
 - (void)removeSavedGroupsForTorrents:(NSArray *)removedTorrents;
 - (void)updateSavedGroupsForTorrents:(NSArray *)list;
-- (void)torrentGroupChanged:(NSNotification *)notification;
 - (NSUInteger)groupForTorrent:(NSString *)hashString;
 @end
 
@@ -58,26 +57,7 @@
 @synthesize torrents;
 @synthesize delegate;
 @synthesize initialized;
-
-- (bool)saveGroups
-{
-    return saveGroups;
-}
-
-- (void)setSaveGroups:(bool)newSaveGroups
-{
-    if (saveGroups == newSaveGroups) {
-        return;
-    }
-    
-    saveGroups = newSaveGroups;
-    
-    if (saveGroups) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(torrentGroupChanged:) name:REFRACT_NOTIFICATION_TORRENT_GROUP_CHANGED object:nil];
-    } else {
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:REFRACT_NOTIFICATION_TORRENT_GROUP_CHANGED object:nil];
-    }
-}
+@synthesize saveGroups;
 
 - (NSUInteger)countOfTorrents
 {
@@ -199,21 +179,6 @@
     [allTorrents release];
     [self setTorrents:[NSMutableArray array]];
     initialized = false;
-}
-
-- (void)torrentGroupChanged:(NSNotification *)notification
-{    
-    NSDictionary *data = [notification userInfo];
-    if (!data) {
-        return;
-    }
-    
-    RFTorrent *torrent = [data objectForKey:@"torrent"];
-    if (!torrent) {
-        return;
-    }
-    
-    [self updateSavedGroupsForTorrents:[NSArray arrayWithObject:torrent]];
 }
 
 - (void)updateSavedGroupsForTorrents:(NSArray *)list
