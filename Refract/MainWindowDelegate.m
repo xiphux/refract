@@ -13,6 +13,7 @@
 #import "RFTorrentGroup.h"
 #import "RFConstants.h"
 #import "NotificationController.h"
+#import "RFServerList.h"
 
 @interface MainWindowDelegate ()
 
@@ -90,7 +91,14 @@
     
     statusButtonType = [[NSUserDefaults standardUserDefaults] integerForKey:REFRACT_USERDEFAULT_STAT_TYPE];
     
-    RFServer *srv = [[RFServer alloc] init];
+    RFServer *srv = nil;
+    RFServerList *list = [RFServerList sharedServerList];
+    if ([[list servers] count] == 0) {
+        srv = [[RFServer alloc] init];
+        [[list servers] addObject:srv];
+    } else {
+        srv = [[list servers] objectAtIndex:0];
+    }
     [srv setDelegate:self];
     [self setServer:srv];
     [srv start];

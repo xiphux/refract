@@ -10,6 +10,7 @@
 #import "RFConstants.h"
 #import "NotificationController.h"
 #import "MainWindowDelegate.h"
+#import "RFServerList.h"
 
 @implementation RefractAppDelegate
 
@@ -47,6 +48,7 @@
 
 - (void)applicationWillTerminate:(NSNotification *)notification
 {
+    [[RFServerList sharedServerList] save];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
