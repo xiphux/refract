@@ -302,4 +302,19 @@
     }
 }
 
+- (bool)containsStatus:(RFTorrentStatus)status
+{
+    if (!torrents) {
+        return false;
+    }
+    
+    for (RFTorrent *t in torrents) {
+        if ([t status] == status) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
 @end

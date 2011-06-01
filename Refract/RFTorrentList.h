@@ -43,6 +43,8 @@
 
 - (void)setGroup:(NSUInteger)gid forTorrents:(NSArray *)list;
 
+- (bool)containsStatus:(RFTorrentStatus)status;
+
 @end
 
 

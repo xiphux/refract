@@ -55,7 +55,7 @@
     [torrentListController release]; 
     [statsButton release];
     
-    [server release];
+    [activeServer release];
 
     [super dealloc];
 }
@@ -72,7 +72,7 @@
 @synthesize stopMenu;
 @synthesize startStopButton;
 
-@synthesize server;
+@synthesize activeServer;
 
 - (void)awakeFromNib
 {
@@ -100,10 +100,8 @@
         srv = [[list servers] objectAtIndex:0];
     }
     [srv setDelegate:self];
-    [self setServer:srv];
+    [self setActiveServer:srv];
     [srv start];
-
-    [sourceListController initGroups:[[server groupList] groups]];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsChanged:) name:NSUserDefaultsDidChangeNotification object:nil];
     
@@ -128,56 +126,7 @@
 {
     [torrentListController rearrangeObjects];
     
-    bool downloading = false;
-    bool stopped = false;
-    bool waiting = false;
-    bool checking = false;
-    bool seeding = false;
-    for (RFTorrent *t in [[srv torrentList] torrents]) {
-        switch ([t status]) {
-            case stDownloading:
-                downloading = true;
-                break;
-            case stSeeding:
-                seeding = true;
-                break;
-            case stStopped:
-                stopped = true;
-                break;
-            case stWaiting:
-                waiting = true;
-                break;
-            case stChecking:
-                checking = true;
-                break;
-        }
-    }
-    
-    if (downloading) {
-        [sourceListController addStatusGroup:stDownloading];
-    } else {
-        [sourceListController removeStatusGroup:stDownloading];
-    }
-    if (stopped) {
-        [sourceListController addStatusGroup:stStopped];
-    } else {
-        [sourceListController removeStatusGroup:stStopped];
-    }
-    if (waiting) {
-        [sourceListController addStatusGroup:stWaiting];
-    } else {
-        [sourceListController removeStatusGroup:stWaiting];
-    }
-    if (checking) {
-        [sourceListController addStatusGroup:stChecking];
-    } else {
-        [sourceListController removeStatusGroup:stChecking];
-    }
-    if (seeding) {
-        [sourceListController addStatusGroup:stSeeding];
-    } else {
-        [sourceListController removeStatusGroup:stSeeding];
-    }
+    [sourceListController updateServer:srv];
     
     [self updateDockBadge];
     [self updateStatsButton];
@@ -191,15 +140,21 @@
 
 #pragma mark source list delegate
 
-- (void)sourceList:(SourceListController *)list filterDidChange:(RFTorrentFilter *)newFilter
+- (void)sourceList:(SourceListController *)list server:(RFServer *)server filterDidChange:(RFTorrentFilter *)newFilter
 {
     if ([list isEqual:sourceListController]) {
-        RFTorrentFilterType filtType = [[sourceListController filter] filterType];
+        
+        if (![server isEqual:activeServer]) {
+            [self setActiveServer:server];
+            [self updateStatsButton];
+        }
+        
+        RFTorrentFilterType filtType = [newFilter filterType];
         if (filtType == filtStatus) {
-            [torrentListController setStatusFilter:[[sourceListController filter] torrentStatus]];
+            [torrentListController setStatusFilter:[newFilter torrentStatus]];
         } else if (filtType == filtGroup) {
-            if ([[sourceListController filter] torrentGroup] != nil) {
-                [torrentListController setGroupFilter:[[[sourceListController filter] torrentGroup] gid]];
+            if ([newFilter torrentGroup] != nil) {
+                [torrentListController setGroupFilter:[[newFilter torrentGroup] gid]];
             } else {
                 // no group
                 [torrentListController setGroupFilter:0];
@@ -210,91 +165,6 @@
         
         [self updateStatsButton];
     }
-}
-
-- (NSUInteger)sourceList:(SourceListController *)list torrentsInGroup:(RFTorrentGroup *)group
-{
-    if (!group) {
-        return 0;
-    }
-    
-    if ([group gid] < 1) {
-        return 0;
-    }
-    
-    NSArray *torrents = [[[server torrentList] torrents] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"group == %d", [group gid]]];
-    return [torrents count];
-}
-
-- (BOOL)sourceList:(SourceListController *)list canAddGroup:(NSString *)name
-{
-    if (![server groupList]) {
-        return true;
-    }
-    
-    if ([name length] == 0) {
-        return false;
-    }
-    
-    return ![[server groupList] groupWithNameExists:name];
-}
-
-- (RFTorrentGroup *)sourceList:(SourceListController *)list didAddGroup:(NSString *)name
-{
-    if (![server groupList]) {
-        return nil;
-    }
-    
-    RFTorrentGroup *newGroup = [[server groupList] addGroup:name];
-    
-    return newGroup;
-}
-
-- (BOOL)sourceList:(SourceListController *)list canRemoveGroup:(RFTorrentGroup *)group
-{
-    return true;
-}
-
-- (void)sourceList:(SourceListController *)list didRemoveGroup:(RFTorrentGroup *)group
-{
-    if (![server groupList]) {
-        return;
-    }
-    
-    [[server torrentList] clearGroup:group];
-    
-    [[server groupList] removeGroup:group];
-}
-
-- (BOOL)sourceList:(SourceListController *)list canRenameGroup:(RFTorrentGroup *)group toName:(NSString *)newName
-{
-    if (!group) {
-        return true;
-    }
-    
-    if ([newName length] == 0) {
-        return false;
-    }
-    
-    if ([[group name] isEqualToString:newName]) {
-        return true;
-    }
-    
-    if (![server groupList]) {
-        return true;
-    }
-    
-    RFTorrentGroup *existing = [[server groupList] groupWithName:newName];
-    if (existing && ![existing isEqual:group]) {
-        return false;
-    }
-    
-    return true;
-}
-
-- (void)sourceList:(SourceListController *)list didRenameGroup:(RFTorrentGroup *)group toName:(NSString *)newName
-{
-    [group setName:newName];
 }
 
 
@@ -322,10 +192,10 @@
     
     if (clickedSegmentTag == 0) {
         // stop
-        [server stopTorrents:selected];
+        [activeServer stopTorrents:selected];
     } else if (clickedSegmentTag == 1) {
         // start
-        [server startTorrents:selected];
+        [activeServer startTorrents:selected];
     }
 }
 
@@ -336,12 +206,12 @@
         return;
     }
     
-    [server startTorrents:selected];
+    [activeServer startTorrents:selected];
 }
 
 - (IBAction)startAllClicked:(id)sender
 {
-    [server startAllTorrents];
+    [activeServer startAllTorrents];
 }
 
 - (IBAction)stopClicked:(id)sender
@@ -351,12 +221,12 @@
         return;
     }
     
-    [server stopTorrents:selected];
+    [activeServer stopTorrents:selected];
 }
 
 - (IBAction)stopAllClicked:(id)sender
 {
-    [server stopAllTorrents];
+    [activeServer stopAllTorrents];
 }
 
 - (IBAction)removeClicked:(id)sender
@@ -389,19 +259,19 @@
     if ([type isEqualToString:@"remove"]) {
         
         if (returnCode == NSAlertSecondButtonReturn) {
-            [server removeTorrents:[context objectForKey:@"selected"] deleteData:false];
+            [activeServer removeTorrents:[context objectForKey:@"selected"] deleteData:false];
         }
         
     } else if ([type isEqualToString:@"removedelete"]) {
         
         if (returnCode == NSAlertSecondButtonReturn) {
-            [server removeTorrents:[context objectForKey:@"selected"] deleteData:true];
+            [activeServer removeTorrents:[context objectForKey:@"selected"] deleteData:true];
         }
         
     } else if ([type isEqualToString:@"add"]) {
         if (returnCode == NSAlertSecondButtonReturn) {
             NSArray *paths = [context objectForKey:@"paths"];
-            [server addTorrents:paths];
+            [activeServer addTorrents:paths];
         }
     }
 }
@@ -419,7 +289,7 @@
         NSUInteger i, count = [urlsToOpen count];
         for (i=0; i<count; i++) {
             NSURL *url = [urlsToOpen objectAtIndex:i];
-            [server addTorrentFile:url];
+            [activeServer addTorrentFile:url];
         }
     }
 }
@@ -431,7 +301,7 @@
     }
     
     NSUInteger gid = [sender tag];
-    [[server torrentList] setGroup:gid forTorrents:[torrentListController selectedObjects]];
+    [[activeServer torrentList] setGroup:gid forTorrents:[torrentListController selectedObjects]];
 }
 
 - (IBAction)verifyClicked:(id)sender
@@ -441,7 +311,7 @@
         return;
     }
     
-    [server verifyTorrents:selected];
+    [activeServer verifyTorrents:selected];
 }
 
 - (IBAction)reannounceClicked:(id)sender
@@ -451,7 +321,7 @@
         return;
     }
     
-    [server reannounceTorrents:selected];
+    [activeServer reannounceTorrents:selected];
 }
 
 
@@ -481,13 +351,13 @@
             label = [NSString stringWithFormat:@"%d torrents", [[torrentListController arrangedObjects] count]];
             break;
         case statRate:
-            label = [NSString stringWithFormat:@"D: %@ U: %@", [RFUtils readableRateDecimal:[[server engine] downloadSpeed]], [RFUtils readableRateDecimal:[[server engine] uploadSpeed]]];
+            label = [NSString stringWithFormat:@"D: %@ U: %@", [RFUtils readableRateDecimal:[[activeServer engine] downloadSpeed]], [RFUtils readableRateDecimal:[[activeServer engine] uploadSpeed]]];
             break;
         case statSession:
-            label = [NSString stringWithFormat:@"Session D: %@ U: %@", [RFUtils readableBytesDecimal:[[server engine] sessionDownloadedBytes]], [RFUtils readableBytesDecimal:[[server engine] sessionUploadedBytes]]];
+            label = [NSString stringWithFormat:@"Session D: %@ U: %@", [RFUtils readableBytesDecimal:[[activeServer engine] sessionDownloadedBytes]], [RFUtils readableBytesDecimal:[[activeServer engine] sessionUploadedBytes]]];
             break;
         case statTotal:
-            label = [NSString stringWithFormat:@"Total D: %@ U: %@", [RFUtils readableBytesDecimal:[[server engine] totalDownloadedBytes]], [RFUtils readableBytesDecimal:[[server engine] totalUploadedBytes]]];
+            label = [NSString stringWithFormat:@"Total D: %@ U: %@", [RFUtils readableBytesDecimal:[[activeServer engine] totalDownloadedBytes]], [RFUtils readableBytesDecimal:[[activeServer engine] totalUploadedBytes]]];
             break;
     }
     [statsButton setTitle:label];
@@ -501,7 +371,7 @@
 
 - (void)updateDockBadge
 {
-    NSUInteger activeCount = [[[[server torrentList] torrents] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"status == %d", stDownloading]] count];
+    NSUInteger activeCount = [[[[activeServer torrentList] torrents] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"status == %d", stDownloading]] count];
     
     if (activeCount > 0) {
         [[[NSApplication sharedApplication] dockTile] setBadgeLabel:[NSString stringWithFormat:@"%d", activeCount]];
@@ -629,7 +499,7 @@
 
 - (BOOL)prepareForDragOperation:(id<NSDraggingInfo>)sender
 {
-    if (server && [server started]) {
+    if (activeServer && [activeServer started]) {
         return YES;
     }
     
@@ -666,11 +536,11 @@
 
 - (NSArray *)torrentItemAvailableGroups:(TorrentItem *)item
 {
-    if (![server groupList]) {
+    if (![activeServer groupList]) {
         return nil;
     }
     
-    return [[server groupList] groups];
+    return [[activeServer groupList] groups];
 }
 
 - (void)torrentItem:(TorrentItem *)item startTorrent:(RFTorrent *)torrent
@@ -679,7 +549,7 @@
         return;
     }
     
-    [server startTorrents:[NSArray arrayWithObject:torrent]];
+    [activeServer startTorrents:[NSArray arrayWithObject:torrent]];
 }
 
 - (void)torrentItem:(TorrentItem *)item stopTorrent:(RFTorrent *)torrent
@@ -688,7 +558,7 @@
         return;
     }
     
-    [server stopTorrents:[NSArray arrayWithObject:torrent]];
+    [activeServer stopTorrents:[NSArray arrayWithObject:torrent]];
 }
 
 - (void)torrentItem:(TorrentItem *)item removeTorrent:(RFTorrent *)torrent deleteData:(bool)del
@@ -710,7 +580,7 @@
         return;
     }
     
-    [server verifyTorrents:[NSArray arrayWithObject:torrent]];
+    [activeServer verifyTorrents:[NSArray arrayWithObject:torrent]];
 }
 
 - (void)torrentItem:(TorrentItem *)item reannounceTorrent:(RFTorrent *)torrent
@@ -719,7 +589,7 @@
         return;
     }
     
-    [server reannounceTorrents:[NSArray arrayWithObject:torrent]];
+    [activeServer reannounceTorrents:[NSArray arrayWithObject:torrent]];
 }
 
 - (void)torrentItem:(TorrentItem *)item torrent:(RFTorrent *)torrent changeGroup:(NSUInteger)gid
@@ -728,7 +598,7 @@
         return;
     }
     
-    [[server torrentList] setGroup:gid forTorrents:[NSArray arrayWithObject:torrent]];
+    [[activeServer torrentList] setGroup:gid forTorrents:[NSArray arrayWithObject:torrent]];
 }
 
 
@@ -756,9 +626,9 @@
         [noGroup setTarget:self];
         [groupSubMenu addItem:noGroup];
         
-        if ([[[server groupList] groups] count] > 0) {
+        if ([[[activeServer groupList] groups] count] > 0) {
             [groupSubMenu addItem:[NSMenuItem separatorItem]];
-            NSArray *sortedGroups = [[[server groupList] groups] sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"name" ascending:true] autorelease]]];
+            NSArray *sortedGroups = [[[activeServer groupList] groups] sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"name" ascending:true] autorelease]]];
             for (NSUInteger i = 0; i < [sortedGroups count]; i++) {
                 RFTorrentGroup *group = [sortedGroups objectAtIndex:i];
                 NSMenuItem *groupItem = [[[NSMenuItem alloc] initWithTitle:[group name] action:@selector(changeGroup:) keyEquivalent:@""] autorelease];

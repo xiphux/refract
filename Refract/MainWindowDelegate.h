@@ -39,7 +39,7 @@ typedef enum {
     
     bool sleeping;
     
-    RFServer *server;
+    RFServer *activeServer;
 }
 
 @property (assign) IBOutlet NSWindow *window;
@@ -54,7 +54,7 @@ typedef enum {
 @property (retain) IBOutlet NSMenu *startMenu;
 @property (retain) IBOutlet NSSegmentedControl *startStopButton;
 
-@property (retain) RFServer *server;
+@property (retain) RFServer *activeServer;
 
 - (IBAction)statsButtonClick:(id)sender;
 - (IBAction)startStopClicked:(id)sender;
