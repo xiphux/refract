@@ -26,7 +26,8 @@ typedef enum {
     TorrentListController IBOutlet *torrentListController;
     SourceListController IBOutlet *sourceListController;
     
-    NSButton IBOutlet *statsButton;
+    NSPopUpButton IBOutlet *statsButton;
+    NSMenu IBOutlet *statsMenu;
     NSMenu IBOutlet *removeMenu;
     NSSegmentedControl IBOutlet *removeButton;
     NSMenu IBOutlet *actionMenu;
@@ -41,18 +42,6 @@ typedef enum {
     
     RFServer *activeServer;
 }
-
-@property (assign) IBOutlet NSWindow *window;
-@property (retain) IBOutlet TorrentListController *torrentListController;
-@property (retain) IBOutlet SourceListController *sourceListController;
-@property (retain) IBOutlet NSButton *statsButton;
-@property (retain) IBOutlet NSMenu *removeMenu;
-@property (retain) IBOutlet NSSegmentedControl *removeButton;
-@property (retain) IBOutlet NSMenu *actionMenu;
-@property (retain) IBOutlet NSSegmentedControl *actionButton;
-@property (retain) IBOutlet NSMenu *stopMenu;
-@property (retain) IBOutlet NSMenu *startMenu;
-@property (retain) IBOutlet NSSegmentedControl *startStopButton;
 
 @property (retain) RFServer *activeServer;
 

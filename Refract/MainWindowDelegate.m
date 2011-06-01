@@ -60,18 +60,6 @@
     [super dealloc];
 }
 
-@synthesize window;
-@synthesize sourceListController;
-@synthesize torrentListController;
-@synthesize statsButton;
-@synthesize removeMenu;
-@synthesize removeButton;
-@synthesize actionMenu;
-@synthesize actionButton;
-@synthesize startMenu;
-@synthesize stopMenu;
-@synthesize startStopButton;
-
 @synthesize activeServer;
 
 - (void)awakeFromNib
@@ -172,10 +160,7 @@
 
 - (IBAction)statsButtonClick:(id)sender
 {
-    statusButtonType = statusButtonType + 1;
-    if (statusButtonType > statTotal) {
-        statusButtonType = 1;
-    }
+    statusButtonType = [sender tag];
     [[NSUserDefaults standardUserDefaults] setInteger:statusButtonType forKey:REFRACT_USERDEFAULT_STAT_TYPE];
     [self updateStatsButton];
 }
@@ -360,7 +345,7 @@
             label = [NSString stringWithFormat:@"Total D: %@ U: %@", [RFUtils readableBytesDecimal:[[activeServer engine] totalDownloadedBytes]], [RFUtils readableBytesDecimal:[[activeServer engine] totalUploadedBytes]]];
             break;
     }
-    [statsButton setTitle:label];
+    [[[statsButton menu] itemAtIndex:0] setTitle:label];
     [statsButton sizeToFit];
     
     NSRect torrentListRect = [[statsButton superview] frame];
@@ -666,6 +651,17 @@
         [stopItem setEnabled:selected];
         NSMenuItem *stopAllItem = [menu itemAtIndex:1];
         [stopAllItem setEnabled:[[torrentListController arrangedObjects] count] > 0];
+    }
+    
+    if ([menu isEqual:statsMenu]) {
+        for (NSUInteger i = 1; i <= 4; i++) {
+            NSMenuItem *item = [menu itemAtIndex:i];
+            if (i == statusButtonType) {
+                [item setState:NSOnState];
+            } else {
+                [item setState:NSOffState];
+            }
+        }
     }
 }
 

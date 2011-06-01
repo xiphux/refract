@@ -30,17 +30,7 @@
     NSURL *downloadLocation;
 }
 
-@property (retain) IBOutlet NSWindow *window;
-@property (retain) IBOutlet NSView *general;
-@property (retain) IBOutlet NSView *engine;
-@property (retain) IBOutlet NSView *notifications;
 @property (retain) NSView *current;
-@property (retain) NSToolbar *toolbar;
-@property (retain) IBOutlet NSToolbarItem *generalButton;
-@property (retain) IBOutlet NSToolbarItem *engineButton;
-@property (retain) IBOutlet NSToolbarItem *notificationsButton;
-@property (retain) IBOutlet NSTextField *transmissionUsernameField;
-@property (retain) IBOutlet NSTextField *transmissionPasswordField;
 @property (copy) NSString *transmissionUsername;
 @property (copy) NSString *transmissionPassword;
 @property (copy) NSURL *downloadLocation;

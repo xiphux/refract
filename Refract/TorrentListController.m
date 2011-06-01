@@ -41,11 +41,6 @@
     [super dealloc];
 }
 
-@synthesize controller;
-@synthesize listView;
-@synthesize searchField;
-@synthesize listButton;
-
 - (void)awakeFromNib
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(listButton:) name:NSPopUpButtonWillPopUpNotification object:listButton];

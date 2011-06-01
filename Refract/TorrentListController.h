@@ -30,10 +30,6 @@ typedef enum {
     TorrentListSort listSort;
 }
 
-@property (retain) IBOutlet NSArrayController *controller;
-@property (retain) IBOutlet NSCollectionView *listView;
-@property (retain) IBOutlet NSSearchField *searchField;
-@property (retain) IBOutlet NSPopUpButton *listButton;
 @property (readonly) NSArray *selectedObjects;
 @property (readonly) NSArray *arrangedObjects;
 

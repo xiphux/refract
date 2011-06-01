@@ -53,9 +53,6 @@
     [super dealloc];
 }
 
-@synthesize upperLabel;
-@synthesize lowerLabel;
-@synthesize actionButton;
 @synthesize delegate;
 
 - (void)awakeFromNib

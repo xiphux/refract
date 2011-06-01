@@ -29,11 +29,6 @@
     NSObject <SourceListDelegate> *delegate;
 }
 
-@property (retain) NSTreeController *treeController;
-@property (retain) NSOutlineView *sourceList;
-@property (retain) NSMenu *contextMenu;
-@property (retain) NSWindow *window;
-@property (retain) NSButton *addGroupButton;
 @property (nonatomic, assign) NSObject <SourceListDelegate> *delegate;
 
 - (void)updateServer:(RFServer *)server;

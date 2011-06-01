@@ -20,9 +20,6 @@
     NSObject <TorrentItemDelegate> IBOutlet *delegate;
 }
 
-@property (retain) IBOutlet NSTextField *upperLabel;
-@property (retain) IBOutlet NSTextField *lowerLabel;
-@property (retain) IBOutlet NSPopUpButton *actionButton;
 @property (nonatomic, assign) NSObject <TorrentItemDelegate> *delegate;
 
 - (void)actionButton:(NSNotification *)notification;

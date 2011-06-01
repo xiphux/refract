@@ -48,11 +48,6 @@
     [super dealloc];
 }
 
-@synthesize treeController;
-@synthesize sourceList;
-@synthesize contextMenu;
-@synthesize addGroupButton;
-@synthesize window;
 @synthesize delegate;
 
 - (void)awakeFromNib
