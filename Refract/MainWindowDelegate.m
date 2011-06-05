@@ -277,6 +277,7 @@
     
     NSUInteger gid = [sender tag];
     [[activeServer torrentList] setGroup:gid forTorrents:[torrentListController selectedObjects]];
+    [torrentListController rearrangeObjects];
 }
 
 - (IBAction)verifyClicked:(id)sender
@@ -603,6 +604,7 @@
     }
     
     [[activeServer torrentList] setGroup:gid forTorrents:[NSArray arrayWithObject:torrent]];
+    [torrentListController rearrangeObjects];
 }
 
 
