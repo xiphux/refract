@@ -66,6 +66,12 @@
 {
     [self setDefaults];
     
+    [[RFServerList sharedServerList] addObserver:self forKeyPath:@"servers" options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld) context:NULL];
+    
+    for (RFServer *srv in [[RFServerList sharedServerList] servers]) {
+        [srv setDelegate:self];
+    }
+    
     [window registerForDraggedTypes:[NSArray arrayWithObject:NSFilenamesPboardType]];
     
     [removeButton setMenu:removeMenu forSegment:0];
@@ -74,22 +80,6 @@
     
     [startStopButton setMenu:stopMenu forSegment:0];
     [startStopButton setMenu:startMenu forSegment:1];
-    
-    [sourceListController setDelegate:self];
-    
-    statusButtonType = [[NSUserDefaults standardUserDefaults] integerForKey:REFRACT_USERDEFAULT_STAT_TYPE];
-    
-    RFServer *srv = nil;
-    RFServerList *list = [RFServerList sharedServerList];
-    if ([[list servers] count] == 0) {
-        srv = [[RFServer alloc] init];
-        [[list servers] addObject:srv];
-    } else {
-        srv = [[list servers] objectAtIndex:0];
-    }
-    [srv setDelegate:self];
-    [self setActiveServer:srv];
-    [srv start];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsChanged:) name:NSUserDefaultsDidChangeNotification object:nil];
     
@@ -112,12 +102,14 @@
 
 - (void)serverDidRefreshTorrents:(RFServer *)srv
 {
-    [torrentListController rearrangeObjects];
-    
     [sourceListController updateServer:srv];
     
-    [self updateDockBadge];
-    [self updateStatsButton];
+    if ([activeServer isEqual:srv]) {
+        [torrentListController rearrangeObjects];
+        
+        [self updateDockBadge];
+        [self updateStatsButton];
+    }
 }
 
 - (void)serverDidRefreshStats:(RFServer *)server
@@ -134,7 +126,6 @@
         
         if (![server isEqual:activeServer]) {
             [self setActiveServer:server];
-            [self updateStatsButton];
         }
         
         RFTorrentFilterType filtType = [newFilter filterType];
@@ -160,8 +151,7 @@
 
 - (IBAction)statsButtonClick:(id)sender
 {
-    statusButtonType = [sender tag];
-    [[NSUserDefaults standardUserDefaults] setInteger:statusButtonType forKey:REFRACT_USERDEFAULT_STAT_TYPE];
+    [[NSUserDefaults standardUserDefaults] setInteger:[sender tag] forKey:REFRACT_USERDEFAULT_STAT_TYPE];
     [self updateStatsButton];
 }
 
@@ -326,15 +316,40 @@
 }
 
 
+#pragma mark key change observations
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([object isEqual:[RFServerList sharedServerList]]) {
+        if ([keyPath isEqualToString:@"servers"]) {
+            NSKeyValueChange changeKind = [[change objectForKey:NSKeyValueChangeKindKey] intValue];
+            if (changeKind == NSKeyValueChangeRemoval || changeKind == NSKeyValueChangeReplacement) {
+                NSArray *removedList = [change objectForKey:NSKeyValueChangeOldKey];
+                if (removedList) {
+                    for (RFServer *oldServer in removedList) {
+                        [oldServer setDelegate:nil];
+                    }
+                }
+            }
+            if (changeKind == NSKeyValueChangeInsertion || changeKind == NSKeyValueChangeReplacement) {
+                NSArray *addedList = [change objectForKey:NSKeyValueChangeNewKey];
+                if (addedList) {
+                    for (RFServer *newServer in addedList) {
+                        [newServer setDelegate:self];
+                    }
+                }
+            }
+        }
+    }
+}
+
+
 #pragma mark utility functions
 
 - (void)updateStatsButton
 {
     NSString *label;
-    switch (statusButtonType) {
-        case statCount:
-            label = [NSString stringWithFormat:@"%d torrents", [[torrentListController arrangedObjects] count]];
-            break;
+    switch ([[NSUserDefaults standardUserDefaults] integerForKey:REFRACT_USERDEFAULT_STAT_TYPE]) {
         case statRate:
             label = [NSString stringWithFormat:@"D: %@ U: %@", [RFUtils readableRateDecimal:[[activeServer engine] downloadSpeed]], [RFUtils readableRateDecimal:[[activeServer engine] uploadSpeed]]];
             break;
@@ -343,9 +358,13 @@
             break;
         case statTotal:
             label = [NSString stringWithFormat:@"Total D: %@ U: %@", [RFUtils readableBytesDecimal:[[activeServer engine] totalDownloadedBytes]], [RFUtils readableBytesDecimal:[[activeServer engine] totalUploadedBytes]]];
+        case statCount:
+        default:
+            label = [NSString stringWithFormat:@"%d torrents", [[torrentListController arrangedObjects] count]];
             break;
     }
-    [[[statsButton menu] itemAtIndex:0] setTitle:label];
+    NSMenuItem *statsTitle = [[statsButton menu] itemAtIndex:0];
+    [statsTitle setTitle:label];
     [statsButton sizeToFit];
     
     NSRect torrentListRect = [[statsButton superview] frame];
@@ -654,9 +673,10 @@
     }
     
     if ([menu isEqual:statsMenu]) {
+        StatType type = [[NSUserDefaults standardUserDefaults] integerForKey:REFRACT_USERDEFAULT_STAT_TYPE];
         for (NSUInteger i = 1; i <= 4; i++) {
             NSMenuItem *item = [menu itemAtIndex:i];
-            if (i == statusButtonType) {
+            if (i == type) {
                 [item setState:NSOnState];
             } else {
                 [item setState:NSOffState];

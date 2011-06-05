@@ -6,9 +6,6 @@
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-
-#define REFRACT_KEYCHAIN_TRANSMISSION @"Refract.Transmission"
-
 #define REFRACT_USERDEFAULT_STAT_TYPE @"StatType"
 #define REFRACT_USERDEFAULT_SORT @"Sort"
 #define REFRACT_USERDEFAULT_UPDATE_FREQUENCY @"UpdateFrequency"

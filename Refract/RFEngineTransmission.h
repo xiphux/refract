@@ -11,7 +11,7 @@
 
 @interface RFEngineTransmission : RFEngine {
 @private
-    NSString *url;
+    NSURL *url;
     NSString *username;
     NSString *password;
     NSMutableDictionary *torrents;
@@ -29,8 +29,9 @@
 
 @property (readonly, retain) NSMutableDictionary *torrents;
 @property (readonly) bool connected;
-@property (copy) NSString *url;
+@property (copy) NSURL *url;
 @property (copy) NSString *username;
+@property (copy) NSString *password;
 
 @property (readonly) unsigned long uploadSpeed;
 @property (readonly) unsigned long downloadSpeed;
@@ -39,7 +40,7 @@
 @property (readonly) unsigned long totalUploadedBytes;
 @property (readonly) unsigned long totalDownloadedBytes;
 
-- (id)initWithUrl:(NSString *)initUrl;
-- (id)initWithUrlAndLogin:(NSString *)initUrl username:(NSString *)initUser;
+- (id)initWithUrl:(NSURL *)initUrl;
+- (id)initWithUrlAndLogin:(NSURL *)initUrl username:(NSString *)initUser;
 
 @end

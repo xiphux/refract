@@ -14,6 +14,8 @@
 #define REFRACT_RFSERVER_KEY_ENGINE @"engine"
 #define REFRACT_RFSERVER_KEY_TORRENTLIST @"torrentList"
 #define REFRACT_RFSERVER_KEY_GROUPLIST @"groupList"
+#define REFRACT_RFSERVER_KEY_ENABLED @"enabled"
+#define REFRACT_RFSERVER_KEY_UPDATEFREQUENCY @"updateFrequency"
 
 @implementation RFServer
 
@@ -41,6 +43,10 @@
         }
         
         groupList = [[RFGroupList alloc] init];
+        
+        enabled = true;
+        
+        updateFrequency = 5;
     }
     
     return self;
@@ -69,6 +75,10 @@
         }
         
         groupList = [[aDecoder decodeObjectForKey:REFRACT_RFSERVER_KEY_GROUPLIST] retain];
+        
+        enabled = [aDecoder decodeBoolForKey:REFRACT_RFSERVER_KEY_ENABLED];
+        
+        updateFrequency = [aDecoder decodeIntForKey:REFRACT_RFSERVER_KEY_UPDATEFREQUENCY];
     }
     
     return self;
@@ -93,10 +103,14 @@
     [aCoder encodeObject:engine forKey:REFRACT_RFSERVER_KEY_ENGINE];
     [aCoder encodeObject:torrentList forKey:REFRACT_RFSERVER_KEY_TORRENTLIST];
     [aCoder encodeObject:groupList forKey:REFRACT_RFSERVER_KEY_GROUPLIST];
+    [aCoder encodeBool:enabled forKey:REFRACT_RFSERVER_KEY_ENABLED];
+    [aCoder encodeInt:updateFrequency forKey:REFRACT_RFSERVER_KEY_UPDATEFREQUENCY];
 }
 
+@synthesize enabled;
 @synthesize name;
 @synthesize sid;
+@synthesize updateFrequency;
 
 @synthesize engine;
 @synthesize torrentList;
@@ -105,6 +119,54 @@
 @synthesize started;
 
 @synthesize delegate;
+
+- (bool)enabled
+{
+    return enabled;
+}
+
+- (void)setEnabled:(bool)newEnabled
+{
+    if (enabled == newEnabled) {
+        return;
+    }
+    
+    enabled = newEnabled;
+    
+    if (enabled) {
+        if (!started) {
+            [self start];
+        }
+    } else {
+        if (started) {
+            [self stop];
+        }
+    }
+}
+
+- (NSUInteger)updateFrequency
+{
+    return updateFrequency;
+}
+
+- (void)setUpdateFrequency:(NSUInteger)newUpdateFrequency
+{
+    if (updateFrequency == newUpdateFrequency) {
+        return;
+    }
+    
+    if (newUpdateFrequency < 1) {
+        newUpdateFrequency = 1;
+    }
+    
+    bool needsupdate = (newUpdateFrequency < updateFrequency);
+    
+    updateFrequency = newUpdateFrequency;
+    
+    if (needsupdate && started) {
+        [self refresh];
+    }
+}
 
 
 #pragma mark torrent manipulation
@@ -288,9 +350,7 @@
     
     if ([requestType isEqualToString:@"refresh"]) {
         [[self torrentList] clearTorrents];
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSTimeInterval update = [defaults doubleForKey:REFRACT_USERDEFAULT_UPDATE_FREQUENCY];
-        refreshTimer = [NSTimer scheduledTimerWithTimeInterval:update target:self selector:@selector(refresh) userInfo:nil repeats:false];
+        refreshTimer = [NSTimer scheduledTimerWithTimeInterval:(NSTimeInterval)updateFrequency target:self selector:@selector(refresh) userInfo:nil repeats:false];
     }
 }
 

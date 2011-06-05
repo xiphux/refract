@@ -7,8 +7,16 @@
 //
 
 #import "PreferencesDelegate.h"
-#import "EMKeychainItem.h"
 #import "RFConstants.h"
+#import "RFServerList.h"
+#import "RFServer.h"
+
+@interface PreferencesDelegate ()
+
+- (void)alertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo;
+- (void)doRemoveServer:(RFServer *)server;
+
+@end
 
 @implementation PreferencesDelegate
 
@@ -25,20 +33,16 @@
 - (void)dealloc
 {
     [window release];
-    [general release];
-    [engine release];
-    [notifications release];
+    [serversPage release];
+    [notificationsPage release];
     [toolbar release];
-    [generalButton release];
-    [engineButton release];
+    [serversButton release];
     [notificationsButton release];
-    [transmissionUsernameField release];
-    [transmissionPasswordField release];
-    [transmissionUsername release];
-    [transmissionPassword release];
-    [downloadLocation release];
+    [serverList release];
     [super dealloc];
 }
+
+@synthesize serverList;
 
 - (NSView *)current
 {
@@ -59,64 +63,31 @@
 
 - (void)awakeFromNib
 {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *tmUser = [defaults stringForKey:REFRACT_USERDEFAULT_TRANSMISSION_USERNAME];
-    
-    if ([tmUser length] > 0) {
-        [self willChangeValueForKey:@"transmissionUsername"];
-        transmissionUsername = [tmUser retain];
-        [self didChangeValueForKey:@"transmissionUsername"];
-        EMGenericKeychainItem *tmPass = [EMGenericKeychainItem genericKeychainItemForService:REFRACT_KEYCHAIN_TRANSMISSION withUsername:transmissionUsername];
-        if (tmPass) {
-            NSString *passStr = [tmPass password];
-            if ([passStr length] > 0) {
-                [self willChangeValueForKey:@"transmissionPassword"];
-                transmissionPassword = [[tmPass password] retain];   
-                [self didChangeValueForKey:@"transmissionPassword"];
-            }
-        }
-    }
-    
-    NSString *downloadLocationSetting = [defaults stringForKey:REFRACT_USERDEFAULT_DOWNLOAD_LOCATION];
-    if ([downloadLocationSetting length] > 0) {
-        [self willChangeValueForKey:@"downloadLocation"];
-        downloadLocation = [[NSURL fileURLWithPath:downloadLocationSetting] retain];
-        [self didChangeValueForKey:@"downloadLocation"];
-    }
-    
     NSView *contentView = [window contentView];
-    [[contentView animator] addSubview:general];
-    current = general;
-    [window setTitle:@"General"];
-    [toolbar setSelectedItemIdentifier:[generalButton itemIdentifier]];
+    [[contentView animator] addSubview:serversPage];
+    current = serversPage;
+    [window setTitle:@"Servers"];
+    [toolbar setSelectedItemIdentifier:[serversButton itemIdentifier]];
     [self updateWindowSize];
     [window makeKeyAndOrderFront:self];
+    [self setServerList:[RFServerList sharedServerList]];
 }
 
-- (IBAction)switchToGeneral:(id)sender
+- (IBAction)switchToServers:(id)sender
 {
-    if (current == general) {
+    if (current == serversPage) {
         return;
     }
-    [self setCurrent:general];
-    [window setTitle:@"General"];
-}
-
-- (IBAction)switchToEngine:(id)sender
-{
-    if (current == engine) {
-        return;
-    }
-    [self setCurrent:engine];
-    [window setTitle:@"Engine"];
+    [self setCurrent:serversPage];
+    [window setTitle:@"Servers"];
 }
 
 - (IBAction)switchToNotifications:(id)sender
 {
-    if (current == notifications) {
+    if (current == notificationsPage) {
         return;
     }
-    [self setCurrent:notifications];
+    [self setCurrent:notificationsPage];
     [window setTitle:@"Notifications"];
 }
 
@@ -136,89 +107,103 @@
     [window setFrame:windowFrame display:true animate:true];
 }
 
-- (NSString *)transmissionUsername
+- (IBAction)addServer:(id)sender
 {
-    return transmissionUsername;
+    NSString *name = @"New Server";
+    NSUInteger num = 0;
+    while ([[RFServerList sharedServerList] serverWithNameExists:name]) {
+        name = [NSString stringWithFormat:@"New Server %d", ++num];
+    }
+    
+    RFServer *newServer = [[[RFServer alloc] init] autorelease];
+    [newServer setName:name];
+    
+    [serverList insertObject:newServer inServersAtIndex:[serverList countOfServers]];
+    [newServer start];
 }
 
-- (void)setTransmissionUsername:(NSString *)newTransmissionUsername
+- (IBAction)removeServer:(id)sender
 {
-    if ([newTransmissionUsername isEqualToString:transmissionUsername]) {
+    if ([[serverListController selectedObjects] count] < 1) {
         return;
     }
     
-    EMGenericKeychainItem *oldPass = [EMGenericKeychainItem genericKeychainItemForService:REFRACT_KEYCHAIN_TRANSMISSION withUsername:transmissionUsername];
-    if (oldPass) {
-        [oldPass removeFromKeychain];
+    RFServer *selectedServer = [[serverListController selectedObjects] objectAtIndex:0];
+    
+    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+    [alert addButtonWithTitle:@"Cancel"];
+    [alert addButtonWithTitle:@"Remove"];
+    [alert setMessageText:[NSString stringWithFormat:@"Are you sure you want to remove the server \"%@\"?", [selectedServer name]]];
+    [alert setInformativeText:@"All information associated with this server, including groups, will be discarded."];
+    [alert setAlertStyle:NSWarningAlertStyle];
+    
+    NSDictionary *context = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:selectedServer, @"remove", nil] forKeys:[NSArray arrayWithObjects:@"server", @"type", nil]];
+    
+    [alert beginSheetModalForWindow:window modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:context];
+}
+
+- (void)doRemoveServer:(RFServer *)server
+{
+    if (!server) {
+        return;
     }
     
-    [transmissionUsername release];
+    if ([server started]) {
+        [server stop];
+    }
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    if ([newTransmissionUsername length] > 0) {
-        EMGenericKeychainItem *existingPass = [EMGenericKeychainItem genericKeychainItemForService:REFRACT_KEYCHAIN_TRANSMISSION withUsername:newTransmissionUsername];
-        if (existingPass) {
-            [self willChangeValueForKey:@"transmissionPassword"];
-            transmissionPassword = [[existingPass password] retain];
-            [self didChangeValueForKey:@"transmissionPassword"];
-        } else {
-            [EMGenericKeychainItem addGenericKeychainItemForService:REFRACT_KEYCHAIN_TRANSMISSION withUsername:newTransmissionUsername password:transmissionPassword];
+    NSUInteger idx = [[serverList servers] indexOfObject:server];
+    if (idx != NSNotFound) {
+        [serverList removeObjectFromServersAtIndex:idx];
+    }
+}
+
+- (void)alertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo
+{
+    NSDictionary *context = (NSDictionary *)contextInfo;
+    
+    NSString *type = [context objectForKey:@"type"];
+    
+    if ([type isEqualToString:@"remove"]) {
+        if (returnCode == NSAlertSecondButtonReturn) {
+            [self doRemoveServer:[context objectForKey:@"server"]];
         }
-        [defaults setObject:newTransmissionUsername forKey:REFRACT_USERDEFAULT_TRANSMISSION_USERNAME];
-    } else {
-        [self willChangeValueForKey:@"transmissionPassword"];
-        [transmissionPassword release];
-        [self didChangeValueForKey:@"transmissionPassword"];
-        [defaults removeObjectForKey:REFRACT_USERDEFAULT_TRANSMISSION_USERNAME];
+    }
+}
+
+- (BOOL)control:(NSControl *)control textShouldEndEditing:(NSText *)fieldEditor
+{
+    if ([control isEqual:serverNameField]) {
+        if ([[fieldEditor string] length] == 0) {
+            return false;
+        }
+        
+        RFServer *selectedServer = [[serverListController selectedObjects] objectAtIndex:0];
+        
+        RFServer *existingServer = [serverList serverWithName:[fieldEditor string]];
+        
+        if (existingServer && (![selectedServer isEqual:existingServer])) {
+            return false;
+        }
     }
     
-    transmissionUsername = [newTransmissionUsername copy];
+    return true;
 }
 
-- (NSString *)transmissionPassword
+- (void)tableViewSelectionDidChange:(NSNotification *)notification
 {
-    return transmissionPassword;
-}
-
-- (void)setTransmissionPassword:(NSString *)newTransmissionPassword
-{
-    if ([newTransmissionPassword isEqualToString:transmissionPassword]) {
+    [engineOptionTabs selectTabViewItemAtIndex:1];
+    [engineField setEnabled:false];
+    
+    if ([[serverListController selectedObjects] count] == 0) {
         return;
     }
     
-    if ([transmissionUsername length] == 0) {
-        [transmissionPasswordField setStringValue:@""];
-        [transmissionPassword release];
-        return;
-    }
-    
-    EMGenericKeychainItem *pass = [EMGenericKeychainItem genericKeychainItemForService:REFRACT_KEYCHAIN_TRANSMISSION withUsername:transmissionUsername];
-    if (pass) {
-        [pass setPassword:newTransmissionPassword];
-    } else {
-        [EMGenericKeychainItem addGenericKeychainItemForService:REFRACT_KEYCHAIN_TRANSMISSION withUsername:transmissionUsername password:newTransmissionPassword];
-    }
-    
-    transmissionPassword = [newTransmissionPassword copy];
-}
-
-- (NSURL *)downloadLocation
-{
-    return downloadLocation;
-}
-
-- (void)setDownloadLocation:(NSURL *)newDownloadLocation
-{
-    if ([newDownloadLocation isEqual:downloadLocation]) {
-        return;
-    }
-    
-    downloadLocation = [newDownloadLocation copy];
-    
-    if (downloadLocation && ([[downloadLocation path] length] > 0)) {
-        [[NSUserDefaults standardUserDefaults] setObject:[downloadLocation path] forKey:REFRACT_USERDEFAULT_DOWNLOAD_LOCATION];
-    } else {
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:REFRACT_USERDEFAULT_DOWNLOAD_LOCATION];
+    RFServer *selectedServer = [[serverListController selectedObjects] objectAtIndex:0];
+    [engineField setEnabled:true];
+    [engineField selectItemWithTag:[[selectedServer engine] type]];
+    if ([[selectedServer engine] type] == engTransmission) {
+        [engineOptionTabs selectTabViewItemAtIndex:0];
     }
 }
 

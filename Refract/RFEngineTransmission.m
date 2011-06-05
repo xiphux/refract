@@ -32,17 +32,15 @@
 
 - (id)init
 {
-    //return [self initWithUrl:@"http://127.0.0.1:9091/transmission/rpc"];
-    return [self initWithUrl:@"http://10.0.1.200:9091/transmission/rpc"];
+    return [self initWithUrl:[NSURL URLWithString:@"http://127.0.0.1:9091/transmission/rpc"]];
 }
 
-- (id)initWithUrl:(NSString *) initUrl
+- (id)initWithUrl:(NSURL *) initUrl
 {
-    //return [self initWithUrlAndLogin:initUrl username:@""];
-    return [self initWithUrlAndLogin:initUrl username:@"xiphux"];
+    return [self initWithUrlAndLogin:initUrl username:nil];
 }
 
-- (id)initWithUrlAndLogin:(NSString *)initUrl username:(NSString *)initUser
+- (id)initWithUrlAndLogin:(NSURL *)initUrl username:(NSString *)initUser
 {
     self = [super init];
     if (self) {
@@ -60,7 +58,7 @@
 
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
-    NSString *coderURL = [aDecoder decodeObjectForKey:REFRACT_RFENGINETRANSMISSION_KEY_URL];
+    NSURL *coderURL = [aDecoder decodeObjectForKey:REFRACT_RFENGINETRANSMISSION_KEY_URL];
     NSString *coderUsername = [aDecoder decodeObjectForKey:REFRACT_RFENGINETRANSMISSION_KEY_USERNAME];
     
     return [self initWithUrlAndLogin:coderURL username:coderUsername];
@@ -81,7 +79,7 @@
 {
     [aCoder encodeInt:engTransmission forKey:REFRACT_RFENGINE_KEY_TYPE];
     
-    if ([url length] > 0) {
+    if ([[url absoluteString] length] > 0) {
         [aCoder encodeObject:url forKey:REFRACT_RFENGINETRANSMISSION_KEY_URL];
     }
     if ([username length] > 0) {
@@ -98,20 +96,21 @@
 @synthesize totalUploadedBytes;
 @synthesize totalDownloadedBytes;
 
-- (NSString *)url
+- (NSURL *)url
 {
     return url;
 }
 
-- (void)setUrl:(NSString *)newUrl
+- (void)setUrl:(NSURL *)newUrl
 {
-    if ([url isEqualToString:newUrl]) {
+    if ([url isEqual:newUrl]) {
         return;
     }
     
     [url release];
     
-    url = [[NSString alloc] initWithString:newUrl];
+    url = [newUrl copy];
+    [self setUsername:nil];
     
     connected = false;
 }
@@ -129,19 +128,57 @@
     
     [username release];
     
-    username = [[NSString alloc] initWithString:newUsername];
-    
     [self willChangeValueForKey:@"password"];
     [password release];
-    if ([username length] > 0) {
-        EMGenericKeychainItem *keychain = [EMGenericKeychainItem genericKeychainItemForService:REFRACT_KEYCHAIN_TRANSMISSION withUsername:username];
-        if (keychain) {
-            password = [[keychain password] retain];
+    
+    if ([[url absoluteString] length] > 0) {
+        if (newUsername) {
+            username = [[NSString alloc] initWithString:newUsername];
+        }
+        
+        if ([username length] > 0) {
+            EMInternetKeychainItem *keychain = [EMInternetKeychainItem internetKeychainItemForServer:[url host] withUsername:username path:[url path] port:[[url port] intValue] protocol:kSecProtocolTypeAny];
+            if (keychain) {
+                password = [[keychain password] retain];
+            }
         }
     }
+    
     [self didChangeValueForKey:@"password"];
     
     connected = false;
+}
+
+- (NSString *)password
+{
+    return password;
+}
+
+- (void)setPassword:(NSString *)newPassword
+{
+    if ([password isEqualToString:newPassword]) {
+        return;
+    }
+    
+    [password release];
+    
+    if ([username length] == 0) {
+        return;
+    }
+    
+    if ([[url absoluteString] length] == 0) {
+        return;
+    }
+    
+    if (newPassword) {
+        password = [[NSString alloc] initWithString:newPassword];
+        [EMInternetKeychainItem addInternetKeychainItemForServer:[url host] withUsername:username password:password path:[url path] port:[[url port] intValue] protocol:kSecProtocolTypeAny];
+    } else {
+        EMInternetKeychainItem *keychain = [EMInternetKeychainItem internetKeychainItemForServer:[url host] withUsername:username path:[url path] port:[[url port] intValue] protocol:kSecProtocolTypeAny];
+        if (keychain) {
+            [keychain removeFromKeychain];
+        }
+    }
 }
 
 - (RFEngineType)type
@@ -151,7 +188,7 @@
 
 - (bool)connect
 {
-    if ([url length] == 0) {
+    if ([[url absoluteString] length] == 0) {
         return false;
     }
     
@@ -165,7 +202,7 @@
 
 - (NSMutableURLRequest *)createRequest
 {
-    NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
+    NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
     [req setHTTPMethod:@"POST"];
     [req setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     

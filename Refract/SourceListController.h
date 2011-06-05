@@ -26,7 +26,7 @@
     bool initialized;
     NSArray *initialGroups;
 
-    NSObject <SourceListDelegate> *delegate;
+    IBOutlet NSObject <SourceListDelegate> *delegate;
 }
 
 @property (nonatomic, assign) NSObject <SourceListDelegate> *delegate;

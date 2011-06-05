@@ -56,6 +56,8 @@
     NSSortDescriptor *titlesd = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:true];
     [treeController setSortDescriptors:[NSArray arrayWithObjects:indexsd, titlesd, nil]];
     
+    [[RFServerList sharedServerList] addObserver:self forKeyPath:@"servers" options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld) context:NULL];
+    
     [self initServerNodes];
     
     initialized = true;
@@ -65,18 +67,25 @@
 
 - (void)initServerNodes
 {
+    bool hasNode = false;
+    
     RFServerList *list = [RFServerList sharedServerList];
     
     for (RFServer *srv in [list servers]) {
         
-        manipulatingSourceList = true;
-        [self createServerNode:srv];
-        manipulatingSourceList = false;
+        if ([srv enabled]) {
+            [self createServerNode:srv];
+            
+            [self updateServer:srv];
+            hasNode = true;
+        }
         
-        [self updateServer:srv];
+        [srv addObserver:self forKeyPath:@"enabled" options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld) context:NULL];
     }
     
-    [treeController rearrangeObjects];
+    if (hasNode) {
+        [treeController rearrangeObjects];
+    }
 }
 
 - (void)createServerNode:(RFServer *)server
@@ -118,6 +127,9 @@
     for (RFTorrentGroup *grp in [[server groupList] groups]) {
         [treeController insertObject:[self createGroupNode:grp] atArrangedObjectIndexPath:[groupsPath indexPathByAddingIndex:groupIdx++]];
     }
+    
+    NSTreeNode *serverNode = [self findServerTreeNode:server];
+    [sourceList expandItem:serverNode expandChildren:true];
 }
 
 - (void)updateServer:(RFServer *)server
@@ -127,8 +139,6 @@
     }
     
     bool modified = false;
-    
-    manipulatingSourceList = true;
     
     NSTreeNode *serverNode = [self findServerTreeNode:server];
     
@@ -157,8 +167,6 @@
     if (modified) {
         [treeController rearrangeObjects];
     }
-    
-    manipulatingSourceList = false;
 }
 
 - (StatusNode *)createStatusNode:(RFTorrentStatus)status
@@ -337,10 +345,8 @@
         return;
     }
     GroupNode *newNode = [self createGroupNode:newGroup];
-    manipulatingSourceList = true;
     [treeController insertObject:newNode atArrangedObjectIndexPath:itemPath];
     [treeController rearrangeObjects];
-    manipulatingSourceList = false;
 }
 
 - (IBAction)removeGroup:(id)sender
@@ -460,7 +466,48 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if ([object isKindOfClass:[GroupNode class]]) {
+    if ([object isEqual:[RFServerList sharedServerList]]) {
+        if ([keyPath isEqualToString:@"servers"]) {
+            NSKeyValueChange changeKind = [[change objectForKey:NSKeyValueChangeKindKey] intValue];
+            if (changeKind == NSKeyValueChangeRemoval || changeKind == NSKeyValueChangeReplacement) {
+                NSArray *removedList = [change objectForKey:NSKeyValueChangeOldKey];
+                if (removedList) {
+                    for (RFServer *oldServer in removedList) {
+                        NSTreeNode *oldServerNode = [self findServerTreeNode:oldServer];
+                        if (oldServerNode) {
+                            [treeController removeObjectAtArrangedObjectIndexPath:[oldServerNode indexPath]];
+                        }
+                        [oldServer removeObserver:self forKeyPath:@"enabled"];
+                    }
+                }
+            }
+            if (changeKind == NSKeyValueChangeInsertion || changeKind == NSKeyValueChangeReplacement) {
+                NSArray *addedList = [change objectForKey:NSKeyValueChangeNewKey];
+                if (addedList) {
+                    for (RFServer *newServer in addedList) {
+                        [self createServerNode:newServer];
+                        
+                        [self updateServer:newServer];
+                        [newServer addObserver:self forKeyPath:@"enabled" options:(NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld) context:NULL];
+                    }
+                    [treeController rearrangeObjects];
+                }
+            }
+        }
+    } else if ([object isKindOfClass:[RFServer class]]) {
+        if ([keyPath isEqualToString:@"enabled"]) {
+            if ([(RFServer *)object enabled]) {
+                [self createServerNode:object];
+                
+                [self updateServer:object];
+            } else {
+                NSTreeNode *oldServerNode = [self findServerTreeNode:object];
+                if (oldServerNode) {
+                    [treeController removeObjectAtArrangedObjectIndexPath:[oldServerNode indexPath]];
+                }
+            }
+        }
+    } else if ([object isKindOfClass:[GroupNode class]]) {
         
         [treeController rearrangeObjects];
         
@@ -471,6 +518,9 @@
 - (BOOL)outlineView:(NSOutlineView *)outlineView isGroupItem:(id)item
 {
     if ([[item representedObject] isKindOfClass:[CategoryNode class]]) {
+        return YES;
+    }
+    if ([[item representedObject] isKindOfClass:[ServerNode class]]) {
         return YES;
     }
     return NO;
@@ -494,6 +544,14 @@
     return YES;
 }
 
+- (BOOL)outlineView:(NSOutlineView *)outlineView shouldShowOutlineCellForItem:(id)item
+{
+    if ([[item representedObject] isKindOfClass:[ServerNode class]]) {
+        return YES;
+    }
+    return NO;
+}
+
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item
 {
     if ([[item representedObject] isKindOfClass:[GroupNode class]]) {
@@ -507,37 +565,35 @@
 
 - (void)outlineViewSelectionDidChange:(NSNotification *)notification
 {
-    if (manipulatingSourceList) {
-        return;
-    }
-    
     NSArray *selection = [treeController selectedNodes];
     if ([selection count] == 0) {
         [treeController setSelectionIndexPath:[NSIndexPath indexPathWithIndex:0]];
-        return;
+        selection = [treeController selectedNodes];
     }
-    NSTreeNode *node = [selection objectAtIndex:0];
-    BaseNode *dataNode = [node representedObject];
     
-    RFTorrentFilter *newFilter;
+    RFTorrentFilter *newFilter = nil;
+    NSTreeNode *node = nil;
     
-    if ([dataNode isKindOfClass:[StatusNode class]]) {
-        newFilter = [[[RFTorrentFilter alloc] initWithStatus:[(StatusNode *)dataNode status]] autorelease];
-    } else if ([dataNode isKindOfClass:[GroupNode class]]) {
-        newFilter = [[[RFTorrentFilter alloc] initwithGroup:[(GroupNode *)dataNode group]] autorelease];
-    } else if (![dataNode isKindOfClass:[CategoryNode class]]) {
-        if ([dataNode isKindOfClass:[ServerNode class]]) {
-            newFilter = [[[RFTorrentFilter alloc] initWithType:filtNone] autorelease];
+    if ([selection count] > 0) {
+        node = [selection objectAtIndex:0];
+        BaseNode *dataNode = [node representedObject];
+        if ([dataNode isKindOfClass:[StatusNode class]]) {
+            newFilter = [[[RFTorrentFilter alloc] initWithStatus:[(StatusNode *)dataNode status]] autorelease];
+        } else if ([dataNode isKindOfClass:[GroupNode class]]) {
+            newFilter = [[[RFTorrentFilter alloc] initwithGroup:[(GroupNode *)dataNode group]] autorelease];
+        } else if (![dataNode isKindOfClass:[CategoryNode class]]) {
+            if ([dataNode isKindOfClass:[ServerNode class]]) {
+                newFilter = [[[RFTorrentFilter alloc] initWithType:filtNone] autorelease];
+            }
         }
-    }
-    
-    if (!newFilter) {
-        return;
     }
     
     if ([self delegate]) {
         if ([[self delegate] respondsToSelector:@selector(sourceList:server:filterDidChange:)]) {
-            RFServer *server = [(ServerNode *)[[self findOwningServerNode:node] representedObject] server];
+            RFServer *server = nil;
+            if (node) {
+                server = [(ServerNode *)[[self findOwningServerNode:node] representedObject] server];
+            }
             [[self delegate] sourceList:self server:server filterDidChange:newFilter];
         }
     }
@@ -584,24 +640,28 @@
 
 - (id)outlineView:(NSOutlineView *)outlineView itemForPersistentObject:(id)object
 {
-//    if ([object isEqualToString:@"Status"]) {
-//        return [self findCategoryTreeNode:catStatus];
-//    } else if ([object isEqualToString:@"Group"]) {
-//        return [self findCategoryTreeNode:catGroup];
-//    }
+    if ([object isKindOfClass:[NSNumber class]]) {
+        NSArray *list = [[treeController arrangedObjects] childNodes];
+        
+        for (NSUInteger i = 0; i < [list count]; i++) {
+            NSTreeNode *tNode = [list objectAtIndex:i];
+            BaseNode *dNode = [tNode representedObject];
+            if ([dNode isKindOfClass:[ServerNode class]]) {
+                if ([[(ServerNode *)dNode server] sid] == [(NSNumber *)object intValue]) {
+                    return tNode;
+                }
+            }
+        }
+    }
     
     return nil;
 }
 
 - (id)outlineView:(NSOutlineView *)outlineView persistentObjectForItem:(id)item
 {
-//    if ([[item representedObject] isKindOfClass:[CategoryNode class]]) {
-//        if ([(CategoryNode *)[item representedObject] categoryType] == catStatus) {
-//            return @"Status";
-//        } else if ([(CategoryNode *)[item representedObject] categoryType] == catGroup) {
-//            return @"Group";
-//        }
-//    }
+    if ([[item representedObject] isKindOfClass:[ServerNode class]]) {
+        return [NSNumber numberWithInt:[[(ServerNode *)[item representedObject] server] sid]];
+    }
     
     return nil;
 }

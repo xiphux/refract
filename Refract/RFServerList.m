@@ -24,6 +24,11 @@ static RFServerList *sharedInstance = nil;
                 NSArray *serverArray = [NSKeyedUnarchiver unarchiveObjectWithData:serverData];
                 if (serverArray) {
                     servers = [[NSMutableArray alloc] initWithArray:serverArray];
+                    for (RFServer *srv in servers) {
+                        if ([srv enabled]) {
+                            [srv start];
+                        }
+                    }
                 }
             }
             if (!servers) {
@@ -80,6 +85,43 @@ static RFServerList *sharedInstance = nil;
     }
 }
 
+- (RFServer *)serverWithName:(NSString *)name
+{
+    for (RFServer *srv in servers) {
+        if ([[srv name] isEqualToString:name]) {
+            return srv;
+        }
+    }
+    
+    return nil;
+}
+
+- (bool)serverWithNameExists:(NSString *)name
+{
+    return ([self serverWithName:name] != nil);
+}
+
+
+#pragma mark kvo compliance
+
+- (NSUInteger)countOfServers
+{
+    return [servers count];
+}
+
+- (void)insertObject:(RFServer *)server inServersAtIndex:(NSUInteger)index
+{
+    [servers insertObject:server atIndex:index];
+}
+
+- (void)removeObjectFromServersAtIndex:(NSUInteger)index
+{
+    [servers removeObjectAtIndex:index];
+}
+
+
+
+#pragma mark static functions
 
 + (RFServerList *)sharedServerList
 {

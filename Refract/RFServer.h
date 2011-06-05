@@ -17,8 +17,10 @@
 @interface RFServer : NSObject <RFEngineDelegate, RFTorrentListDelegate, NSCoding> {
 @private
     
+    bool enabled;
     NSString *name;
     NSUInteger sid;
+    NSUInteger updateFrequency;
     
     RFEngine *engine;
     RFTorrentList *torrentList;
@@ -30,8 +32,10 @@
     id <RFServerDelegate> delegate;
 }
 
+@property bool enabled;
 @property (copy) NSString *name;
 @property (readonly) NSUInteger sid;
+@property NSUInteger updateFrequency;
 
 @property (readonly) RFEngine *engine;
 @property (readonly) RFTorrentList *torrentList;
