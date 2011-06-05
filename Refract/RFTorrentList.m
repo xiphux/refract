@@ -317,4 +317,34 @@
     return false;
 }
 
+- (bool)hasComplete
+{
+    if (!torrents) {
+        return false;
+    }
+    
+    for (RFTorrent *t in torrents) {
+        if ([t complete]) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+- (bool)hasIncomplete
+{
+    if (!torrents) {
+        return false;
+    }
+    
+    for (RFTorrent *t in torrents) {
+        if (![t complete]) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
 @end

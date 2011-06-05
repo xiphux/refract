@@ -59,6 +59,15 @@
     return obj;
 }
 
+- (id)initWithState:(RFTorrentState)initState
+{
+    id obj = [self initWithType:filtState];
+    if ([obj isKindOfClass:[RFTorrentFilter class]]) {
+        torrentState = initState;
+    }
+    return obj;
+}
+
 - (void)dealloc
 {
     [torrentGroup release];
@@ -68,6 +77,7 @@
 @synthesize filterType;
 @synthesize torrentStatus;
 @synthesize torrentGroup;
+@synthesize torrentState;
 
 - (bool)isEqual:(id)other
 {
@@ -78,12 +88,19 @@
         return false;
     }
     
-    return ((filterType == [other filterType]) && (torrentStatus == [other torrentStatus]) && ([torrentGroup isEqual:[other torrentGroup]]));
+    return ((filterType == [other filterType]) && (torrentStatus == [other torrentStatus]) && ([torrentGroup isEqual:[other torrentGroup]]) && (torrentState == [other torrentState]));
 }
 
 - (NSUInteger)hash
 {
-    return NSUINTROTATE(torrentStatus, NSUINT_BIT/2) ^ (NSUInteger)filterType;
+    if (filterType == filtStatus) {
+        return NSUINTROTATE(torrentStatus, NSUINT_BIT/2) ^ (NSUInteger)filterType;
+    } else if (filterType == filtState) {
+        return NSUINTROTATE(torrentState, NSUINT_BIT/2) ^ (NSUInteger)filterType;
+    } else if (filterType == filtGroup) {
+        return NSUINTROTATE([torrentGroup hash], NSUINT_BIT/2) ^ (NSUInteger)filterType;
+    }
+    return (NSUInteger)filterType;
 }
 
 - (bool)checkTorrent:(RFTorrent *)t
@@ -102,7 +119,45 @@
         }
     }
     
+    if (filterType == filtState) {
+        if (torrentState == stateComplete) {
+            return [t complete];
+        } else if (torrentState == stateIncomplete) {
+            return ![t complete];
+        }
+    }
+    
     return false;
+}
+
+- (NSPredicate *)predicate
+{
+    if (filterType == filtNone) {
+        return nil;
+    }
+    
+    if (filterType == filtStatus) {
+        return [NSPredicate predicateWithFormat:@"status == %d", torrentStatus];
+    }
+    
+    if (filterType == filtGroup) {
+        if (torrentGroup) {
+            return [NSPredicate predicateWithFormat:@"group == %d", [torrentGroup gid]];
+        } else {
+            // no group
+            return [NSPredicate predicateWithFormat:@"group == 0"];
+        }
+    }
+    
+    if (filterType == filtState) {
+        if (torrentState == stateComplete) {
+            return [NSPredicate predicateWithFormat:@"complete == TRUE"];
+        } else if (torrentState == stateIncomplete) {
+            return [NSPredicate predicateWithFormat:@"complete == FALSE"];
+        }
+    }
+    
+    return nil;
 }
 
 @end

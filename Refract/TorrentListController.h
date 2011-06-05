@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "RFTorrent.h"
+#import "RFTorrentFilter.h"
 
 typedef enum {
     sortName = 1,
@@ -26,17 +27,16 @@ typedef enum {
     
     NSPopUpButton IBOutlet *listButton;
     
-    NSPredicate *listPredicate;
     TorrentListSort listSort;
+    
+    RFTorrentFilter *filter;
 }
 
 @property (readonly) NSArray *selectedObjects;
 @property (readonly) NSArray *arrangedObjects;
+@property (retain) RFTorrentFilter *filter;
 
 - (void)rearrangeObjects;
 - (IBAction)search:(id)sender;
-- (void)setGroupFilter:(NSUInteger)gid;
-- (void)setStatusFilter:(RFTorrentStatus)status;
-- (void)clearFilter;
 
 @end

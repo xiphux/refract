@@ -51,6 +51,8 @@ typedef enum {
     time_t addedDate;
     
     NSUInteger group;
+    
+    bool complete;
 }
 
 @property(copy) NSString *name;
@@ -73,6 +75,7 @@ typedef enum {
 @property time_t doneDate;
 @property time_t addedDate;
 @property NSUInteger group;
+@property (readonly) bool complete;
 
 - (id)initWithTid:(NSString *)initTid;
 

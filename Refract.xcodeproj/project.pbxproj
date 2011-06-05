@@ -43,6 +43,7 @@
 		C680DA23139AF6B800FCDEA1 /* URLTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = C680DA22139AF6B800FCDEA1 /* URLTransformer.m */; };
 		C683C39013492A330039B953 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = C683C38F13492A330039B953 /* Preferences.xib */; };
 		C68FD6F6139441EA002C92C0 /* ServerNode.m in Sources */ = {isa = PBXBuildFile; fileRef = C68FD6F5139441EA002C92C0 /* ServerNode.m */; };
+		C6955D59139C3A4C00204459 /* StateNode.m in Sources */ = {isa = PBXBuildFile; fileRef = C6955D58139C3A4C00204459 /* StateNode.m */; };
 		C6A8E45013651627006CE0DC /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6A8E44F13651627006CE0DC /* MainMenu.xib */; };
 		C6A8E453136516FD006CE0DC /* RefractAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C6A8E452136516FD006CE0DC /* RefractAppDelegate.m */; };
 		C6A8E45613651874006CE0DC /* MainWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = C6A8E45513651874006CE0DC /* MainWindowController.m */; };
@@ -182,6 +183,8 @@
 		C683C38F13492A330039B953 /* Preferences.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Preferences.xib; sourceTree = "<group>"; };
 		C68FD6F4139441E9002C92C0 /* ServerNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerNode.h; sourceTree = "<group>"; };
 		C68FD6F5139441EA002C92C0 /* ServerNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerNode.m; sourceTree = "<group>"; };
+		C6955D57139C3A4C00204459 /* StateNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StateNode.h; sourceTree = "<group>"; };
+		C6955D58139C3A4C00204459 /* StateNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StateNode.m; sourceTree = "<group>"; };
 		C6A8E44F13651627006CE0DC /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
 		C6A8E451136516FD006CE0DC /* RefractAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RefractAppDelegate.h; sourceTree = "<group>"; };
 		C6A8E452136516FD006CE0DC /* RefractAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RefractAppDelegate.m; sourceTree = "<group>"; };
@@ -271,6 +274,8 @@
 				C6A8E45C136A56E7006CE0DC /* GroupNode.m */,
 				C68FD6F4139441E9002C92C0 /* ServerNode.h */,
 				C68FD6F5139441EA002C92C0 /* ServerNode.m */,
+				C6955D57139C3A4C00204459 /* StateNode.h */,
+				C6955D58139C3A4C00204459 /* StateNode.m */,
 			);
 			name = SourceList;
 			sourceTree = "<group>";
@@ -656,6 +661,7 @@
 				C62D8EF9138CA20E00B6B8AD /* RFServerList.m in Sources */,
 				C68FD6F6139441EA002C92C0 /* ServerNode.m in Sources */,
 				C680DA23139AF6B800FCDEA1 /* URLTransformer.m in Sources */,
+				C6955D59139C3A4C00204459 /* StateNode.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -38,6 +38,7 @@
     [listView release];
     [searchField release];
     [listButton release];
+    [filter release];
     [super dealloc];
 }
 
@@ -83,28 +84,22 @@
     [self updateFilter];
 }
 
-- (void)setGroupFilter:(NSUInteger)gid
+- (RFTorrentFilter *)filter
 {
-    listPredicate = [NSPredicate predicateWithFormat:@"group == %d", gid];
-    [searchField setStringValue:@""];
-    [self updateFilter];
+    return filter;
 }
 
-- (void)setStatusFilter:(RFTorrentStatus)status
+- (void)setFilter:(RFTorrentFilter *)newFilter
 {
-    listPredicate = [NSPredicate predicateWithFormat:@"status == %d", status];
-    [searchField setStringValue:@""];
+    if ([filter isEqual:newFilter]) {
+        return;
+    }
+    
+    [filter release];
+    filter = [newFilter retain];
+    
     [self updateFilter];
 }
-
-- (void)clearFilter
-{
-    listPredicate = nil;
-    [searchField setStringValue:@""];
-    [self updateFilter];
-}
-
-
 
 - (NSPredicate *)searchPredicate
 {
@@ -134,13 +129,14 @@
 - (void)updateFilter
 {
     NSPredicate *search = [self searchPredicate];
+    NSPredicate *filterPredicate = [filter predicate];
     
-    if (search && listPredicate) {
-        [controller setFilterPredicate:[NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:search, listPredicate, nil]]];
+    if (search && filterPredicate) {
+        [controller setFilterPredicate:[NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:search, filterPredicate, nil]]];
     } else if (search) {
         [controller setFilterPredicate:search];
-    } else if (listPredicate) {
-        [controller setFilterPredicate:listPredicate];
+    } else if (filterPredicate) {
+        [controller setFilterPredicate:filterPredicate];
     } else {
         [controller setFilterPredicate:nil];
     }

@@ -128,19 +128,7 @@
             [self setActiveServer:server];
         }
         
-        RFTorrentFilterType filtType = [newFilter filterType];
-        if (filtType == filtStatus) {
-            [torrentListController setStatusFilter:[newFilter torrentStatus]];
-        } else if (filtType == filtGroup) {
-            if ([newFilter torrentGroup] != nil) {
-                [torrentListController setGroupFilter:[[newFilter torrentGroup] gid]];
-            } else {
-                // no group
-                [torrentListController setGroupFilter:0];
-            }
-        } else {
-            [torrentListController clearFilter];
-        }
+        [torrentListController setFilter:newFilter];
         
         [self updateStatsButton];
     }

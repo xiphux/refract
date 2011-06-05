@@ -13,21 +13,23 @@
 #import "StatusNode.h"
 #import "GroupNode.h"
 #import "ServerNode.h"
+#import "StateNode.h"
 #import "RFServerList.h"
 
 @interface SourceListController ()
-- (NSUInteger)statusSortIndex:(RFTorrentStatus)status;
 - (void)doRemoveGroupNode:(NSTreeNode *)node;
 - (NSTreeNode *)findServerTreeNode:(RFServer *)server;
 - (NSTreeNode *)findOwningServerNode:(NSTreeNode *)node;
 - (NSTreeNode *)findCategoryTreeNode:(CategoryNodeType)type inList:(NSArray *)list;
 - (NSTreeNode *)findStatusTreeNode:(RFTorrentStatus)status inList:(NSArray *)list;
+- (NSTreeNode *)findStateTreeNode:(RFTorrentState)state inList:(NSArray *)list;
 - (void)alertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode
         contextInfo:(void *)contextInfo;
 
 - (void)createServerNode:(RFServer *)server;
 - (void)initServerNodes;
 - (StatusNode *)createStatusNode:(RFTorrentStatus)status;
+- (StateNode *)createStateNode:(RFTorrentState)state;
 - (GroupNode *)createGroupNode:(RFTorrentGroup *)group;
 @end
 
@@ -164,6 +166,30 @@
         
     }
     
+    for (NSUInteger state = stateComplete; state <= stateIncomplete; state++) {
+        bool needsnode;
+        
+        if (state == stateComplete) {
+            needsnode = [[server torrentList] hasComplete];
+        } else if (state == stateIncomplete) {
+            needsnode = [[server torrentList] hasIncomplete];
+        }
+        
+        NSTreeNode *stateNode = [self findStateTreeNode:state inList:[statusCatNode childNodes]];
+        if (needsnode) {
+            if (!stateNode) {
+                NSIndexPath *statePath = [[statusCatNode indexPath] indexPathByAddingIndex:[[statusCatNode childNodes] count]];
+                [treeController insertObject:[self createStateNode:state] atArrangedObjectIndexPath:statePath];
+                modified = true;
+            }
+        } else {
+            if (stateNode) {
+                [treeController removeObjectAtArrangedObjectIndexPath:[stateNode indexPath]];
+                modified = true;
+            }
+        }
+    }
+    
     if (modified) {
         [treeController rearrangeObjects];
     }
@@ -175,23 +201,46 @@
     switch (status) {
         case stDownloading:
             [sNode setTitle:@"Downloading"];
+            [sNode setSortIndex:1];
             break;
         case stSeeding:
             [sNode setTitle:@"Seeding"];
+            [sNode setSortIndex:2];
             break;
         case stChecking:
             [sNode setTitle:@"Checking"];
+            [sNode setSortIndex:3];
             break;
         case stWaiting:
             [sNode setTitle:@"Waiting"];
+            [sNode setSortIndex:4];
             break;
         case stStopped:
             [sNode setTitle:@"Stopped"];
+            [sNode setSortIndex:5];
             break;
     }
     [sNode setIsLeaf:true];
     [sNode setStatus:status];
-    [sNode setSortIndex:[self statusSortIndex:status]];
+    return sNode;
+}
+
+- (StateNode *)createStateNode:(RFTorrentState)state
+{
+    StateNode *sNode = [[[StateNode alloc] init] autorelease];
+    switch (state) {
+        case stateComplete:
+            [sNode setTitle:@"Complete"];
+            [sNode setSortIndex:10];
+            break;
+            
+        case stateIncomplete:
+            [sNode setTitle:@"Incomplete"];
+            [sNode setSortIndex:11];
+            break;
+    }
+    [sNode setIsLeaf:true];
+    [sNode setState:state];
     return sNode;
 }
 
@@ -286,28 +335,23 @@
     return nil;
 }
 
-- (NSUInteger)statusSortIndex:(RFTorrentStatus)status
+- (NSTreeNode *)findStateTreeNode:(RFTorrentState)state inList:(NSArray *)list
 {
-    switch (status) {
-        case stDownloading:
-            return 1;
-            break;
-        case stSeeding:
-            return 2;
-            break;
-        case stChecking:
-            return 3;
-            break;
-        case stWaiting:
-            return 4;
-            break;
-        case stStopped:
-            return 5;
-            break;
-        default:
-            return 0;
-            break;
+    if (!list) {
+        return nil;
     }
+    
+    for (NSUInteger i = 0; i < [list count]; i++) {
+        NSTreeNode *tNode = [list objectAtIndex:i];
+        BaseNode *dNode = [tNode representedObject];
+        if ([dNode isKindOfClass:[StateNode class]]) {
+            if ([(StateNode *)dNode state] == state) {
+                return tNode;
+            }
+        }
+    }
+    
+    return nil;
 }
 
 - (IBAction)addGroup:(id)sender
@@ -579,6 +623,8 @@
         BaseNode *dataNode = [node representedObject];
         if ([dataNode isKindOfClass:[StatusNode class]]) {
             newFilter = [[[RFTorrentFilter alloc] initWithStatus:[(StatusNode *)dataNode status]] autorelease];
+        } else if ([dataNode isKindOfClass:[StateNode class]]) {
+            newFilter = [[[RFTorrentFilter alloc] initWithState:[(StateNode *)dataNode state]] autorelease];
         } else if ([dataNode isKindOfClass:[GroupNode class]]) {
             newFilter = [[[RFTorrentFilter alloc] initwithGroup:[(GroupNode *)dataNode group]] autorelease];
         } else if (![dataNode isKindOfClass:[CategoryNode class]]) {

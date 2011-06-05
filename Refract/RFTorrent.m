@@ -12,6 +12,10 @@
 #define NSUINT_BIT (CHAR_BIT * sizeof(NSUInteger))
 #define NSUINTROTATE(val, howmuch) ((((NSUInteger)val) << howmuch) | (((NSUInteger)val) >> (NSUINT_BIT - howmuch)))
 
+@interface RFTorrent ()
+- (void)updateComplete;
+@end
+
 @implementation RFTorrent
 
 - (id)init
@@ -38,6 +42,8 @@
 }
 
 @synthesize tid;
+
+@synthesize complete;
 
 - (NSString *)name  
 {
@@ -89,6 +95,8 @@
     currentSize = newCurrentSize;
 
     updated = true;
+    
+    [self updateComplete];
 }
 
 - (unsigned long)doneSize
@@ -105,6 +113,8 @@
     doneSize = newDoneSize;
     
     updated = true;
+    
+    [self updateComplete];
 }
 
 - (unsigned long)totalSize
@@ -407,6 +417,17 @@
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"TorrentUpdated" object:self];
         updated = false;
+    }
+}
+
+- (void)updateComplete
+{
+    bool newComplete = (currentSize == doneSize);
+    
+    if (complete != newComplete) {
+        [self willChangeValueForKey:@"complete"];
+        complete = newComplete;
+        [self didChangeValueForKey:@"complete"];
     }
 }
 

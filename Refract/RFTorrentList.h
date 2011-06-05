@@ -45,6 +45,9 @@
 
 - (bool)containsStatus:(RFTorrentStatus)status;
 
+- (bool)hasComplete;
+- (bool)hasIncomplete;
+
 @end
 
 

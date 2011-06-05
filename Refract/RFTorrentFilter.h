@@ -14,18 +14,26 @@
 typedef enum {
     filtNone,
     filtStatus,
-    filtGroup
+    filtGroup,
+    filtState
 } RFTorrentFilterType;
+
+typedef enum {
+    stateComplete = 1,
+    stateIncomplete = 2
+} RFTorrentState;
 
 @interface RFTorrentFilter : NSObject {
 @private
     RFTorrentFilterType filterType;
+    RFTorrentState torrentState;
     RFTorrentStatus torrentStatus;
     RFTorrentGroup *torrentGroup;
 }
 
 @property (readonly) RFTorrentFilterType filterType;
 @property (readonly) RFTorrentStatus torrentStatus;
+@property (readonly) RFTorrentState torrentState;
 @property (readonly) RFTorrentGroup *torrentGroup;
 
 - (bool)isEqual:(id)other;
@@ -35,7 +43,9 @@ typedef enum {
 - (id)initWithStatus:(RFTorrentStatus)initStatus;
 - (id)initWithType:(RFTorrentFilterType)initType;
 - (id)initwithGroup:(RFTorrentGroup *)group;
+- (id)initWithState:(RFTorrentState)initState;
 
 - (bool)checkTorrent:(RFTorrent *)t;
+- (NSPredicate *)predicate;
 
 @end
