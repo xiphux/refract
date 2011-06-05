@@ -32,9 +32,9 @@ static NotificationController *sharedInstance = nil;
         self = [super init];
         if (self) {
             
-            queuedDownloadAdded = [NSMutableArray array];
-            queuedDownloadRemoved = [NSMutableArray array];
-            queuedDownloadFinished = [NSMutableArray array];
+            queuedDownloadAdded = [[NSMutableArray alloc] init];
+            queuedDownloadRemoved = [[NSMutableArray alloc] init];
+            queuedDownloadFinished = [[NSMutableArray alloc] init];
             
             notificationQueue = [[NSOperationQueue alloc] init];
             

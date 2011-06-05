@@ -7,48 +7,41 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "RFServerList.h"
 
-
-@interface PreferencesDelegate : NSObject {
+@interface PreferencesDelegate : NSObject <NSTextFieldDelegate, NSTableViewDelegate> {
 @private
     IBOutlet NSWindow *window;
-    IBOutlet NSView *general;
-    IBOutlet NSView *engine;
-    IBOutlet NSView *notifications;
+    IBOutlet NSView *serversPage;
+    IBOutlet NSView *notificationsPage;
+    
     NSView *current;
+    
     IBOutlet NSToolbar *toolbar;
-    IBOutlet NSToolbarItem *generalButton;
-    IBOutlet NSToolbarItem *engineButton;
+    IBOutlet NSToolbarItem *serversButton;
     IBOutlet NSToolbarItem *notificationsButton;
     
+    IBOutlet NSTextField *serverNameField;
+    
+    IBOutlet NSTabView *engineOptionTabs;
+    IBOutlet NSPopUpButton *engineField;
+    IBOutlet NSTextField *transmissionURLField;
     IBOutlet NSTextField *transmissionUsernameField;
     IBOutlet NSTextField *transmissionPasswordField;
     
-    NSString *transmissionUsername;
-    NSString *transmissionPassword;
-    
-    NSURL *downloadLocation;
+    RFServerList *serverList;
+    IBOutlet NSArrayController *serverListController;
 }
 
-@property (retain) IBOutlet NSWindow *window;
-@property (retain) IBOutlet NSView *general;
-@property (retain) IBOutlet NSView *engine;
-@property (retain) IBOutlet NSView *notifications;
 @property (retain) NSView *current;
-@property (retain) NSToolbar *toolbar;
-@property (retain) IBOutlet NSToolbarItem *generalButton;
-@property (retain) IBOutlet NSToolbarItem *engineButton;
-@property (retain) IBOutlet NSToolbarItem *notificationsButton;
-@property (retain) IBOutlet NSTextField *transmissionUsernameField;
-@property (retain) IBOutlet NSTextField *transmissionPasswordField;
-@property (copy) NSString *transmissionUsername;
-@property (copy) NSString *transmissionPassword;
-@property (copy) NSURL *downloadLocation;
+@property (retain) RFServerList *serverList;
 
 - (void)awakeFromNib;
-- (IBAction)switchToGeneral:(id)sender;
-- (IBAction)switchToEngine:(id)sender;
+- (IBAction)switchToServers:(id)sender;
 - (IBAction)switchToNotifications:(id)sender;
 - (void)updateWindowSize;
+
+- (IBAction)addServer:(id)sender;
+- (IBAction)removeServer:(id)sender;
 
 @end

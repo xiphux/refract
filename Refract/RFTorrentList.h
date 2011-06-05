@@ -13,17 +13,19 @@
 
 @protocol RFTorrentListDelegate;
 
-@interface RFTorrentList : NSObject {
+@interface RFTorrentList : NSObject <NSCoding> {
 @private
     NSArray *allTorrents;
     NSMutableArray *torrents;
     bool initialized;
+    
+    NSMutableDictionary *torrentGroups;
     bool saveGroups;
     
     id <RFTorrentListDelegate> delegate;
 }
 
-@property (retain) NSMutableArray *torrents;
+@property (retain) NSArray *torrents;
 @property (nonatomic, assign) id <RFTorrentListDelegate> delegate;
 @property bool initialized;
 @property bool saveGroups;
@@ -40,6 +42,8 @@
 - (void)clearGroup:(RFTorrentGroup *)group;
 
 - (void)setGroup:(NSUInteger)gid forTorrents:(NSArray *)list;
+
+- (bool)containsStatus:(RFTorrentStatus)status;
 
 @end
 

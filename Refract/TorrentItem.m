@@ -22,7 +22,6 @@
 - (void)deleteTorrent:(id)sender;
 - (void)verifyTorrent:(id)sender;
 - (void)reannounceTorrent:(id)sender;
-- (NSMutableDictionary *)notificationData;
 - (void)changeGroup:(id)sender;
 @end
 
@@ -48,12 +47,12 @@
 
 - (void)dealloc
 {
+    [upperLabel release];
+    [lowerLabel release];
+    [actionButton release];
     [super dealloc];
 }
 
-@synthesize upperLabel;
-@synthesize lowerLabel;
-@synthesize actionButton;
 @synthesize delegate;
 
 - (void)awakeFromNib
@@ -142,20 +141,20 @@
     RFTorrent *t = [self representedObject];
     
     if ([t status] != stStopped) {
-        NSMenuItem *stop = [[NSMenuItem alloc] initWithTitle:@"Stop" action:@selector(stopTorrent:) keyEquivalent:@""];
+        NSMenuItem *stop = [[[NSMenuItem alloc] initWithTitle:@"Stop" action:@selector(stopTorrent:) keyEquivalent:@""] autorelease];
         [stop setTarget:self];
         [menu addItem:stop];
     } else {
-        NSMenuItem *start = [[NSMenuItem alloc] initWithTitle:@"Start" action:@selector(startTorrent:) keyEquivalent:@""];
+        NSMenuItem *start = [[[NSMenuItem alloc] initWithTitle:@"Start" action:@selector(startTorrent:) keyEquivalent:@""] autorelease];
         [start setTarget:self];
         [menu addItem:start];
     }
     
-    NSMenuItem *remove = [[NSMenuItem alloc] initWithTitle:@"Remove" action:@selector(removeTorrent:) keyEquivalent:@""];
+    NSMenuItem *remove = [[[NSMenuItem alloc] initWithTitle:@"Remove" action:@selector(removeTorrent:) keyEquivalent:@""] autorelease];
     [remove setTarget:self];
     [menu addItem:remove];
         
-    NSMenuItem *delete = [[NSMenuItem alloc] initWithTitle:@"Remove and Delete" action:@selector(deleteTorrent:) keyEquivalent:@""];
+    NSMenuItem *delete = [[[NSMenuItem alloc] initWithTitle:@"Remove and Delete" action:@selector(deleteTorrent:) keyEquivalent:@""] autorelease];
     [delete setTarget:self];
     [delete setKeyEquivalentModifierMask:NSAlternateKeyMask];
     [delete setAlternate:true];
@@ -163,11 +162,11 @@
     
     [menu addItem:[NSMenuItem separatorItem]];
     
-    NSMenuItem *verifyItem = [[NSMenuItem alloc] initWithTitle:@"Verify" action:@selector(verifyTorrent:) keyEquivalent:@""];
+    NSMenuItem *verifyItem = [[[NSMenuItem alloc] initWithTitle:@"Verify" action:@selector(verifyTorrent:) keyEquivalent:@""] autorelease];
     [verifyItem setTarget:self];
     [menu addItem:verifyItem];
     
-    NSMenuItem *reannounce = [[NSMenuItem alloc] initWithTitle:@"Reannounce" action:@selector(reannounceTorrent:) keyEquivalent:@""];
+    NSMenuItem *reannounce = [[[NSMenuItem alloc] initWithTitle:@"Reannounce" action:@selector(reannounceTorrent:) keyEquivalent:@""] autorelease];
     [reannounce setTarget:self];
     [menu addItem:reannounce];
     
@@ -175,13 +174,13 @@
     
         [menu addItem:[NSMenuItem separatorItem]];
         
-        NSMenuItem *groupMenuItem = [[NSMenuItem alloc] initWithTitle:@"Group" action:nil keyEquivalent:@""];
+        NSMenuItem *groupMenuItem = [[[NSMenuItem alloc] initWithTitle:@"Group" action:nil keyEquivalent:@""] autorelease];
         [groupMenuItem setTitle:@"Group"];
         
-        NSMenu *groupSubMenu = [[NSMenu alloc] initWithTitle:@"Group"];        
+        NSMenu *groupSubMenu = [[[NSMenu alloc] initWithTitle:@"Group"] autorelease];        
         [groupMenuItem setSubmenu:groupSubMenu];
         
-        NSMenuItem *noGroup = [[NSMenuItem alloc] initWithTitle:@"No Group" action:@selector(changeGroup:) keyEquivalent:@""];
+        NSMenuItem *noGroup = [[[NSMenuItem alloc] initWithTitle:@"No Group" action:@selector(changeGroup:) keyEquivalent:@""] autorelease];
         [noGroup setTag:0];
         [noGroup setTarget:self];
         if ([[self representedObject] group] == 0) {
@@ -195,7 +194,7 @@
             NSArray *sortedGroups = [groups sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"name" ascending:true] autorelease]]];
             for (NSUInteger i = 0; i < [sortedGroups count]; i++) {
                 RFTorrentGroup *group = [sortedGroups objectAtIndex:i];
-                NSMenuItem *groupItem = [[NSMenuItem alloc] initWithTitle:[group name] action:@selector(changeGroup:) keyEquivalent:@""];
+                NSMenuItem *groupItem = [[[NSMenuItem alloc] initWithTitle:[group name] action:@selector(changeGroup:) keyEquivalent:@""] autorelease];
                 [groupItem setTag:[group gid]];
                 [groupItem setTarget:self];
                 if ([group gid] == [[self representedObject] group]) {
@@ -216,44 +215,65 @@
         return;
     }
     
-    [[self representedObject] setGroup:gid];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:REFRACT_NOTIFICATION_TORRENT_GROUP_CHANGED object:self userInfo:[self notificationData]];
-}
-
-- (NSMutableDictionary *)notificationData
-{
-    return [NSMutableDictionary dictionaryWithObject:[self representedObject] forKey:@"torrent"];
+    if ([self delegate]) {
+        if ([[self delegate] respondsToSelector:@selector(torrentItem:torrent:changeGroup:)]) {
+            [[self delegate] torrentItem:self torrent:[self representedObject] changeGroup:gid];
+        }
+    }
 }
 
 - (void)startTorrent:(id)sender
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:REFRACT_NOTIFICATION_TORRENT_START object:self userInfo:[self notificationData]];
+    if ([self delegate]) {
+        if ([[self delegate] respondsToSelector:@selector(torrentItem:startTorrent:)]) {
+            [[self delegate] torrentItem:self startTorrent:[self representedObject]];
+        }
+    }
 }
 
 - (void)stopTorrent:(id)sender
-{
-    [[NSNotificationCenter defaultCenter] postNotificationName:REFRACT_NOTIFICATION_TORRENT_STOP object:self userInfo:[self notificationData]];   
+{  
+    if ([self delegate]) {
+        if ([[self delegate] respondsToSelector:@selector(torrentItem:stopTorrent:)]) {
+            [[self delegate] torrentItem:self stopTorrent:[self representedObject]];
+        }
+    }
 }
 
 - (void)removeTorrent:(id)sender
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:REFRACT_NOTIFICATION_TORRENT_REMOVE object:self userInfo:[self notificationData]];
+    if ([self delegate]) {
+        if ([[self delegate] respondsToSelector:@selector(torrentItem:removeTorrent:deleteData:)]) {
+            [[self delegate] torrentItem:self removeTorrent:[self representedObject] deleteData:false];
+        }
+    }
 }
 
 - (void)deleteTorrent:(id)sender
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:REFRACT_NOTIFICATION_TORRENT_DELETE object:self userInfo:[self notificationData]];
+    if ([self delegate]) {
+        if ([[self delegate] respondsToSelector:@selector(torrentItem:removeTorrent:deleteData:)]) {
+            [[self delegate] torrentItem:self removeTorrent:[self representedObject] deleteData:true];
+        }
+    }
 }
 
 - (void)verifyTorrent:(id)sender
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:REFRACT_NOTIFICATION_TORRENT_VERIFY object:self userInfo:[self notificationData]];
+    if ([self delegate]) {
+        if ([[self delegate] respondsToSelector:@selector(torrentItem:verifyTorrent:)]) {
+            [[self delegate] torrentItem:self verifyTorrent:[self representedObject]];
+        }
+    }
 }
 
 - (void)reannounceTorrent:(id)sender
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:REFRACT_NOTIFICATION_TORRENT_REANNOUNCE object:self userInfo:[self notificationData]];
+    if ([self delegate]) {
+        if ([[self delegate] respondsToSelector:@selector(torrentItem:reannounceTorrent:)]) {
+            [[self delegate] torrentItem:self reannounceTorrent:[self representedObject]];;
+        }
+    }
 }
 
 @end

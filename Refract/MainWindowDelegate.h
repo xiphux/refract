@@ -7,12 +7,11 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "RFEngine.h"
-#import "RFTorrentList.h"
 #import "RFGroupList.h"
 #import "SourceListController.h"
 #import "TorrentListController.h"
 #import "TorrentItem.h"
+#import "RFServer.h"
 
 typedef enum {
     statCount = 1,
@@ -21,13 +20,14 @@ typedef enum {
     statTotal = 4
 } StatType;
 
-@interface MainWindowDelegate : NSObject <NSSplitViewDelegate, RFTorrentListDelegate, RFEngineDelegate, SourceListDelegate, TorrentItemDelegate, NSMenuDelegate> {
+@interface MainWindowDelegate : NSObject <NSSplitViewDelegate, RFTorrentListDelegate, RFEngineDelegate, SourceListDelegate, TorrentItemDelegate, NSMenuDelegate, RFServerDelegate> {
 @private
     NSWindow IBOutlet *window;
     TorrentListController IBOutlet *torrentListController;
     SourceListController IBOutlet *sourceListController;
     
-    NSButton IBOutlet *statsButton;
+    NSPopUpButton IBOutlet *statsButton;
+    NSMenu IBOutlet *statsMenu;
     NSMenu IBOutlet *removeMenu;
     NSSegmentedControl IBOutlet *removeButton;
     NSMenu IBOutlet *actionMenu;
@@ -36,34 +36,14 @@ typedef enum {
     NSMenu IBOutlet *startMenu;
     NSSegmentedControl IBOutlet *startStopButton;
     
-    RFEngine *engine;
-    RFTorrentList *torrentList;
-    RFGroupList *groupList;
-    
     StatType statusButtonType;
-    bool started;
     
-    NSTimer *updateTimer;
     bool sleeping;
     
-    NSOperationQueue *updateQueue;
+    RFServer *activeServer;
 }
 
-@property (assign) IBOutlet NSWindow *window;
-@property (retain) IBOutlet TorrentListController *torrentListController;
-@property (retain) IBOutlet SourceListController *sourceListController;
-@property (retain) IBOutlet NSButton *statsButton;
-@property (retain) IBOutlet NSMenu *removeMenu;
-@property (retain) IBOutlet NSSegmentedControl *removeButton;
-@property (retain) IBOutlet NSMenu *actionMenu;
-@property (retain) IBOutlet NSSegmentedControl *actionButton;
-@property (retain) IBOutlet NSMenu *stopMenu;
-@property (retain) IBOutlet NSMenu *startMenu;
-@property (retain) IBOutlet NSSegmentedControl *startStopButton;
-
-@property (retain) RFEngine *engine;
-@property (retain) RFTorrentList *torrentList;
-@property (retain) RFGroupList *groupList;
+@property (retain) RFServer *activeServer;
 
 - (IBAction)statsButtonClick:(id)sender;
 - (IBAction)startStopClicked:(id)sender;
@@ -76,11 +56,6 @@ typedef enum {
 - (IBAction)addClicked:(id)sender;
 - (IBAction)verifyClicked:(id)sender;
 - (IBAction)reannounceClicked:(id)sender;
-- (bool)initEngine;
-- (bool)startEngine;
-- (void)stopEngine;
-- (void)destroyEngine;
-- (void)refresh;
 
 - (void)tryAddTorrents:(NSArray *)files;
 

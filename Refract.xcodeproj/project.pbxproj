@@ -18,6 +18,8 @@
 		C62D8EF01384A58300B6B8AD /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C62D8EEF1384A58300B6B8AD /* Sparkle.framework */; };
 		C62D8EF11384A5B100B6B8AD /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = C62D8EEF1384A58300B6B8AD /* Sparkle.framework */; };
 		C62D8EF31384A6FD00B6B8AD /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = C62D8EF21384A6FD00B6B8AD /* dsa_pub.pem */; };
+		C62D8EF613874E1C00B6B8AD /* RFServer.m in Sources */ = {isa = PBXBuildFile; fileRef = C62D8EF513874E1B00B6B8AD /* RFServer.m */; };
+		C62D8EF9138CA20E00B6B8AD /* RFServerList.m in Sources */ = {isa = PBXBuildFile; fileRef = C62D8EF8138CA20D00B6B8AD /* RFServerList.m */; };
 		C6414DCF13514B33000F248C /* SourceListController.m in Sources */ = {isa = PBXBuildFile; fileRef = C6414DCE13514B33000F248C /* SourceListController.m */; };
 		C6414DD3135156D9000F248C /* BaseNode.m in Sources */ = {isa = PBXBuildFile; fileRef = C6414DD2135156D9000F248C /* BaseNode.m */; };
 		C6414DD61351588C000F248C /* StatusNode.m in Sources */ = {isa = PBXBuildFile; fileRef = C6414DD51351588B000F248C /* StatusNode.m */; };
@@ -38,7 +40,9 @@
 		C67861D41347829D00892BC2 /* RFEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = C67861D31347829D00892BC2 /* RFEngine.m */; };
 		C678621E134795EF00892BC2 /* RFEngineTransmission.m in Sources */ = {isa = PBXBuildFile; fileRef = C678621D134795EF00892BC2 /* RFEngineTransmission.m */; };
 		C67862251347BDEA00892BC2 /* RFBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = C67862241347BDEA00892BC2 /* RFBase64.m */; };
+		C680DA23139AF6B800FCDEA1 /* URLTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = C680DA22139AF6B800FCDEA1 /* URLTransformer.m */; };
 		C683C39013492A330039B953 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = C683C38F13492A330039B953 /* Preferences.xib */; };
+		C68FD6F6139441EA002C92C0 /* ServerNode.m in Sources */ = {isa = PBXBuildFile; fileRef = C68FD6F5139441EA002C92C0 /* ServerNode.m */; };
 		C6A8E45013651627006CE0DC /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6A8E44F13651627006CE0DC /* MainMenu.xib */; };
 		C6A8E453136516FD006CE0DC /* RefractAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C6A8E452136516FD006CE0DC /* RefractAppDelegate.m */; };
 		C6A8E45613651874006CE0DC /* MainWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = C6A8E45513651874006CE0DC /* MainWindowController.m */; };
@@ -130,6 +134,10 @@
 		C62D8EEC13836D9700B6B8AD /* JSON.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = JSON.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C62D8EEF1384A58300B6B8AD /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
 		C62D8EF21384A6FD00B6B8AD /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
+		C62D8EF413874E1B00B6B8AD /* RFServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFServer.h; sourceTree = "<group>"; };
+		C62D8EF513874E1B00B6B8AD /* RFServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFServer.m; sourceTree = "<group>"; };
+		C62D8EF7138CA20C00B6B8AD /* RFServerList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFServerList.h; sourceTree = "<group>"; };
+		C62D8EF8138CA20D00B6B8AD /* RFServerList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFServerList.m; sourceTree = "<group>"; };
 		C6414DCD13514B33000F248C /* SourceListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SourceListController.h; sourceTree = "<group>"; };
 		C6414DCE13514B33000F248C /* SourceListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SourceListController.m; sourceTree = "<group>"; };
 		C6414DD1135156D9000F248C /* BaseNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseNode.h; sourceTree = "<group>"; };
@@ -169,7 +177,11 @@
 		C678621D134795EF00892BC2 /* RFEngineTransmission.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFEngineTransmission.m; sourceTree = "<group>"; };
 		C67862231347BDEA00892BC2 /* RFBase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFBase64.h; sourceTree = "<group>"; };
 		C67862241347BDEA00892BC2 /* RFBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFBase64.m; sourceTree = "<group>"; };
+		C680DA21139AF6B700FCDEA1 /* URLTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = URLTransformer.h; sourceTree = "<group>"; };
+		C680DA22139AF6B800FCDEA1 /* URLTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = URLTransformer.m; sourceTree = "<group>"; };
 		C683C38F13492A330039B953 /* Preferences.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Preferences.xib; sourceTree = "<group>"; };
+		C68FD6F4139441E9002C92C0 /* ServerNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerNode.h; sourceTree = "<group>"; };
+		C68FD6F5139441EA002C92C0 /* ServerNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerNode.m; sourceTree = "<group>"; };
 		C6A8E44F13651627006CE0DC /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
 		C6A8E451136516FD006CE0DC /* RefractAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RefractAppDelegate.h; sourceTree = "<group>"; };
 		C6A8E452136516FD006CE0DC /* RefractAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RefractAppDelegate.m; sourceTree = "<group>"; };
@@ -238,6 +250,8 @@
 				C6F920C0134939FB0047C777 /* PreferencesDelegate.m */,
 				C6B914D3135AB05E0008B707 /* PreferencesController.h */,
 				C6B914D4135AB05E0008B707 /* PreferencesController.m */,
+				C680DA21139AF6B700FCDEA1 /* URLTransformer.h */,
+				C680DA22139AF6B800FCDEA1 /* URLTransformer.m */,
 			);
 			name = Preferences;
 			sourceTree = "<group>";
@@ -255,6 +269,8 @@
 				C6414DD813516057000F248C /* CategoryNode.m */,
 				C6A8E45B136A56E7006CE0DC /* GroupNode.h */,
 				C6A8E45C136A56E7006CE0DC /* GroupNode.m */,
+				C68FD6F4139441E9002C92C0 /* ServerNode.h */,
+				C68FD6F5139441EA002C92C0 /* ServerNode.m */,
 			);
 			name = SourceList;
 			sourceTree = "<group>";
@@ -395,6 +411,10 @@
 				C60C32631357FFBC00CB14CD /* RFConstants.h */,
 				C6A8E461136BD728006CE0DC /* RFGroupList.h */,
 				C6A8E462136BD729006CE0DC /* RFGroupList.m */,
+				C62D8EF413874E1B00B6B8AD /* RFServer.h */,
+				C62D8EF513874E1B00B6B8AD /* RFServer.m */,
+				C62D8EF7138CA20C00B6B8AD /* RFServerList.h */,
+				C62D8EF8138CA20D00B6B8AD /* RFServerList.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -632,6 +652,10 @@
 				C6A8E45D136A56E7006CE0DC /* GroupNode.m in Sources */,
 				C6A8E463136BD729006CE0DC /* RFGroupList.m in Sources */,
 				C6297270137511CD00977F79 /* TorrentListController.m in Sources */,
+				C62D8EF613874E1C00B6B8AD /* RFServer.m in Sources */,
+				C62D8EF9138CA20E00B6B8AD /* RFServerList.m in Sources */,
+				C68FD6F6139441EA002C92C0 /* ServerNode.m in Sources */,
+				C680DA23139AF6B800FCDEA1 /* URLTransformer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

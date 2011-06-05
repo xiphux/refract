@@ -54,13 +54,14 @@
 {
     id obj = [self initWithType:filtGroup];
     if ([obj isKindOfClass:[RFTorrentFilter class]]) {
-        torrentGroup = initGroup;
+        torrentGroup = [initGroup retain];
     }
     return obj;
 }
 
 - (void)dealloc
 {
+    [torrentGroup release];
     [super dealloc];
 }
 

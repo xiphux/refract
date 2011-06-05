@@ -10,12 +10,13 @@
 #import "NotificationController.h"
 #import "RFConstants.h"
 
+#define REFRACT_RFTORRENTLIST_KEY_TORRENTGROUPS @"torrentGroups"
+
 @interface RFTorrentList ()
 - (void)updateList;
 - (void)cleanStaleGroups;
 - (void)removeSavedGroupsForTorrents:(NSArray *)removedTorrents;
 - (void)updateSavedGroupsForTorrents:(NSArray *)list;
-- (void)torrentGroupChanged:(NSNotification *)notification;
 - (NSUInteger)groupForTorrent:(NSString *)hashString;
 @end
 
@@ -26,38 +27,37 @@
 {
     self = [super init];
     if (self) {
+        torrentGroups = [[NSMutableDictionary alloc] init];
+    }
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super init];
+    if (self) {
+        torrentGroups = [[aDecoder decodeObjectForKey:REFRACT_RFTORRENTLIST_KEY_TORRENTGROUPS] retain];
     }
     return self;
 }
 
 - (void)dealloc
 {
+    [allTorrents release];
+    [torrents release];
+    [torrentGroups release];
     [super dealloc];
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeObject:torrentGroups forKey:REFRACT_RFTORRENTLIST_KEY_TORRENTGROUPS];
 }
 
 @synthesize torrents;
 @synthesize delegate;
 @synthesize initialized;
-
-- (bool)saveGroups
-{
-    return saveGroups;
-}
-
-- (void)setSaveGroups:(bool)newSaveGroups
-{
-    if (saveGroups == newSaveGroups) {
-        return;
-    }
-    
-    saveGroups = newSaveGroups;
-    
-    if (saveGroups) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(torrentGroupChanged:) name:REFRACT_NOTIFICATION_TORRENT_GROUP_CHANGED object:nil];
-    } else {
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:REFRACT_NOTIFICATION_TORRENT_GROUP_CHANGED object:nil];
-    }
-}
+@synthesize saveGroups;
 
 - (NSUInteger)countOfTorrents
 {
@@ -97,7 +97,8 @@
 
 - (void)loadTorrents:(NSArray *)torrentList
 {
-    allTorrents = torrentList;
+    [allTorrents release];
+    allTorrents = [[NSArray alloc] initWithArray:torrentList];
     [self updateList];
     if (!initialized) {
         if (saveGroups) {
@@ -175,24 +176,9 @@
 
 - (void)clearTorrents
 {
-    allTorrents = [NSArray array];
+    [allTorrents release];
     [self setTorrents:[NSMutableArray array]];
     initialized = false;
-}
-
-- (void)torrentGroupChanged:(NSNotification *)notification
-{    
-    NSDictionary *data = [notification userInfo];
-    if (!data) {
-        return;
-    }
-    
-    RFTorrent *torrent = [data objectForKey:@"torrent"];
-    if (!torrent) {
-        return;
-    }
-    
-    [self updateSavedGroupsForTorrents:[NSArray arrayWithObject:torrent]];
 }
 
 - (void)updateSavedGroupsForTorrents:(NSArray *)list
@@ -205,20 +191,12 @@
         return;
     }
     
-    NSMutableDictionary *tGroups = [NSMutableDictionary dictionaryWithDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey:REFRACT_USERDEFAULT_TORRENT_GROUPS]];
-    
     for (RFTorrent *t in list) {
         if ([t group] > 0) {
-            [tGroups setObject:[NSNumber numberWithUnsignedLong:[t group]] forKey:[t hashString]];
+            [torrentGroups setObject:[NSNumber numberWithUnsignedLong:[t group]] forKey:[t hashString]];
         } else {
-            [tGroups removeObjectForKey:[t hashString]];
+            [torrentGroups removeObjectForKey:[t hashString]];
         }
-    }
-    
-    if ([tGroups count] > 0) {
-        [[NSUserDefaults standardUserDefaults] setObject:tGroups forKey:REFRACT_USERDEFAULT_TORRENT_GROUPS];
-    } else {
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:REFRACT_USERDEFAULT_TORRENT_GROUPS];
     }
 }
 
@@ -231,21 +209,9 @@
     if ([removedTorrents count] == 0) {
         return;
     }
-    
-    NSDictionary *tGroups = [[NSUserDefaults standardUserDefaults] dictionaryForKey:REFRACT_USERDEFAULT_TORRENT_GROUPS];
-    
-    if (tGroups) {
-        NSMutableDictionary *mutableGroups = [NSMutableDictionary dictionaryWithDictionary:tGroups];
         
-        for (RFTorrent *t in removedTorrents) {
-            [mutableGroups removeObjectForKey:[t hashString]];
-        }
-        
-        if ([mutableGroups count] > 0) {
-            [[NSUserDefaults standardUserDefaults] setObject:mutableGroups forKey:REFRACT_USERDEFAULT_TORRENT_GROUPS];
-        } else {
-            [[NSUserDefaults standardUserDefaults] removeObjectForKey:REFRACT_USERDEFAULT_TORRENT_GROUPS];
-        }
+    for (RFTorrent *t in removedTorrents) {
+        [torrentGroups removeObjectForKey:[t hashString]];
     }
 }
 
@@ -255,12 +221,7 @@
         return 0;
     }
     
-    NSDictionary *tGroups = [[NSUserDefaults standardUserDefaults] dictionaryForKey:REFRACT_USERDEFAULT_TORRENT_GROUPS];
-    if (!tGroups) {
-        return 0;
-    }
-    
-    NSNumber *groupNum = [tGroups objectForKey:hashString];
+    NSNumber *groupNum = [torrentGroups objectForKey:hashString];
     if (!groupNum) {
         return 0;
     }
@@ -317,15 +278,9 @@
 
 - (void)cleanStaleGroups
 {
-    NSDictionary *tGroups = [[NSUserDefaults standardUserDefaults] dictionaryForKey:REFRACT_USERDEFAULT_TORRENT_GROUPS];
-    
-    if (!tGroups) {
-        return;
-    }
-    
     NSMutableArray *prune = [NSMutableArray array];
     
-    for (NSString *hashString in tGroups) {
+    for (NSString *hashString in torrentGroups) {
         bool found = false;
         for (RFTorrent *t in torrents) {
             if ([[t hashString] isEqualToString:hashString]) {
@@ -342,16 +297,24 @@
         return;
     }
     
-    NSMutableDictionary *mutableGroups = [NSMutableDictionary dictionaryWithDictionary:tGroups];
     for (NSString *hashString in prune) {
-        [mutableGroups removeObjectForKey:hashString];
+        [torrentGroups removeObjectForKey:hashString];
+    }
+}
+
+- (bool)containsStatus:(RFTorrentStatus)status
+{
+    if (!torrents) {
+        return false;
     }
     
-    if ([mutableGroups count] > 0) {
-        [[NSUserDefaults standardUserDefaults] setObject:mutableGroups forKey:REFRACT_USERDEFAULT_TORRENT_GROUPS];
-    } else {
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:REFRACT_USERDEFAULT_TORRENT_GROUPS];
+    for (RFTorrent *t in torrents) {
+        if ([t status] == status) {
+            return true;
+        }
     }
+    
+    return false;
 }
 
 @end

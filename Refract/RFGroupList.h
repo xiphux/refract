@@ -10,21 +10,18 @@
 
 #import "RFTorrentGroup.h"
 
-@interface RFGroupList : NSObject {
+@interface RFGroupList : NSObject <NSCoding> {
 @private
     NSMutableArray *groups;
 }
 
-@property (retain) NSMutableArray *groups;
+@property (readonly) NSArray *groups;
 
 - (RFTorrentGroup *)groupWithName:(NSString *)name;
 - (bool)groupWithNameExists:(NSString *)name;
 
 - (RFTorrentGroup *)addGroup:(NSString *)name;
 - (void)removeGroup:(RFTorrentGroup *)group;
-
-- (void)load;
-- (void)save;
 
 + (NSUInteger)generateGroupId;
 

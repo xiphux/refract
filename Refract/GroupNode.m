@@ -23,6 +23,7 @@
 
 - (void)dealloc
 {
+    [group release];
     [super dealloc];
 }
 

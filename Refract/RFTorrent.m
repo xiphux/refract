@@ -23,7 +23,7 @@
 {
     self = [super init];
     if (self) {
-        tid = [NSString stringWithString:initTid];
+        tid = [[NSString alloc] initWithString:initTid];
     }
     
     return self;
@@ -33,6 +33,7 @@
 {
     [name release];
     [tid release];
+    [hashString release];
     [super dealloc];
 }
 
@@ -49,7 +50,9 @@
         return;
     }
     
-    name = [NSString stringWithString:newName];
+    [name release];
+    
+    name = [[NSString alloc] initWithString:newName];
     
     updated = true;
 }
@@ -65,7 +68,9 @@
         return;
     }
     
-    hashString = [NSString stringWithString:newHashString];
+    [hashString release];
+    
+    hashString = [[NSString alloc] initWithString:newHashString];
     
     updated = true;
 }

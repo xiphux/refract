@@ -12,9 +12,11 @@ typedef enum {
     engTransmission = 1
 } RFEngineType;
 
+#define REFRACT_RFENGINE_KEY_TYPE @"type"
+
 @protocol RFEngineDelegate;
 
-@interface RFEngine : NSObject {
+@interface RFEngine : NSObject <NSCoding> {
 @protected
     NSObject <RFEngineDelegate> *delegate;
 }

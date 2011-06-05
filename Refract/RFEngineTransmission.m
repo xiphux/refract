@@ -15,6 +15,9 @@
 #import "NotificationController.h"
 #import <JSON/JSON.h>
 
+#define REFRACT_RFENGINETRANSMISSION_KEY_URL @"url"
+#define REFRACT_RFENGINETRANSMISSION_KEY_USERNAME @"username"
+
 @interface RFEngineTransmission ()
 @property (readwrite, retain) NSMutableDictionary *torrents;
 - (NSArray *)torrentListToIds:(NSArray *)list;
@@ -22,7 +25,6 @@
 - (bool)rpcRequest:(NSString *)type data:(NSData *)requestBody;
 - (void)parseTorrentList:(NSArray *)torrentList;
 - (NSMutableURLRequest *)createRequest;
-- (void)settingsChanged:(NSNotification *)notification;
 - (void)handleResponse:(NSData *)responseData userInfo:(NSDictionary *)userInfo;
 @end
 
@@ -30,62 +32,62 @@
 
 - (id)init
 {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSDictionary *appDefaults = [NSDictionary dictionaryWithObject:@"http://127.0.0.1:9091/transmission/rpc" forKey:REFRACT_USERDEFAULT_TRANSMISSION_URL];
-    [defaults registerDefaults:appDefaults];
-    
-    return [self initWithUrl:[defaults objectForKey:@"Transmission.URL"]];
+    return [self initWithUrl:[NSURL URLWithString:@"http://127.0.0.1:9091/transmission/rpc"]];
 }
 
-- (id)initWithUrl:(NSString *) initUrl
+- (id)initWithUrl:(NSURL *) initUrl
 {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
-    NSString *user = [defaults stringForKey:REFRACT_USERDEFAULT_TRANSMISSION_USERNAME];
-    NSString *pass = nil;
-    if ([user length] > 0) {
-        EMGenericKeychainItem *keychain = [EMGenericKeychainItem genericKeychainItemForService:REFRACT_KEYCHAIN_TRANSMISSION withUsername:user];
-        if (keychain) {
-            pass = [keychain password];
-        }
-    }
-    
-    return [self initWithUrlAndLogin:initUrl username:user password:pass];
+    return [self initWithUrlAndLogin:initUrl username:nil];
 }
 
-- (id)initWithUrlAndLogin:(NSString *)initUrl username:(NSString *)initUser password:(NSString *)initPass
+- (id)initWithUrlAndLogin:(NSURL *)initUrl username:(NSString *)initUser
 {
     self = [super init];
     if (self) {
-        // Initialization code here.
+        [self setUrl:initUrl];
+        
+        [self setUsername:initUser];
+        
         torrents = [[NSMutableDictionary alloc] init];
         
-        url = [NSString stringWithString:initUrl];
-        username = [NSString stringWithString:initUser];
-        password = [NSString stringWithString:initPass];
-        
         updateQueue = [[NSOperationQueue alloc] init];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsChanged:) name:NSUserDefaultsDidChangeNotification object:nil];
     }
     
     return self;
 }
 
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    NSURL *coderURL = [aDecoder decodeObjectForKey:REFRACT_RFENGINETRANSMISSION_KEY_URL];
+    NSString *coderUsername = [aDecoder decodeObjectForKey:REFRACT_RFENGINETRANSMISSION_KEY_USERNAME];
+    
+    return [self initWithUrlAndLogin:coderURL username:coderUsername];
+}
+
 - (void)dealloc
 {
+    [torrents release];
+    [updateQueue release];
     [url release];
     [username release];
     [password release];
-    [torrents release];
-    [updateQueue release];
+    [sessionId release];
     [super dealloc];
 }
 
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeInt:engTransmission forKey:REFRACT_RFENGINE_KEY_TYPE];
+    
+    if ([[url absoluteString] length] > 0) {
+        [aCoder encodeObject:url forKey:REFRACT_RFENGINETRANSMISSION_KEY_URL];
+    }
+    if ([username length] > 0) {
+        [aCoder encodeObject:username forKey:REFRACT_RFENGINETRANSMISSION_KEY_USERNAME];
+    }
+}
+
 @synthesize torrents;
-@synthesize url;
-@synthesize username;
-@synthesize password;
 @synthesize connected;
 @synthesize uploadSpeed;
 @synthesize downloadSpeed;
@@ -94,6 +96,91 @@
 @synthesize totalUploadedBytes;
 @synthesize totalDownloadedBytes;
 
+- (NSURL *)url
+{
+    return url;
+}
+
+- (void)setUrl:(NSURL *)newUrl
+{
+    if ([url isEqual:newUrl]) {
+        return;
+    }
+    
+    [url release];
+    
+    url = [newUrl copy];
+    [self setUsername:nil];
+    
+    connected = false;
+}
+
+- (NSString *)username
+{
+    return username;
+}
+
+- (void)setUsername:(NSString *)newUsername
+{
+    if ([username isEqualToString:newUsername]) {
+        return;
+    }
+    
+    [username release];
+    
+    [self willChangeValueForKey:@"password"];
+    [password release];
+    
+    if ([[url absoluteString] length] > 0) {
+        if (newUsername) {
+            username = [[NSString alloc] initWithString:newUsername];
+        }
+        
+        if ([username length] > 0) {
+            EMInternetKeychainItem *keychain = [EMInternetKeychainItem internetKeychainItemForServer:[url host] withUsername:username path:[url path] port:[[url port] intValue] protocol:kSecProtocolTypeAny];
+            if (keychain) {
+                password = [[keychain password] retain];
+            }
+        }
+    }
+    
+    [self didChangeValueForKey:@"password"];
+    
+    connected = false;
+}
+
+- (NSString *)password
+{
+    return password;
+}
+
+- (void)setPassword:(NSString *)newPassword
+{
+    if ([password isEqualToString:newPassword]) {
+        return;
+    }
+    
+    [password release];
+    
+    if ([username length] == 0) {
+        return;
+    }
+    
+    if ([[url absoluteString] length] == 0) {
+        return;
+    }
+    
+    if (newPassword) {
+        password = [[NSString alloc] initWithString:newPassword];
+        [EMInternetKeychainItem addInternetKeychainItemForServer:[url host] withUsername:username password:password path:[url path] port:[[url port] intValue] protocol:kSecProtocolTypeAny];
+    } else {
+        EMInternetKeychainItem *keychain = [EMInternetKeychainItem internetKeychainItemForServer:[url host] withUsername:username path:[url path] port:[[url port] intValue] protocol:kSecProtocolTypeAny];
+        if (keychain) {
+            [keychain removeFromKeychain];
+        }
+    }
+}
+
 - (RFEngineType)type
 {
     return engTransmission;
@@ -101,7 +188,7 @@
 
 - (bool)connect
 {
-    if ([url length] == 0) {
+    if ([[url absoluteString] length] == 0) {
         return false;
     }
     
@@ -115,7 +202,7 @@
 
 - (NSMutableURLRequest *)createRequest
 {
-    NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
+    NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
     [req setHTTPMethod:@"POST"];
     [req setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     
@@ -323,7 +410,7 @@
             RFTorrent *torrent = [torrents objectForKey:tid];
             
             if (!torrent) {
-                torrent = [[RFTorrent alloc] initWithTid:tid];
+                torrent = [[[RFTorrent alloc] initWithTid:tid] autorelease];
                 [torrents setValue:torrent forKey:tid];
             }
             
@@ -449,32 +536,6 @@
     [[NotificationController sharedNotificationController] flushQueue];
 }
 
-- (void)settingsChanged:(NSNotification *)notification
-{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
-    if ([defaults integerForKey:REFRACT_USERDEFAULT_ENGINE] != engTransmission) {
-        return;
-    }
-    
-    NSString *settingsUrl = [defaults stringForKey:REFRACT_USERDEFAULT_TRANSMISSION_URL];
-    if (![url isEqualToString:settingsUrl]) {
-        url = settingsUrl;
-    }
-    NSString *settingsUser = [defaults stringForKey:REFRACT_USERDEFAULT_TRANSMISSION_USERNAME];
-    if (![username isEqualToString:settingsUser]) {
-        username = settingsUrl;
-    }
-    NSString *pass = nil;
-    if ([username length] > 0) {
-        EMGenericKeychainItem *keychain = [EMGenericKeychainItem genericKeychainItemForService: REFRACT_KEYCHAIN_TRANSMISSION withUsername:username];
-        if (keychain) {
-            pass = [keychain password];
-        }
-    }
-    password = pass;
-}
-
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSHTTPURLResponse *)response
 {
     RFURLConnection *rfConn = (RFURLConnection *)connection;
@@ -496,7 +557,9 @@
         // requires session token - get token and resubmit request
         NSDictionary *responseHeaders = [[rfConn response] allHeaderFields];
         
+        [sessionId release];
         sessionId = [responseHeaders valueForKey:@"X-Transmission-Session-Id"];
+        [sessionId retain];
         if ([sessionId length] > 0) {
             [self rpcRequest:[[rfConn userInfo] objectForKey:@"type"] data:[rfConn requestData]]; 
         }
@@ -618,8 +681,6 @@
             }
         }];
         [updateQueue addOperation:statsOp];
-        [statsOp release];
-        
     }
 }
 

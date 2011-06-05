@@ -9,15 +9,26 @@
 #import "RFGroupList.h"
 #import "RFConstants.h"
 
+#define REFRACT_RFGROUPLIST_KEY_GROUPS @"groups"
+
 @implementation RFGroupList
 
 - (id)init
 {
     self = [super init];
     if (self) {
-        groups = [NSMutableArray array];
+        groups = [[NSMutableArray alloc] init];
     }
     
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super init];
+    if (self) {
+        groups = [[aDecoder decodeObjectForKey:REFRACT_RFGROUPLIST_KEY_GROUPS] retain];
+    }
     return self;
 }
 
@@ -25,6 +36,11 @@
 {
     [groups release];
     [super dealloc];
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeObject:groups forKey:REFRACT_RFGROUPLIST_KEY_GROUPS];
 }
 
 @synthesize groups;
@@ -55,7 +71,7 @@
         return nil;
     }
     
-    RFTorrentGroup *newGroup = [[RFTorrentGroup alloc] init];
+    RFTorrentGroup *newGroup = [[[RFTorrentGroup alloc] init] autorelease];
     
     [newGroup setGid:[RFGroupList generateGroupId]];
     [newGroup setName:name];
@@ -72,26 +88,6 @@
     }
     
     [groups removeObject:group];
-}
-
-- (void)load
-{
-    NSData *savedGroupData = [[NSUserDefaults standardUserDefaults] objectForKey:REFRACT_USERDEFAULT_GROUPS];
-    if (savedGroupData) {
-        NSArray *savedGroups = [NSKeyedUnarchiver unarchiveObjectWithData:savedGroupData];
-        if (savedGroups) {
-            groups = [NSMutableArray arrayWithArray:savedGroups];
-        }
-    }
-}
-
-- (void)save
-{
-    if ([groups count] > 0) {
-        [[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:groups] forKey:REFRACT_USERDEFAULT_GROUPS];
-    } else {
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:REFRACT_USERDEFAULT_GROUPS];
-    }
 }
 
 
