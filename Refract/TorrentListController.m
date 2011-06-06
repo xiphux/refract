@@ -98,6 +98,8 @@
     [filter release];
     filter = [newFilter retain];
     
+    [searchField setStringValue:@""];
+    
     [self updateFilter];
 }
 
