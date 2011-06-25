@@ -15,6 +15,8 @@
 #import "NotificationController.h"
 #import "RFServerList.h"
 
+#import "RFEngineTransmission.h"
+
 @interface MainWindowDelegate ()
 
 - (void)setDefaults;
@@ -60,7 +62,37 @@
     [super dealloc];
 }
 
-@synthesize activeServer;
+- (RFServer *)activeServer
+{
+    return activeServer;
+}
+
+- (void)setActiveServer:(RFServer *)newActiveServer
+{
+    if (activeServer) {
+        if ([[activeServer engine] type] == engTransmission) {
+            [[activeServer engine] removeObserver:self forKeyPath:@"speedLimit"];
+        }
+    }
+    
+    [activeServer release];
+    
+    activeServer = [newActiveServer retain];
+    
+    if (activeServer) {
+        if ([[activeServer engine] type] == engTransmission) {
+            [[activeServer engine] addObserver:self forKeyPath:@"speedLimit" options:(NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew) context:NULL];
+            [speedLimitButton setHidden:false];
+            if ([(RFEngineTransmission *)[activeServer engine] speedLimit]) {
+                [speedLimitButton setSelectedSegment:1];
+            } else {
+                [speedLimitButton setSelectedSegment:0];
+            }
+        } else {
+            [speedLimitButton setHidden:true];
+        }
+    }
+}
 
 - (void)awakeFromNib
 {
@@ -289,6 +321,24 @@
 }
 
 
+- (IBAction)speedLimitClicked:(id)sender
+{
+    NSInteger clickedSegment = [sender selectedSegment];
+    
+    if (!([[activeServer engine] type] == engTransmission)) {
+        return;
+    }
+    
+    if (clickedSegment == 0) {
+        // disable speed limit
+        [(RFEngineTransmission *)[activeServer engine] setSpeedLimit:false];
+    } else {
+        // enable speed limit
+        [(RFEngineTransmission *)[activeServer engine] setSpeedLimit:true];
+    }
+}
+
+
 #pragma mark notifications
 
 - (void)settingsChanged:(NSNotification *)notification
@@ -327,6 +377,14 @@
                         [newServer setDelegate:self];
                     }
                 }
+            }
+        }
+    } else if ([object isEqual:[activeServer engine]]) {
+        if ([keyPath isEqualToString:@"speedLimit"]) {
+            if ([(RFEngineTransmission *)[activeServer engine] speedLimit]) {
+                [speedLimitButton setSelectedSegment:1];
+            } else {
+                [speedLimitButton setSelectedSegment:0];
             }
         }
     }

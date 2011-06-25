@@ -186,6 +186,23 @@
     return engTransmission;
 }
 
+- (bool)speedLimit
+{
+    return speedLimit;
+}
+
+- (void)setSpeedLimit:(bool)newSpeedLimit
+{
+    if (newSpeedLimit == speedLimit) {
+        return;
+    }
+    
+    speedLimit = newSpeedLimit;
+    
+    NSDictionary *args = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:speedLimit] forKey:@"alt-speed-enabled"];
+    [self request:@"setspeedlimit" method:@"session-set" arguments:args];
+}
+
 - (bool)connect
 {
     if ([[url absoluteString] length] == 0) {
@@ -225,7 +242,8 @@
     
     [self request:@"refresh" method:@"torrent-get" arguments:args];
     [self request:@"stats" method:@"session-stats" arguments:nil];
-    
+    [self request:@"settings" method:@"session-get" arguments:nil];
+     
     return true;
 }
 
@@ -681,6 +699,15 @@
             }
         }];
         [updateQueue addOperation:statsOp];
+    } else if ([type isEqualToString:@"settings"]) {
+        NSDictionary *settingsDict = [responseDict objectForKey:@"arguments"];
+        
+        NSNumber *altSpeedEnabled = [settingsDict objectForKey:@"alt-speed-enabled"];
+        if (altSpeedEnabled && ([altSpeedEnabled boolValue] != speedLimit)) {
+            [self willChangeValueForKey:@"speedLimit"];
+            speedLimit = [altSpeedEnabled boolValue];
+            [self didChangeValueForKey:@"speedLimit"];
+        }
     }
 }
 

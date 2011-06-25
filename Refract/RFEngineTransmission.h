@@ -24,6 +24,8 @@
     unsigned long totalUploadedBytes;
     unsigned long totalDownloadedBytes;
     
+    bool speedLimit;
+    
     NSOperationQueue *updateQueue;
 }
 
@@ -32,6 +34,8 @@
 @property (copy) NSURL *url;
 @property (copy) NSString *username;
 @property (copy) NSString *password;
+
+@property bool speedLimit;
 
 @property (readonly) unsigned long uploadSpeed;
 @property (readonly) unsigned long downloadSpeed;

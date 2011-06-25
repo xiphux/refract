@@ -35,6 +35,7 @@ typedef enum {
     NSMenu IBOutlet *stopMenu;
     NSMenu IBOutlet *startMenu;
     NSSegmentedControl IBOutlet *startStopButton;
+    NSSegmentedControl IBOutlet *speedLimitButton;
     
     StatType statusButtonType;
     
@@ -56,6 +57,7 @@ typedef enum {
 - (IBAction)addClicked:(id)sender;
 - (IBAction)verifyClicked:(id)sender;
 - (IBAction)reannounceClicked:(id)sender;
+- (IBAction)speedLimitClicked:(id)sender;
 
 - (void)tryAddTorrents:(NSArray *)files;
 
