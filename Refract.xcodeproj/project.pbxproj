@@ -26,6 +26,7 @@
 		C6414DD913516057000F248C /* CategoryNode.m in Sources */ = {isa = PBXBuildFile; fileRef = C6414DD813516057000F248C /* CategoryNode.m */; };
 		C6414DDC13526AC7000F248C /* RFTorrentFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = C6414DDB13526AC6000F248C /* RFTorrentFilter.m */; };
 		C64DF9A61348E3B200CB08EF /* Torrent.xib in Resources */ = {isa = PBXBuildFile; fileRef = C64DF9A51348E3B200CB08EF /* Torrent.xib */; };
+		C668FB2613DA59A200FE775A /* RFAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = C668FB2513DA59A200FE775A /* RFAlert.m */; };
 		C67861971346E41100892BC2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C67861961346E41100892BC2 /* Cocoa.framework */; };
 		C67861A11346E41100892BC2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C678619F1346E41100892BC2 /* InfoPlist.strings */; };
 		C67861A41346E41100892BC2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C67861A31346E41100892BC2 /* main.m */; };
@@ -150,6 +151,8 @@
 		C6414DDA13526AC6000F248C /* RFTorrentFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFTorrentFilter.h; sourceTree = "<group>"; };
 		C6414DDB13526AC6000F248C /* RFTorrentFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFTorrentFilter.m; sourceTree = "<group>"; };
 		C64DF9A51348E3B200CB08EF /* Torrent.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Torrent.xib; sourceTree = "<group>"; };
+		C668FB2413DA59A200FE775A /* RFAlert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFAlert.h; sourceTree = "<group>"; };
+		C668FB2513DA59A200FE775A /* RFAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFAlert.m; sourceTree = "<group>"; };
 		C67861921346E41100892BC2 /* Refract.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Refract.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C67861961346E41100892BC2 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		C67861991346E41100892BC2 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -479,6 +482,8 @@
 				C67861A91346E41100892BC2 /* MainWindowDelegate.m */,
 				C67861AB1346E41100892BC2 /* MainWindow.xib */,
 				C6414DD013515672000F248C /* SourceList */,
+				C668FB2413DA59A200FE775A /* RFAlert.h */,
+				C668FB2513DA59A200FE775A /* RFAlert.m */,
 			);
 			name = "Main Window";
 			sourceTree = "<group>";
@@ -662,6 +667,7 @@
 				C68FD6F6139441EA002C92C0 /* ServerNode.m in Sources */,
 				C680DA23139AF6B800FCDEA1 /* URLTransformer.m in Sources */,
 				C6955D59139C3A4C00204459 /* StateNode.m in Sources */,
+				C668FB2613DA59A200FE775A /* RFAlert.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -729,6 +735,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_GC = required;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
@@ -747,6 +754,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_GC = required;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -767,7 +775,7 @@
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_ENABLE_OBJC_GC = supported;
+				GCC_ENABLE_OBJC_GC = required;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Refract/Refract-Prefix.pch";
 				INFOPLIST_FILE = "Refract/Refract-Info.plist";
@@ -787,7 +795,7 @@
 					"\"$(SRCROOT)\"",
 				);
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_ENABLE_OBJC_GC = supported;
+				GCC_ENABLE_OBJC_GC = required;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Refract/Refract-Prefix.pch";
 				INFOPLIST_FILE = "Refract/Refract-Info.plist";

@@ -14,6 +14,7 @@
 #import "RFConstants.h"
 #import "NotificationController.h"
 #import "RFServerList.h"
+#import "RFAlert.h"
 
 #import "RFEngineTransmission.h"
 
@@ -26,7 +27,7 @@
 
 - (void)settingsChanged:(NSNotification *)notification;
 
-- (void)alertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode
+- (void)alertDidEnd:(RFAlert *)alert returnCode:(NSInteger)returnCode
         contextInfo:(void *)contextInfo;
 
 - (void)changeGroup:(id)sender;
@@ -244,30 +245,27 @@
     [self tryDeleteTorrents:selected];
 }
 
-- (void)alertDidEnd:(NSAlert *)alert returnCode:(NSInteger)returnCode
+- (void)alertDidEnd:(RFAlert *)alert returnCode:(NSInteger)returnCode
         contextInfo:(void *)contextInfo
 {
-    NSDictionary *context = (NSDictionary *)contextInfo;
-    
-    NSString *type = [context objectForKey:@"type"];
-    
-    if ([type isEqualToString:@"remove"]) {
-        
-        if (returnCode == NSAlertSecondButtonReturn) {
-            [activeServer removeTorrents:[context objectForKey:@"selected"] deleteData:false];
-        }
-        
-    } else if ([type isEqualToString:@"removedelete"]) {
-        
-        if (returnCode == NSAlertSecondButtonReturn) {
-            [activeServer removeTorrents:[context objectForKey:@"selected"] deleteData:true];
-        }
-        
-    } else if ([type isEqualToString:@"add"]) {
-        if (returnCode == NSAlertSecondButtonReturn) {
-            NSArray *paths = [context objectForKey:@"paths"];
-            [activeServer addTorrents:paths];
-        }
+    switch ([alert type]) {
+        case alertConfirmRemove:
+            if (returnCode == NSAlertSecondButtonReturn) {
+                [activeServer removeTorrents:[alert torrents] deleteData:false];
+            }
+            break;
+            
+        case alertConfirmDelete:
+            if (returnCode == NSAlertSecondButtonReturn) {
+                [activeServer removeTorrents:[alert torrents] deleteData:true];
+            }
+            break;
+            
+        case alertConfirmAdd:
+            if (returnCode == NSAlertSecondButtonReturn) {
+                [activeServer addTorrents:[alert paths]];
+            }
+            break;
     }
 }
 
@@ -441,7 +439,7 @@
         return;
     }
     
-    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+    RFAlert *alert = [[[RFAlert alloc] init] autorelease];
     [alert addButtonWithTitle:@"Cancel"];
     [alert addButtonWithTitle:@"Remove"];
     if ([torrents count] > 1) {
@@ -456,9 +454,10 @@
     [alert setInformativeText:[names componentsJoinedByString:@"\n"]];
     [alert setAlertStyle:NSWarningAlertStyle];
     
-    NSDictionary *context = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSArray arrayWithArray:torrents], @"remove", nil] forKeys:[NSArray arrayWithObjects:@"selected", @"type", nil]];
+    [alert setType:alertConfirmRemove];
+    [alert setTorrents:torrents];
     
-    [alert beginSheetModalForWindow:window modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:context];
+    [alert beginSheetModalForWindow:window modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:nil];
 }
 
 - (void)tryDeleteTorrents:(NSArray *)torrents
@@ -471,7 +470,7 @@
         return;
     }
     
-    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+    RFAlert *alert = [[[RFAlert alloc] init] autorelease];
     [alert addButtonWithTitle:@"Cancel"];
     [alert addButtonWithTitle:@"Remove and Delete"];
     if ([torrents count] > 1) {
@@ -486,9 +485,10 @@
     [alert setInformativeText:[names componentsJoinedByString:@"\n"]];
     [alert setAlertStyle:NSWarningAlertStyle];
     
-    NSDictionary *context = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSArray arrayWithArray:torrents], @"removedelete", nil] forKeys:[NSArray arrayWithObjects:@"selected", @"type", nil]];
+    [alert setType:alertConfirmDelete];
+    [alert setTorrents:torrents];
     
-    [alert beginSheetModalForWindow:window modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:context];
+    [alert beginSheetModalForWindow:window modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:nil];
 }
 
 - (void)tryAddTorrents:(NSArray *)files
@@ -501,7 +501,7 @@
         return;
     }
     
-    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+    RFAlert *alert = [[[RFAlert alloc] init] autorelease];
     [alert addButtonWithTitle:@"Cancel"];
     [alert addButtonWithTitle:@"Add"];
     if ([files count] > 1) {
@@ -516,9 +516,10 @@
     [alert setInformativeText:[displayNames componentsJoinedByString:@"\n"]];
     [alert setAlertStyle:NSWarningAlertStyle];
     
-    NSDictionary *context = [NSDictionary dictionaryWithObjects:[NSArray arrayWithObjects:[NSArray arrayWithArray:files], @"add", nil] forKeys:[NSArray arrayWithObjects:@"paths", @"type", nil]];
+    [alert setType:alertConfirmAdd];
+    [alert setPaths:files];
     
-    [alert beginSheetModalForWindow:window modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:context];
+    [alert beginSheetModalForWindow:window modalDelegate:self didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) contextInfo:nil];
 }
 
 
