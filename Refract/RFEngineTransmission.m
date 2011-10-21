@@ -475,6 +475,9 @@
             NSNumber *status = [torrentDict objectForKey:@"status"];
             if (status) {
                 switch ([status intValue]) {
+                    case 0:         // TR_STATUS_STOPPED
+                        torrent.status = stStopped;
+                        break;
                     case 1:         // TR_STATUS_CHECK_WAIT
                         torrent.status = stWaiting;
                         break;
@@ -484,11 +487,8 @@
                     case 4:         // TR_STATUS_DOWNLOAD
                         torrent.status = stDownloading;
                         break;
-                    case 8:         // TR_STATUS_SEED
+                    case 6:         // TR_STATUS_SEED
                         torrent.status = stSeeding;
-                        break;
-                    case 16:        // TR_STATUS_STOPPED
-                        torrent.status = stStopped;
                         break;
                     default:
                         torrent.status = 0;
