@@ -13,7 +13,7 @@
 #import "RFConstants.h"
 #import "EMKeychainItem.h"
 #import "NotificationController.h"
-#import <JSON/JSON.h>
+#import "JSON.h"
 
 #define REFRACT_RFENGINETRANSMISSION_KEY_URL @"url"
 #define REFRACT_RFENGINETRANSMISSION_KEY_USERNAME @"username"
